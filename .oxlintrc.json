@@ -1,0 +1,8 @@
+{
+  "$schema": "https://oxlint.io/schema.json",
+  "rules": {
+    "no-console": "warn",
+    "no-unused-vars": "error"
+  },
+  "ignorePatterns": ["node_modules", "dist", "*.gen.ts"]
+}
