@@ -1,19 +1,19 @@
 import { defineConfig } from '@hey-api/openapi-ts';
 
+import { getOpenApiDocumentUrl } from './scripts/generation-env';
+
 export default defineConfig({
-  input: 'https://your-api.example.com/openapi.json',
-  output: 'src/lib/api',
+  input: getOpenApiDocumentUrl(process.env),
+  output: 'src/lib/api/generated',
   plugins: [
+    '@hey-api/typescript',
+    '@hey-api/sdk',
+    '@hey-api/client-fetch',
+    'zod',
     {
-      name: '@hey-api/client-fetch',
-      runtimeConfigPath: '../hey-api.ts',
-    },
-    '@tanstack/react-query',
-    {
-      name: '@hey-api/sdk',
-      operations: {
-        strategy: 'flat',
-      },
+      name: '@tanstack/react-query',
+      queryOptions: true,
+      mutationOptions: true,
     },
   ],
 });
