@@ -2,7 +2,9 @@
   "$schema": "https://oxlint.io/schema.json",
   "rules": {
     "no-console": "warn",
-    "no-unused-vars": "error"
+    "no-unused-vars": "error",
+    "no-explicit-any": "error",
+    "max-lines": ["warn", 200]
   },
   "ignorePatterns": ["node_modules", "dist", "*.gen.ts"]
 }

@@ -13,7 +13,7 @@
     "format:check": "oxfmt --check",
     "fl": "bun run format && bun run lint",
     "test": "vitest run",
-    "api:generate": "openapi-ts && oxfmt --write src/lib/api"
+    "openapi:generate": "openapi-ts && oxfmt --write src/lib/api"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.62.0",
@@ -24,14 +24,16 @@
     "zustand": "^5.0.0"
   },
   "devDependencies": {
-    "@hey-api/openapi-ts": "^0.53.0",
+    "@hey-api/openapi-ts": "^0.96.0",
     "@t3-oss/env-core": "^0.11.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "^16.1.0",
+    "@types/node": "^25.6.0",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@typescript/native-preview": "^7.0.0-dev.20260401.1",
     "@vitejs/plugin-react": "^4.3.4",
+    "dotenv": "^17.4.2",
     "jsdom": "^25.0.1",
     "oxfmt": "^0.43.0",
     "oxlint": "^1.58.0",
