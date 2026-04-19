@@ -1,11 +1,12 @@
 import type { ReactNode } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { sessionQueryOptions } from './client';
 
 interface AuthProviderProps {
   children: ReactNode;
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  // TODO: Implement auth provider with Better Auth
-  // For now, just render children without auth check
+  useQuery(sessionQueryOptions());
   return <>{children}</>;
 }
