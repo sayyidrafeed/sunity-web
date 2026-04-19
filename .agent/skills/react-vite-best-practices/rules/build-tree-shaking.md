@@ -1,7 +1,7 @@
 ---
 title: Configure Build for Effective Tree Shaking
 impact: CRITICAL
-impactDescription: "15-30% smaller bundles"
+impactDescription: '15-30% smaller bundles'
 tags: build, tree-shaking, optimization, dead-code, vite
 ---
 
@@ -37,7 +37,7 @@ import _ from 'lodash';
 import moment from 'moment';
 
 function processData(items: Item[]) {
-  return _.uniqBy(items, 'id').map(item => ({
+  return _.uniqBy(items, 'id').map((item) => ({
     ...item,
     date: moment(item.date).format('YYYY-MM-DD'),
   }));
@@ -55,6 +55,7 @@ function processData(items: Item[]) {
 ```
 
 **Problems:**
+
 - Barrel exports with `export *` pull in entire modules even when only one function is used
 - Namespace imports (`import *`) prevent the bundler from identifying unused exports
 - Libraries like `lodash` (CJS) and `moment` are not tree-shakeable
@@ -85,7 +86,7 @@ import uniqBy from 'lodash-es/uniqBy';
 import { format } from 'date-fns';
 
 function processData(items: Item[]) {
-  return uniqBy(items, 'id').map(item => ({
+  return uniqBy(items, 'id').map((item) => ({
     ...item,
     date: format(new Date(item.date), 'yyyy-MM-dd'),
   }));
@@ -99,11 +100,7 @@ function processData(items: Item[]) {
   "version": "1.0.0",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
-  "sideEffects": [
-    "*.css",
-    "*.scss",
-    "./src/polyfills.ts"
-  ]
+  "sideEffects": ["*.css", "*.scss", "./src/polyfills.ts"]
 }
 ```
 
@@ -130,6 +127,7 @@ export default defineConfig({
 ```
 
 **Benefits:**
+
 - Named exports let the bundler eliminate unused functions at build time
 - ESM-compatible libraries (`lodash-es`, `date-fns`) enable per-function tree shaking
 - The `sideEffects` field tells the bundler which files are safe to remove when unused

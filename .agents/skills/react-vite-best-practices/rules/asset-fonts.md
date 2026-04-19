@@ -1,7 +1,7 @@
 ---
 title: Web Font Loading in Vite
 impact: HIGH
-impactDescription: "Font loading affects LCP and CLS"
+impactDescription: 'Font loading affects LCP and CLS'
 tags: fonts, performance, loading, cls
 ---
 
@@ -17,10 +17,7 @@ Render-blocking external font requests add network round trips and cause layout 
 // ❌ Bad — render-blocking CDN font in index.html
 // index.html
 <head>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
-    rel="stylesheet"
-  />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
 </head>
 ```
 
@@ -35,6 +32,7 @@ body {
 ```
 
 **Problems:**
+
 - Render-blocking request to third-party CDN
 - Extra DNS lookup and TLS handshake for fonts.googleapis.com and fonts.gstatic.com
 - No control over font-display behavior
@@ -82,20 +80,14 @@ body {
 ```html
 <!-- ✅ Good — preload critical font in index.html -->
 <head>
-  <link
-    rel="preload"
-    href="/src/assets/fonts/Inter-Regular.woff2"
-    as="font"
-    type="font/woff2"
-    crossorigin
-  />
+  <link rel="preload" href="/src/assets/fonts/Inter-Regular.woff2" as="font" type="font/woff2" crossorigin />
 </head>
 ```
 
 ```typescript
 // ✅ Good — vite.config.ts handles font files
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
@@ -104,17 +96,18 @@ export default defineConfig({
       output: {
         assetFileNames: (assetInfo) => {
           if (assetInfo.name && /\.(woff2?|ttf|otf|eot)$/.test(assetInfo.name)) {
-            return 'assets/fonts/[name]-[hash][extname]'
+            return 'assets/fonts/[name]-[hash][extname]';
           }
-          return 'assets/[name]-[hash][extname]'
+          return 'assets/[name]-[hash][extname]';
         },
       },
     },
   },
-})
+});
 ```
 
 **Benefits:**
+
 - No third-party network requests or DNS lookups
 - `font-display: swap` prevents invisible text during load
 - `unicode-range` limits download to needed character sets

@@ -1,13 +1,13 @@
 ---
 title: Never Expose Secrets in Client Code
 impact: MEDIUM
-impactDescription: "VITE_ variables are embedded in the client bundle — visible to anyone"
+impactDescription: 'VITE_ variables are embedded in the client bundle — visible to anyone'
 tags: security, environment, secrets, client-side
 ---
 
 ## Never Expose Secrets in Client Code
 
-**Impact: MEDIUM (VITE_ variables are embedded in the client bundle — visible to anyone)**
+**Impact: MEDIUM (VITE\_ variables are embedded in the client bundle — visible to anyone)**
 
 Any environment variable with the `VITE_` prefix is statically replaced in the client bundle at build time. This means the raw value is embedded in JavaScript files served to the browser, where anyone can read it.
 
@@ -28,13 +28,14 @@ const response = await fetch('https://api.stripe.com/v1/charges', {
   headers: {
     Authorization: `Bearer ${import.meta.env.VITE_STRIPE_SECRET_KEY}`,
   },
-})
+});
 
 // ❌ Bad — database connection string in client code
-const db = connect(import.meta.env.VITE_DATABASE_URL)
+const db = connect(import.meta.env.VITE_DATABASE_URL);
 ```
 
 **Problems:**
+
 - Secret keys are visible in the built JavaScript files (open DevTools > Sources)
 - Anyone can extract API keys and make unauthorized requests
 - Database credentials in the client enable direct database access
@@ -67,8 +68,8 @@ export async function createCharge(amount: number) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ amount }),
-  })
-  return response.json()
+  });
+  return response.json();
 }
 
 // The backend proxy holds the Stripe secret key server-side
@@ -79,22 +80,17 @@ export async function createCharge(amount: number) {
 // ✅ Good — validate that no secrets leak through at build time
 // src/config.ts
 if (import.meta.env.DEV) {
-  const envKeys = Object.keys(import.meta.env)
-  const suspicious = envKeys.filter(
-    (key) =>
-      key.startsWith('VITE_') &&
-      /secret|password|private|token/i.test(key)
-  )
+  const envKeys = Object.keys(import.meta.env);
+  const suspicious = envKeys.filter((key) => key.startsWith('VITE_') && /secret|password|private|token/i.test(key));
 
   if (suspicious.length > 0) {
-    console.warn(
-      `Potentially sensitive VITE_ variables detected: ${suspicious.join(', ')}`
-    )
+    console.warn(`Potentially sensitive VITE_ variables detected: ${suspicious.join(', ')}`);
   }
 }
 ```
 
 **Benefits:**
+
 - Secrets stay on the server, never reaching the browser
 - Backend proxy pattern keeps API keys safe while still calling third-party services
 - Only publishable/public keys use the `VITE_` prefix

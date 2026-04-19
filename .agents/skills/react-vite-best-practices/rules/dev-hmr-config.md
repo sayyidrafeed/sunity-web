@@ -1,7 +1,7 @@
 ---
 title: Configure HMR for Optimal Development
 impact: HIGH
-impactDescription: "Fast, reliable hot updates"
+impactDescription: 'Fast, reliable hot updates'
 tags: dev, hmr, hot-reload, development, vite
 ---
 
@@ -37,16 +37,13 @@ export function UserProvider({ children }) {
     userCache.current = user;
   }, [user]);
 
-  return (
-    <UserContext.Provider value={{ user, setUser }}>
-      {children}
-    </UserContext.Provider>
-  );
+  return <UserContext.Provider value={{ user, setUser }}>{children}</UserContext.Provider>;
 }
 // HMR causes state loss and unexpected behavior
 ```
 
 **Problems:**
+
 - Default HMR config fails in Docker, WSL, and network drive environments
 - Module-level mutable state persists across HMR updates, causing bugs
 - Missing watch configuration leads to undetected file changes
@@ -153,11 +150,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
   }, []);
 
-  return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={{ theme, toggleTheme }}>{children}</ThemeContext.Provider>;
 }
 
 if (import.meta.hot) {
@@ -166,18 +159,19 @@ if (import.meta.hot) {
 ```
 
 **Benefits:**
+
 - Changes reflect in the browser in milliseconds, not seconds
 - React Fast Refresh maintains component state during updates
 - Clear error overlays help quickly identify and fix issues
 - Docker/WSL configuration ensures HMR works in containerized environments
 - Custom `import.meta.hot` handling prevents memory leaks during long sessions
 
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Full page reload | Export not a component | Check default exports |
-| State lost | Module-level state | Use state management library |
-| Changes not detected | File system events | Enable polling |
-| Connection errors | Port/protocol mismatch | Configure hmr.clientPort |
-| Slow updates | Large dep chain | Optimize with optimizeDeps |
+| Issue                | Cause                  | Solution                     |
+| -------------------- | ---------------------- | ---------------------------- |
+| Full page reload     | Export not a component | Check default exports        |
+| State lost           | Module-level state     | Use state management library |
+| Changes not detected | File system events     | Enable polling               |
+| Connection errors    | Port/protocol mismatch | Configure hmr.clientPort     |
+| Slow updates         | Large dep chain        | Optimize with optimizeDeps   |
 
 Reference: [Vite HMR API](https://vitejs.dev/guide/api-hmr.html) | [Vite Server Options](https://vitejs.dev/config/server-options.html)

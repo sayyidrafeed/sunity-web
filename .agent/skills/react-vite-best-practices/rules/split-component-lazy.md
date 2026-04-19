@@ -1,7 +1,7 @@
 ---
 title: Lazy Load Non-Critical Components
 impact: CRITICAL
-impactDescription: "20-40% smaller initial bundle"
+impactDescription: '20-40% smaller initial bundle'
 tags: split, lazy, components, code-splitting, react
 ---
 
@@ -45,6 +45,7 @@ function Dashboard() {
 ```
 
 **Problems:**
+
 - All modal, drawer, and dialog code is downloaded on initial page load
 - Users pay the cost of parsing code they may never use
 - Larger initial bundle slows Time to Interactive
@@ -68,20 +69,10 @@ const FeedbackForm = lazy(() => import('./components/FeedbackForm'));
 const AdvancedFilters = lazy(() => import('./components/AdvancedFilters'));
 const ExportDialog = lazy(() => import('./components/ExportDialog'));
 
-function LazyModal({
-  isOpen,
-  children
-}: {
-  isOpen: boolean;
-  children: React.ReactNode
-}) {
+function LazyModal({ isOpen, children }: { isOpen: boolean; children: React.ReactNode }) {
   if (!isOpen) return null;
 
-  return (
-    <Suspense fallback={<Skeleton className="modal-skeleton" />}>
-      {children}
-    </Suspense>
-  );
+  return <Suspense fallback={<Skeleton className="modal-skeleton" />}>{children}</Suspense>;
 }
 
 function Dashboard() {
@@ -90,10 +81,7 @@ function Dashboard() {
 
   return (
     <div>
-      <Header
-        onSettingsClick={() => setShowSettings(true)}
-        onProfileClick={() => setShowProfile(true)}
-      />
+      <Header onSettingsClick={() => setShowSettings(true)} onProfileClick={() => setShowProfile(true)} />
       <Sidebar />
       <MainContent />
 
@@ -113,14 +101,11 @@ function Dashboard() {
 // ✅ Good: Lazy component with preloading
 import { lazy, ComponentType, LazyExoticComponent } from 'react';
 
-interface PreloadableComponent<T extends ComponentType<any>>
-  extends LazyExoticComponent<T> {
+interface PreloadableComponent<T extends ComponentType<any>> extends LazyExoticComponent<T> {
   preload: () => Promise<{ default: T }>;
 }
 
-export function lazyWithPreload<T extends ComponentType<any>>(
-  factory: () => Promise<{ default: T }>
-): PreloadableComponent<T> {
+export function lazyWithPreload<T extends ComponentType<any>>(factory: () => Promise<{ default: T }>): PreloadableComponent<T> {
   const Component = lazy(factory) as PreloadableComponent<T>;
   Component.preload = factory;
   return Component;
@@ -130,11 +115,7 @@ const SettingsPanel = lazyWithPreload(() => import('./components/SettingsPanel')
 
 function SettingsButton({ onClick }: { onClick: () => void }) {
   return (
-    <button
-      onClick={onClick}
-      onMouseEnter={() => SettingsPanel.preload()}
-      onFocus={() => SettingsPanel.preload()}
-    >
+    <button onClick={onClick} onMouseEnter={() => SettingsPanel.preload()} onFocus={() => SettingsPanel.preload()}>
       Settings
     </button>
   );
@@ -173,19 +154,20 @@ function ProductPage({ productId }: { productId: string }) {
 ```
 
 **Benefits:**
+
 - Modals, drawers, and dialogs only load when actually opened
 - Faster First Contentful Paint since critical UI renders immediately
 - Below-the-fold content loads as users scroll, not on initial page load
 - Preloading on hover eliminates perceived delay when opening components
 - Better memory usage since components only occupy memory when rendered
 
-| Component Type | Lazy Load? | Reason |
-|---------------|------------|--------|
-| Modals/Dialogs | Yes | Only shown on interaction |
-| Drawers/Panels | Yes | Hidden by default |
-| Below-fold content | Yes | Not in initial viewport |
-| Tabs (non-default) | Yes | Hidden until selected |
-| Header/Navigation | No | Always visible |
-| Above-fold content | No | Critical for FCP |
+| Component Type     | Lazy Load? | Reason                    |
+| ------------------ | ---------- | ------------------------- |
+| Modals/Dialogs     | Yes        | Only shown on interaction |
+| Drawers/Panels     | Yes        | Hidden by default         |
+| Below-fold content | Yes        | Not in initial viewport   |
+| Tabs (non-default) | Yes        | Hidden until selected     |
+| Header/Navigation  | No         | Always visible            |
+| Above-fold content | No         | Critical for FCP          |
 
 Reference: [React lazy](https://react.dev/reference/react/lazy) | [react-intersection-observer](https://github.com/thebuilder/react-intersection-observer)

@@ -1,7 +1,7 @@
 ---
 title: Structure Components for Fast Refresh
 impact: HIGH
-impactDescription: "Instant updates without losing state"
+impactDescription: 'Instant updates without losing state'
 tags: dev, fast-refresh, hmr, react, development
 ---
 
@@ -41,11 +41,7 @@ export default function UserProfile() {
 // ❌ Bad: Mixing components with non-component exports
 export default function Counter() {
   const [count, setCount] = useState(0);
-  return (
-    <button onClick={() => setCount(c => c + 1)}>
-      Count: {count}
-    </button>
-  );
+  return <button onClick={() => setCount((c) => c + 1)}>Count: {count}</button>;
 }
 
 export const MAX_COUNT = 100;
@@ -60,6 +56,7 @@ export default () => {
 ```
 
 **Problems:**
+
 - Multiple components per file may cause full page reloads instead of hot updates
 - Module-level side effects re-execute on every edit, breaking state
 - Non-component exports in component files trigger full module replacement
@@ -103,9 +100,9 @@ export default function Counter() {
 
   return (
     <div className="counter">
-      <button onClick={() => setCount(c => Math.max(c - 1, MIN_COUNT))}>-</button>
+      <button onClick={() => setCount((c) => Math.max(c - 1, MIN_COUNT))}>-</button>
       <span>{formatCount(count)}</span>
-      <button onClick={() => setCount(c => Math.min(c + 1, MAX_COUNT))}>+</button>
+      <button onClick={() => setCount((c) => Math.min(c + 1, MAX_COUNT))}>+</button>
     </div>
   );
 }
@@ -117,7 +114,11 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchUser } from '../api/users';
 
 export default function UserProfile() {
-  const { data: user, isLoading, error } = useQuery({
+  const {
+    data: user,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ['user', 'current'],
     queryFn: () => fetchUser('current'),
   });
@@ -137,9 +138,7 @@ export default function UserProfile() {
 
 ```tsx
 // ✅ Good: Set displayName on HOCs for Fast Refresh and DevTools
-export function withAuth<P extends object>(
-  WrappedComponent: ComponentType<P>
-) {
+export function withAuth<P extends object>(WrappedComponent: ComponentType<P>) {
   function WithAuth(props: P) {
     const { user, isLoading } = useAuth();
     if (isLoading) return <LoadingSpinner />;
@@ -147,26 +146,25 @@ export function withAuth<P extends object>(
     return <WrappedComponent {...props} />;
   }
 
-  WithAuth.displayName = `WithAuth(${
-    WrappedComponent.displayName || WrappedComponent.name || 'Component'
-  })`;
+  WithAuth.displayName = `WithAuth(${WrappedComponent.displayName || WrappedComponent.name || 'Component'})`;
 
   return WithAuth;
 }
 ```
 
 **Benefits:**
+
 - State preserved across edits — no losing form inputs or scroll position
 - Changes reflect in ~50ms, enabling rapid UI iteration
 - Error recovery restores previous state without full reload
 - Only changed components re-render, keeping the rest of the app intact
 
-| Pattern | Fast Refresh | Notes |
-|---------|--------------|-------|
-| Default export function | Works | Recommended |
-| Named export function | Usually works | Name must be PascalCase |
-| Anonymous function | Fails | Always name components |
-| Multiple components/file | May break | One component per file |
-| Non-component exports | May break | Separate into utility files |
+| Pattern                  | Fast Refresh  | Notes                       |
+| ------------------------ | ------------- | --------------------------- |
+| Default export function  | Works         | Recommended                 |
+| Named export function    | Usually works | Name must be PascalCase     |
+| Anonymous function       | Fails         | Always name components      |
+| Multiple components/file | May break     | One component per file      |
+| Non-component exports    | May break     | Separate into utility files |
 
 Reference: [React Fast Refresh](https://react.dev/learn/editor-setup#your-editor) | [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-react)

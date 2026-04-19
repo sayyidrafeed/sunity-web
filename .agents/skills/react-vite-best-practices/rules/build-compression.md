@@ -1,7 +1,7 @@
 ---
 title: Configure Build-Time Compression
 impact: CRITICAL
-impactDescription: "60-80% smaller asset size"
+impactDescription: '60-80% smaller asset size'
 tags: build, compression, gzip, brotli, optimization
 ---
 
@@ -40,6 +40,7 @@ app.use(express.static('dist'));
 ```
 
 **Problems:**
+
 - Server-side runtime compression adds CPU overhead and latency to every request
 - Lower compression levels used at runtime to keep latency acceptable
 - No Brotli support in most runtime compression middleware
@@ -136,28 +137,32 @@ import expressStaticGzip from 'express-static-gzip';
 
 const app = express();
 
-app.use('/', expressStaticGzip('dist', {
-  enableBrotli: true,
-  orderPreference: ['br', 'gzip'],
-  serveStatic: {
-    maxAge: '1y',
-    immutable: true,
-  },
-}));
+app.use(
+  '/',
+  expressStaticGzip('dist', {
+    enableBrotli: true,
+    orderPreference: ['br', 'gzip'],
+    serveStatic: {
+      maxAge: '1y',
+      immutable: true,
+    },
+  })
+);
 
 app.listen(3000);
 ```
 
 **Benefits:**
+
 - Pre-compressed files eliminate on-the-fly compression overhead
 - Maximum compression levels achievable without impacting response latency
 - Brotli offers 15-25% better compression than gzip for text-based content
 - Faster Time to First Byte with no compression overhead per request
 - Both gzip and Brotli versions provide maximum browser compatibility
 
-| Format | Browser Support | Typical Ratio | Best For |
-|--------|-----------------|---------------|----------|
-| Gzip | 95%+ | 70-80% | Universal fallback |
-| Brotli | 90%+ | 80-90% | Modern browsers |
+| Format | Browser Support | Typical Ratio | Best For           |
+| ------ | --------------- | ------------- | ------------------ |
+| Gzip   | 95%+            | 70-80%        | Universal fallback |
+| Brotli | 90%+            | 80-90%        | Modern browsers    |
 
 Reference: [vite-plugin-compression](https://github.com/vbenjs/vite-plugin-compression)

@@ -1,7 +1,7 @@
 ---
 title: Configure Dependency Pre-bundling
 impact: HIGH
-impactDescription: "2-5x faster cold start"
+impactDescription: '2-5x faster cold start'
 tags: dev, dependencies, prebundling, optimization, vite
 ---
 
@@ -17,10 +17,11 @@ Vite pre-bundles dependencies to convert CommonJS/UMD to ESM and reduce the numb
 // ❌ Bad: No optimizeDeps configuration
 export default defineConfig({
   // Vite auto-detects but may miss some deps
-})
+});
 ```
 
 **Problems:**
+
 - Some dependencies may not be pre-bundled, causing slow page loads
 - Cold start can be slow with many dependencies
 - Runtime errors from unbundled CommonJS modules
@@ -30,39 +31,27 @@ export default defineConfig({
 
 ```typescript
 // ✅ Good: Explicitly include dependencies for pre-bundling
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
 
   optimizeDeps: {
-    include: [
-      'react',
-      'react-dom',
-      'react-router-dom',
-      '@tanstack/react-query',
-      'zustand',
-      'axios',
-      'date-fns',
-      'react-dom/client',
-    ],
+    include: ['react', 'react-dom', 'react-router-dom', '@tanstack/react-query', 'zustand', 'axios', 'date-fns', 'react-dom/client'],
 
     exclude: [
       // '@some/esm-only-package',
     ],
   },
-})
+});
 ```
 
 ```typescript
 // ✅ Good: Handle CommonJS dependencies
 export default defineConfig({
   optimizeDeps: {
-    include: [
-      'lodash-es',
-      'linked-package > some-dep',
-    ],
+    include: ['lodash-es', 'linked-package > some-dep'],
 
     esbuildOptions: {
       define: {
@@ -70,7 +59,7 @@ export default defineConfig({
       },
     },
   },
-})
+});
 ```
 
 ```typescript
@@ -78,14 +67,10 @@ export default defineConfig({
 export default defineConfig({
   server: {
     warmup: {
-      clientFiles: [
-        './src/main.tsx',
-        './src/App.tsx',
-        './src/components/index.ts',
-      ],
+      clientFiles: ['./src/main.tsx', './src/App.tsx', './src/components/index.ts'],
     },
   },
-})
+});
 ```
 
 ```bash
@@ -102,6 +87,7 @@ ls node_modules/.vite/deps/
 ```
 
 **Benefits:**
+
 - 2-5x faster cold start by pre-bundling dependencies upfront
 - Eliminates "optimizing dependencies" interruptions during development
 - Prevents CommonJS/ESM compatibility issues at runtime

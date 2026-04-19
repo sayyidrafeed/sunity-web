@@ -36,7 +36,7 @@ import { Link } from "react-router";
 ## Programmatic Navigation
 
 ```tsx
-import { useNavigate } from "react-router";
+import { useNavigate } from 'react-router';
 
 function Component() {
   const navigate = useNavigate();
@@ -44,12 +44,12 @@ function Component() {
   // Use sparingly - only for non-user-initiated navigation
   useEffect(() => {
     if (inactivityTimeout) {
-      navigate("/logout");
+      navigate('/logout');
     }
   }, [inactivityTimeout]);
 
   // Or with options
-  navigate("/dashboard", { replace: true });
+  navigate('/dashboard', { replace: true });
   navigate(-1); // Go back
 }
 ```
@@ -57,12 +57,12 @@ function Component() {
 ## Redirect in Loaders
 
 ```tsx
-import { redirect } from "react-router";
+import { redirect } from 'react-router';
 
 export async function loader({ request }) {
   const user = await getUser(request);
   if (!user) {
-    return redirect("/login");
+    return redirect('/login');
   }
   return { user };
 }
@@ -71,11 +71,11 @@ export async function loader({ request }) {
 ## Pending UI (Navigation State)
 
 ```tsx
-import { useNavigation } from "react-router";
+import { useNavigation } from 'react-router';
 
 function Root() {
   const navigation = useNavigation();
-  const isNavigating = navigation.state !== "idle";
+  const isNavigating = navigation.state !== 'idle';
 
   return (
     <div>
@@ -91,13 +91,11 @@ function Root() {
 ```tsx
 function Component() {
   const navigation = useNavigation();
-  const isSubmitting = navigation.formAction === "/recipes/new";
+  const isSubmitting = navigation.formAction === '/recipes/new';
 
   return (
     <Form method="post" action="/recipes/new">
-      <button type="submit">
-        {isSubmitting ? "Saving..." : "Create Recipe"}
-      </button>
+      <button type="submit">{isSubmitting ? 'Saving...' : 'Create Recipe'}</button>
     </Form>
   );
 }
@@ -108,11 +106,11 @@ function Component() {
 ```tsx
 createBrowserRouter([
   {
-    path: "/dashboard",
+    path: '/dashboard',
     Component: Dashboard,
     children: [
       { index: true, Component: DashboardHome }, // Renders at /dashboard
-      { path: "settings", Component: Settings }, // Renders at /dashboard/settings
+      { path: 'settings', Component: Settings }, // Renders at /dashboard/settings
     ],
   },
 ]);
@@ -126,7 +124,7 @@ createBrowserRouter([
     Component: MarketingLayout, // No path, just layout wrapper
     children: [
       { index: true, Component: Home },
-      { path: "contact", Component: Contact },
+      { path: 'contact', Component: Contact },
     ],
   },
 ]);
@@ -135,7 +133,7 @@ createBrowserRouter([
 ## Navigate Component
 
 ```tsx
-import { Navigate, useLocation } from "react-router";
+import { Navigate, useLocation } from 'react-router';
 
 function RequireAuth({ children }) {
   const auth = useAuth();

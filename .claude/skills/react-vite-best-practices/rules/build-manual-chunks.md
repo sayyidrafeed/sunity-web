@@ -1,7 +1,7 @@
 ---
 title: Configure Manual Chunks for Vendor Separation
 impact: CRITICAL
-impactDescription: "Optimal caching and parallel loading"
+impactDescription: 'Optimal caching and parallel loading'
 tags: build, chunks, vendor, optimization, rollup
 ---
 
@@ -21,10 +21,11 @@ export default defineConfig({
     // No manual chunks configured
     // All code bundled together
   },
-})
+});
 ```
 
 **Problems:**
+
 - React, React DOM, and other vendors are bundled with application code
 - When you update your app, users must re-download everything
 - No parallel loading of separate chunks
@@ -34,8 +35,8 @@ export default defineConfig({
 
 ```typescript
 // vite.config.ts
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
@@ -58,7 +59,7 @@ export default defineConfig({
       },
     },
   },
-})
+});
 ```
 
 ```typescript
@@ -72,25 +73,26 @@ export default defineConfig({
           if (id.includes('node_modules')) {
             // Split large libraries into separate chunks
             if (id.includes('react-dom')) {
-              return 'vendor-react-dom'
+              return 'vendor-react-dom';
             }
             if (id.includes('react')) {
-              return 'vendor-react'
+              return 'vendor-react';
             }
             if (id.includes('@tanstack')) {
-              return 'vendor-tanstack'
+              return 'vendor-tanstack';
             }
             // Other node_modules
-            return 'vendor'
+            return 'vendor';
           }
         },
       },
     },
   },
-})
+});
 ```
 
 **Benefits:**
+
 - Vendor chunks cached separately from app code
 - Browser can download multiple chunks simultaneously
 - App changes don't invalidate vendor cache

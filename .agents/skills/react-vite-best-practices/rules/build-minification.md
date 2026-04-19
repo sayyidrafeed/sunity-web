@@ -1,7 +1,7 @@
 ---
 title: Configure Optimal Minification Settings
 impact: CRITICAL
-impactDescription: "30-50% smaller bundles"
+impactDescription: '30-50% smaller bundles'
 tags: build, minification, optimization, compression, vite
 ---
 
@@ -60,6 +60,7 @@ function Component() {
 ```
 
 **Problems:**
+
 - Disabled minification ships bloated bundles to production
 - Unconfigured terser uses suboptimal defaults and is slower than OXC
 - String property access patterns prevent effective mangling
@@ -167,6 +168,7 @@ function processData(data: Data) {
 ```
 
 **Benefits:**
+
 - OXC (default) provides the fastest minification with excellent compression
 - Terser produces 2-5% smaller bundles when every KB matters
 - Removing console/debugger prevents information leakage in production

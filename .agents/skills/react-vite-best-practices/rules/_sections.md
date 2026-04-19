@@ -28,7 +28,7 @@ The section ID (in parentheses) is the filename prefix used to group rules.
 ## 5. Environment Config (env)
 
 **Impact:** MEDIUM
-**Description:** Environment variable management. The VITE_ prefix for client-side exposure, mode-specific env files (.env.production, .env.staging), and protecting sensitive data from being embedded in the client bundle.
+**Description:** Environment variable management. The VITE\_ prefix for client-side exposure, mode-specific env files (.env.production, .env.staging), and protecting sensitive data from being embedded in the client bundle.
 
 ## 6. Bundle Analysis (bundle)
 

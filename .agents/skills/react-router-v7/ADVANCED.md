@@ -5,7 +5,7 @@
 ### Root Error Boundary (Required)
 
 ```tsx
-import { useRouteError, isRouteErrorResponse } from "react-router";
+import { useRouteError, isRouteErrorResponse } from 'react-router';
 
 function RootErrorBoundary() {
   const error = useRouteError();
@@ -13,7 +13,9 @@ function RootErrorBoundary() {
   if (isRouteErrorResponse(error)) {
     return (
       <>
-        <h1>{error.status} {error.statusText}</h1>
+        <h1>
+          {error.status} {error.statusText}
+        </h1>
         <p>{error.data}</p>
       </>
     );
@@ -32,7 +34,7 @@ function RootErrorBoundary() {
 
 createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     ErrorBoundary: RootErrorBoundary,
     Component: Root,
   },
@@ -42,12 +44,12 @@ createBrowserRouter([
 ### Throwing Errors in Loaders
 
 ```tsx
-import { data } from "react-router";
+import { data } from 'react-router';
 
 export async function loader({ params }) {
   const record = await db.getRecord(params.id);
   if (!record) {
-    throw data("Record Not Found", { status: 404 });
+    throw data('Record Not Found', { status: 404 });
   }
   return record;
 }
@@ -58,11 +60,11 @@ export async function loader({ params }) {
 ```tsx
 createBrowserRouter([
   {
-    path: "/app",
+    path: '/app',
     ErrorBoundary: AppErrorBoundary,
     children: [
       {
-        path: "invoices/:id",
+        path: 'invoices/:id',
         ErrorBoundary: InvoiceErrorBoundary,
         Component: Invoice,
       },
@@ -116,13 +118,13 @@ function LoginPage() {
 ### Middleware (Framework Mode)
 
 ```tsx
-import { redirect } from "react-router";
+import { redirect } from 'react-router';
 
 async function authMiddleware({ context, request }) {
   const userId = getUserId(request);
 
   if (!userId) {
-    throw redirect("/login");
+    throw redirect('/login');
   }
 
   const user = await getUserById(userId);
@@ -131,7 +133,7 @@ async function authMiddleware({ context, request }) {
 
 createBrowserRouter([
   {
-    path: "/dashboard",
+    path: '/dashboard',
     middleware: [authMiddleware],
     Component: Dashboard,
   },
@@ -145,12 +147,9 @@ createBrowserRouter([
 ```tsx
 createBrowserRouter([
   {
-    path: "/app",
+    path: '/app',
     lazy: async () => {
-      const [Component, loader] = await Promise.all([
-        import("./app"),
-        import("./app-loader"),
-      ]);
+      const [Component, loader] = await Promise.all([import('./app'), import('./app-loader')]);
       return { Component, loader };
     },
   },
@@ -160,9 +159,9 @@ createBrowserRouter([
 ### Declarative Mode Lazy Loading
 
 ```tsx
-import React from "react";
+import React from 'react';
 
-const About = React.lazy(() => import("./pages/About"));
+const About = React.lazy(() => import('./pages/About'));
 
 <Routes>
   <Route
@@ -173,7 +172,7 @@ const About = React.lazy(() => import("./pages/About"));
       </React.Suspense>
     }
   />
-</Routes>
+</Routes>;
 ```
 
 ## Common Route Patterns
@@ -181,25 +180,33 @@ const About = React.lazy(() => import("./pages/About"));
 ### Optional Segments
 
 ```tsx
-{ path: ":lang?/categories" }     // Optional dynamic segment
-{ path: "users/:userId/edit?" }   // Optional static segment at end
+{
+  path: ':lang?/categories';
+} // Optional dynamic segment
+{
+  path: 'users/:userId/edit?';
+} // Optional static segment at end
 ```
 
 ### Catch-All / Splat Routes
 
 ```tsx
-{ path: "files/*" }
+{
+  path: 'files/*';
+}
 
 // Access splat in loader
 loader: ({ params }) => {
-  const filePath = params["*"]; // "path/to/file.txt"
-}
+  const filePath = params['*']; // "path/to/file.txt"
+};
 ```
 
 ### Multiple Params
 
 ```tsx
-{ path: "users/:userId/posts/:postId" }
+{
+  path: 'users/:userId/posts/:postId';
+}
 
 // params.userId, params.postId available in loader/component
 ```
@@ -209,15 +216,15 @@ loader: ({ params }) => {
 ```tsx
 createBrowserRouter([
   {
-    path: "/dashboard",
+    path: '/dashboard',
     Component: Dashboard,
     children: [
       // Index route - renders when parent path matches exactly
       { index: true, Component: DashboardHome },
 
       // Path route - renders at parent + path
-      { path: "settings", Component: Settings },
-      { path: "profile", Component: Profile },
+      { path: 'settings', Component: Settings },
+      { path: 'profile', Component: Profile },
     ],
   },
 ]);

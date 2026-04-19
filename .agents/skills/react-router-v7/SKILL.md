@@ -8,18 +8,19 @@ description: React Router v7 best practices for data-driven routing. Use when im
 ## Quick Reference
 
 **Router Setup (Data Mode)**:
+
 ```tsx
-import { createBrowserRouter, RouterProvider } from "react-router";
+import { createBrowserRouter, RouterProvider } from 'react-router';
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     Component: Root,
     ErrorBoundary: RootErrorBoundary,
     loader: rootLoader,
     children: [
       { index: true, Component: Home },
-      { path: "products/:productId", Component: Product, loader: productLoader },
+      { path: 'products/:productId', Component: Product, loader: productLoader },
     ],
   },
 ]);
@@ -28,14 +29,12 @@ ReactDOM.createRoot(root).render(<RouterProvider router={router} />);
 ```
 
 **Framework Mode (Vite plugin)**:
+
 ```ts
 // routes.ts
-import { index, route } from "@react-router/dev/routes";
+import { index, route } from '@react-router/dev/routes';
 
-export default [
-  index("./home.tsx"),
-  route("products/:pid", "./product.tsx"),
-];
+export default [index('./home.tsx'), route('products/:pid', './product.tsx')];
 ```
 
 ## Route Configuration
@@ -45,11 +44,11 @@ export default [
 ```tsx
 createBrowserRouter([
   {
-    path: "/dashboard",
+    path: '/dashboard',
     Component: Dashboard,
     children: [
       { index: true, Component: DashboardHome },
-      { path: "settings", Component: Settings },
+      { path: 'settings', Component: Settings },
     ],
   },
 ]);
@@ -67,9 +66,15 @@ function Dashboard() {
 ### Dynamic Segments and Splats
 
 ```tsx
-{ path: "teams/:teamId" }           // params.teamId
-{ path: ":lang?/categories" }       // Optional segment
-{ path: "files/*" }                 // Splat: params["*"]
+{
+  path: 'teams/:teamId';
+} // params.teamId
+{
+  path: ':lang?/categories';
+} // Optional segment
+{
+  path: 'files/*';
+} // Splat: params["*"]
 ```
 
 ## Key Decision Points
@@ -93,9 +98,9 @@ function Dashboard() {
 
 ## Mode Comparison
 
-| Feature | Framework Mode | Data Mode | Declarative Mode |
-|---------|---------------|-----------|------------------|
-| Setup | Vite plugin | `createBrowserRouter` | `<BrowserRouter>` |
-| Type Safety | Auto-generated types | Manual | Manual |
-| SSR Support | Built-in | Manual | Limited |
-| Use Case | Full-stack apps | SPAs with control | Simple/legacy |
+| Feature     | Framework Mode       | Data Mode             | Declarative Mode  |
+| ----------- | -------------------- | --------------------- | ----------------- |
+| Setup       | Vite plugin          | `createBrowserRouter` | `<BrowserRouter>` |
+| Type Safety | Auto-generated types | Manual                | Manual            |
+| SSR Support | Built-in             | Manual                | Limited           |
+| Use Case    | Full-stack apps      | SPAs with control     | Simple/legacy     |

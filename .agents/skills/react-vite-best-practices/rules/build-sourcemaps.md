@@ -1,7 +1,7 @@
 ---
 title: Configure Source Maps for Production Debugging
 impact: CRITICAL
-impactDescription: "Better error tracking without exposing source"
+impactDescription: 'Better error tracking without exposing source'
 tags: build, sourcemaps, debugging, production, vite
 ---
 
@@ -38,6 +38,7 @@ export default defineConfig({
 ```
 
 **Problems:**
+
 - Disabled source maps make production debugging impossible
 - Full source maps expose your original source code publicly
 - No integration with error tracking services like Sentry
@@ -76,18 +77,19 @@ import { sentryVitePlugin } from '@sentry/vite-plugin';
 export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
-    mode === 'production' && sentryVitePlugin({
-      org: process.env.SENTRY_ORG,
-      project: process.env.SENTRY_PROJECT,
-      authToken: process.env.SENTRY_AUTH_TOKEN,
-      release: {
-        name: process.env.RELEASE_VERSION,
-      },
-      sourcemaps: {
-        assets: './dist/**',
-        filesToDeleteAfterUpload: './dist/**/*.map',
-      },
-    }),
+    mode === 'production' &&
+      sentryVitePlugin({
+        org: process.env.SENTRY_ORG,
+        project: process.env.SENTRY_PROJECT,
+        authToken: process.env.SENTRY_AUTH_TOKEN,
+        release: {
+          name: process.env.RELEASE_VERSION,
+        },
+        sourcemaps: {
+          assets: './dist/**',
+          filesToDeleteAfterUpload: './dist/**/*.map',
+        },
+      }),
   ].filter(Boolean),
   build: {
     sourcemap: true, // Required for Sentry plugin
@@ -110,16 +112,17 @@ server {
 ```
 
 **Benefits:**
+
 - Hidden source maps enable error tracking without exposing source code
 - Sentry integration provides detailed production error reports with original file names
 - CSS source maps in development speed up styling work
 - Server-level blocking adds a second layer of source map protection
 
-| Option | Description | Use Case |
-|--------|-------------|----------|
-| `false` | No source maps | Not recommended |
-| `true` | Generates and links .map files | Development/Staging |
-| `'inline'` | Embeds maps in bundles | Development only |
-| `'hidden'` | Generates .map files without link | Production |
+| Option     | Description                       | Use Case            |
+| ---------- | --------------------------------- | ------------------- |
+| `false`    | No source maps                    | Not recommended     |
+| `true`     | Generates and links .map files    | Development/Staging |
+| `'inline'` | Embeds maps in bundles            | Development only    |
+| `'hidden'` | Generates .map files without link | Production          |
 
 Reference: [Vite Build Options - sourcemap](https://vitejs.dev/config/build-options.html#build-sourcemap)

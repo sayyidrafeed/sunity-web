@@ -8,14 +8,14 @@ This is a React + Vite frontend using Bun as the package manager, deployed as a 
 
 This project ships with skill files for its core libraries. **Before implementing any feature, check the relevant skill and follow it.** Skills live in `.agents/skills/`, `.agent/skills/`, and `.claude/skills/`.
 
-| What you're working on | Skill to invoke |
-|---|---|
-| React components, rendering, performance | `react-vite-best-practices` |
-| Data fetching, query keys, mutations | `tanstack-query-best-practices` |
-| UI/UX design decisions | `ui-ux-pro-max` |
-| General React best practices | `vercel-react-best-practices` |
-| Reviewing React code for issues | `react-doctor` |
-| Writing any feature or bugfix | `test-driven-development` |
+| What you're working on                   | Skill to invoke                 |
+| ---------------------------------------- | ------------------------------- |
+| React components, rendering, performance | `react-vite-best-practices`     |
+| Data fetching, query keys, mutations     | `tanstack-query-best-practices` |
+| UI/UX design decisions                   | `ui-ux-pro-max`                 |
+| General React best practices             | `vercel-react-best-practices`   |
+| Reviewing React code for issues          | `react-doctor`                  |
+| Writing any feature or bugfix            | `test-driven-development`       |
 
 **If a skill doesn't exist for the library you're using** (e.g. React Router, Better Auth, Zod, hey-api), use **context7 MCP** (`mcp__context7__resolve-library-id` + `mcp__context7__get-library-docs`) to pull the latest official documentation before writing code.
 
@@ -40,6 +40,7 @@ This app is deployed as a **fully static SPA on Cloudflare Pages**. This has har
 Use `bun run <script>` for all operations. Never use `npx`, `pnpm`, or `npm` directly.
 
 ### Develop
+
 - `bun run dev` — start Vite dev server on port 3000
 - `bun run check` — TypeScript type check via `tsgo --noEmit`
 - `bun run lint` — lint with Oxlint
@@ -48,10 +49,12 @@ Use `bun run <script>` for all operations. Never use `npx`, `pnpm`, or `npm` dir
 - `bun run test` — run Vitest test suite
 
 ### Build & Preview
+
 - `bun run build` — production build → `dist/`
 - `bun run preview` — preview production build locally
 
 ### API Code Generation
+
 - `bun run openapi:generate` — regenerate the typed API client from the backend's OpenAPI schema
 
 ## Package Management
@@ -71,12 +74,14 @@ The API client is generated from the backend's OpenAPI schema using `@hey-api/op
 **Generated output:** `src/lib/api/generated/`
 
 The generator produces:
+
 - TypeScript types (`@hey-api/typescript`)
 - Fetch-based SDK client (`@hey-api/sdk` + `@hey-api/client-fetch`)
 - Zod validation schemas (`zod` plugin)
 - TanStack Query `queryOptions` and `mutationOptions` (`@tanstack/react-query` plugin)
 
 **To regenerate:**
+
 1. Ensure the backend is running (or set `VITE_API_URL` in `.env`)
 2. Run `bun run openapi:generate`
 3. Commit the diff in `src/lib/api/generated/`
@@ -107,11 +112,11 @@ Use the generated `*Options()` helpers with TanStack Query — do not hand-write
 
 Validated at startup via `@t3-oss/env-core` + Zod in `src/config/index.ts`:
 
-| Variable | Purpose |
-|---|---|
-| `VITE_API_URL` | Backend API base URL |
-| `VITE_APP_URL` | Frontend URL |
-| `VITE_AUTH_BASE_URL` | Auth server URL |
+| Variable             | Purpose              |
+| -------------------- | -------------------- |
+| `VITE_API_URL`       | Backend API base URL |
+| `VITE_APP_URL`       | Frontend URL         |
+| `VITE_AUTH_BASE_URL` | Auth server URL      |
 
 Copy `.env.example` to `.env` before starting.
 

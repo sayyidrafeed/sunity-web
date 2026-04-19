@@ -27,11 +27,11 @@ Nested routes load data in parallel automatically:
 ```tsx
 createBrowserRouter([
   {
-    path: "/",
-    loader: rootLoader,    // Loads in parallel
+    path: '/',
+    loader: rootLoader, // Loads in parallel
     children: [
       {
-        path: "project/:id",
+        path: 'project/:id',
         loader: projectLoader, // Loads in parallel with rootLoader
       },
     ],
@@ -66,18 +66,13 @@ function SearchPage() {
 ## useSearchParams Hook
 
 ```tsx
-import { useSearchParams } from "react-router";
+import { useSearchParams } from 'react-router';
 
 function SearchPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const query = searchParams.get("q");
+  const query = searchParams.get('q');
 
-  return (
-    <input
-      value={query || ""}
-      onChange={(e) => setSearchParams({ q: e.target.value })}
-    />
-  );
+  return <input value={query || ''} onChange={(e) => setSearchParams({ q: e.target.value })} />;
 }
 ```
 
@@ -90,7 +85,7 @@ function shouldRevalidate({ currentUrl, nextUrl, formAction }) {
 
 createBrowserRouter([
   {
-    path: "/data",
+    path: '/data',
     shouldRevalidate,
     loader: dataLoader,
   },
@@ -101,7 +96,7 @@ createBrowserRouter([
 
 ```tsx
 // product.tsx
-import { Route } from "./+types/product";
+import { Route } from './+types/product';
 
 export async function loader({ params }: Route.LoaderArgs) {
   const product = await getProduct(params.pid);

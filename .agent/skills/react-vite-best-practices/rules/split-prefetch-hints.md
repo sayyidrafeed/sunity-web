@@ -1,7 +1,7 @@
 ---
 title: Prefetch Code Chunks on User Intent
 impact: CRITICAL
-impactDescription: "Instant navigation perceived speed"
+impactDescription: 'Instant navigation perceived speed'
 tags: split, prefetch, preload, performance, code-splitting
 ---
 
@@ -45,6 +45,7 @@ function App() {
 ```
 
 **Problems:**
+
 - Users see loading spinners on every navigation
 - Chunks only start downloading after the user clicks
 - No anticipation of user intent leads to perceived slowness
@@ -57,9 +58,7 @@ function App() {
 import { lazy, Suspense, useCallback } from 'react';
 import { Routes, Route, Link, LinkProps } from 'react-router-dom';
 
-function lazyWithPreload<T extends React.ComponentType<any>>(
-  factory: () => Promise<{ default: T }>
-) {
+function lazyWithPreload<T extends React.ComponentType<any>>(factory: () => Promise<{ default: T }>) {
   const Component = lazy(factory);
   (Component as any).preload = factory;
   return Component as typeof Component & { preload: typeof factory };
@@ -97,9 +96,15 @@ function App() {
   return (
     <>
       <nav>
-        <PrefetchLink to="/" preload={Dashboard.preload}>Dashboard</PrefetchLink>
-        <PrefetchLink to="/analytics" preload={Analytics.preload}>Analytics</PrefetchLink>
-        <PrefetchLink to="/settings" preload={Settings.preload}>Settings</PrefetchLink>
+        <PrefetchLink to="/" preload={Dashboard.preload}>
+          Dashboard
+        </PrefetchLink>
+        <PrefetchLink to="/analytics" preload={Analytics.preload}>
+          Analytics
+        </PrefetchLink>
+        <PrefetchLink to="/settings" preload={Settings.preload}>
+          Settings
+        </PrefetchLink>
       </nav>
 
       <Suspense fallback={<Loading />}>
@@ -125,11 +130,7 @@ interface PrefetchOnVisibleProps {
   rootMargin?: string;
 }
 
-export function PrefetchOnVisible({
-  children,
-  preload,
-  rootMargin = '200px',
-}: PrefetchOnVisibleProps) {
+export function PrefetchOnVisible({ children, preload, rootMargin = '200px' }: PrefetchOnVisibleProps) {
   const ref = useRef<HTMLDivElement>(null);
   const prefetched = useRef(false);
 
@@ -194,17 +195,18 @@ function App() {
 ```
 
 **Benefits:**
+
 - Code loads while users decide, making clicks feel instantaneous
 - Eliminates loading spinners for common navigation paths
 - Prefetching during idle time does not compete with critical resources
 - Maintains code splitting benefits with smarter preloading
 - Users on slow connections benefit the most from preloading
 
-| Strategy | Trigger | Best For |
-|----------|---------|----------|
-| Hover/Focus | User intent signal | Navigation links |
-| Viewport Entry | Scroll position | Below-fold sections |
-| Idle Time | After initial load | Common routes |
-| `modulepreload` | Page load | Critical vendors |
+| Strategy        | Trigger            | Best For            |
+| --------------- | ------------------ | ------------------- |
+| Hover/Focus     | User intent signal | Navigation links    |
+| Viewport Entry  | Scroll position    | Below-fold sections |
+| Idle Time       | After initial load | Common routes       |
+| `modulepreload` | Page load          | Critical vendors    |
 
 Reference: [Vite modulePreload](https://vitejs.dev/config/build-options.html#build-modulepreload) | [React lazy](https://react.dev/reference/react/lazy)

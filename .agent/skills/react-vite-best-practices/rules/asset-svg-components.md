@@ -1,7 +1,7 @@
 ---
 title: Use SVGs as React Components
 impact: HIGH
-impactDescription: "Better styling and integration"
+impactDescription: 'Better styling and integration'
 tags: asset, svg, components, react, vite
 ---
 
@@ -30,6 +30,7 @@ function Icon() {
 ```
 
 **Problems:**
+
 - SVGs as `<img>` tags cannot be styled with CSS (no color changes, no hover effects)
 - Inline SVGs are duplicated across components, bloating the bundle
 - No tree shaking — unused icons still included in the build
@@ -43,9 +44,9 @@ npm install vite-plugin-svgr -D
 
 ```typescript
 // ✅ Good: vite.config.ts - Configure SVGR plugin
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import svgr from 'vite-plugin-svgr'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import svgr from 'vite-plugin-svgr';
 
 export default defineConfig({
   plugins: [
@@ -65,7 +66,7 @@ export default defineConfig({
       },
     }),
   ],
-})
+});
 ```
 
 ```typescript
@@ -93,14 +94,14 @@ function Header() {
 /// <reference types="vite-plugin-svgr/client" />
 
 declare module '*.svg?react' {
-  import type { FunctionComponent, SVGProps } from 'react'
-  const content: FunctionComponent<SVGProps<SVGSVGElement>>
-  export default content
+  import type { FunctionComponent, SVGProps } from 'react';
+  const content: FunctionComponent<SVGProps<SVGSVGElement>>;
+  export default content;
 }
 
 declare module '*.svg' {
-  const content: string
-  export default content
+  const content: string;
+  export default content;
 }
 ```
 
@@ -156,6 +157,7 @@ export function Icon({ name, size = 24, className, ...props }: IconProps) {
 ```
 
 **Benefits:**
+
 - SVGs fully styleable with Tailwind CSS or any CSS framework
 - Dynamic colors via `currentColor` without maintaining multiple SVG files
 - Better tree shaking — unused icons excluded from the build

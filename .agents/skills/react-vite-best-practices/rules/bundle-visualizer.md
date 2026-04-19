@@ -19,8 +19,8 @@ Without bundle analysis, large dependencies go unnoticed and bundle size creeps 
 // "The bundle seems slow, maybe it's the icons?"
 
 // vite.config.ts — no analysis tooling
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
@@ -29,10 +29,11 @@ export default defineConfig({
   // - Is tree-shaking working?
   // - Are there duplicate packages?
   // - Did that new library add 200KB?
-})
+});
 ```
 
 **Problems:**
+
 - No visibility into what makes the bundle large
 - Optimization efforts are based on guesswork
 - Regressions in bundle size go undetected
@@ -47,29 +48,29 @@ npm install -D rollup-plugin-visualizer
 
 ```typescript
 // ✅ Good — vite.config.ts with bundle visualizer
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import { visualizer } from 'rollup-plugin-visualizer'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 export default defineConfig({
   plugins: [
     react(),
     visualizer({
-      filename: 'stats.html',      // Output file
-      open: true,                   // Auto-open in browser after build
-      gzipSize: true,               // Show gzipped sizes
-      brotliSize: true,             // Show brotli-compressed sizes
-      template: 'treemap',          // 'treemap' | 'sunburst' | 'network'
+      filename: 'stats.html', // Output file
+      open: true, // Auto-open in browser after build
+      gzipSize: true, // Show gzipped sizes
+      brotliSize: true, // Show brotli-compressed sizes
+      template: 'treemap', // 'treemap' | 'sunburst' | 'network'
     }),
   ],
-})
+});
 ```
 
 ```typescript
 // ✅ Good — only enable visualizer when analyzing (not every build)
-import { defineConfig, type PluginOption } from 'vite'
-import react from '@vitejs/plugin-react'
-import { visualizer } from 'rollup-plugin-visualizer'
+import { defineConfig, type PluginOption } from 'vite';
+import react from '@vitejs/plugin-react';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 export default defineConfig({
   plugins: [
@@ -84,7 +85,7 @@ export default defineConfig({
         template: 'treemap',
       }),
   ].filter(Boolean) as PluginOption[],
-})
+});
 ```
 
 ```json
@@ -121,6 +122,7 @@ npm run analyze
 ```
 
 **Benefits:**
+
 - Interactive visualization of every module in the bundle
 - Gzip and Brotli size estimates show real-world transfer sizes
 - Catches regressions when new dependencies are added

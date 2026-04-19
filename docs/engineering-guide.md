@@ -6,18 +6,18 @@
 
 ## 1. Stack at a glance
 
-| Layer | Choice | Why you care |
-|---|---|---|
-| Build | **Vite 6** via `bun run` scripts | `bun run dev`, `bun run build`, `bun run check`, `bun run test`. Never run `vite` or `npx` directly. |
-| UI | **React 18** | Functional components only. No class components. |
-| Routing | **React Router 7** (data router) | Routes defined in `src/routes/index.tsx`. Features add their own route slices and merge them there. |
-| Data | **TanStack Query 5** + **hey-api** client | Backend OpenAPI spec generates a typed client + `queryOptions` helpers in `src/lib/api/generated/`. |
-| Auth | **Better Auth** via `authClient` (`src/lib/auth/client.ts`) | Session exposed as a shared `queryOptions` helper. |
-| Global state | **Zustand 5** | For client-only state not derivable from server. Stores live in `src/stores/`. |
-| Type check | **tsgo** (`@typescript/native-preview`) | Faster than `tsc`. Run via `bun run check`. |
-| Lint / Format | **Oxlint** + **Oxfmt** | `bun run lint`, `bun run format`, or `bun run fl` for both. |
-| Tests | **Vitest** + Testing Library | `bun run test`. |
-| Deployment | **Cloudflare Pages** (static SPA) | `bun run build` → `dist/`. No server runtime on CF Pages. |
+| Layer         | Choice                                                      | Why you care                                                                                         |
+| ------------- | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Build         | **Vite 6** via `bun run` scripts                            | `bun run dev`, `bun run build`, `bun run check`, `bun run test`. Never run `vite` or `npx` directly. |
+| UI            | **React 18**                                                | Functional components only. No class components.                                                     |
+| Routing       | **React Router 7** (data router)                            | Routes defined in `src/routes/index.tsx`. Features add their own route slices and merge them there.  |
+| Data          | **TanStack Query 5** + **hey-api** client                   | Backend OpenAPI spec generates a typed client + `queryOptions` helpers in `src/lib/api/generated/`.  |
+| Auth          | **Better Auth** via `authClient` (`src/lib/auth/client.ts`) | Session exposed as a shared `queryOptions` helper.                                                   |
+| Global state  | **Zustand 5**                                               | For client-only state not derivable from server. Stores live in `src/stores/`.                       |
+| Type check    | **tsgo** (`@typescript/native-preview`)                     | Faster than `tsc`. Run via `bun run check`.                                                          |
+| Lint / Format | **Oxlint** + **Oxfmt**                                      | `bun run lint`, `bun run format`, or `bun run fl` for both.                                          |
+| Tests         | **Vitest** + Testing Library                                | `bun run test`.                                                                                      |
+| Deployment    | **Cloudflare Pages** (static SPA)                           | `bun run build` → `dist/`. No server runtime on CF Pages.                                            |
 
 ---
 
@@ -105,9 +105,7 @@ Everything in `src/lib/api/generated/` is produced by **hey-api** from the backe
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { listAnnouncementsOptions } from '@/lib/api/generated';
 
-const { data } = useSuspenseQuery(
-  listAnnouncementsOptions({ query: { groupId } }),
-);
+const { data } = useSuspenseQuery(listAnnouncementsOptions({ query: { groupId } }));
 ```
 
 ### Regenerating the client
@@ -158,6 +156,7 @@ Consumers: `useQuery(sessionQueryOptions())`.
 ### API client config (`src/lib/api/hey-api.ts`)
 
 Configure the shared hey-api client here:
+
 - `baseURL` from `env.VITE_API_URL`
 - `credentials: 'include'` for Better Auth cookie-based sessions
 
@@ -253,32 +252,32 @@ Goal: `/mentor/kelompok` listing mentees.
 
 ## 8. SOLID / KISS / DRY in practice
 
-| Principle | What it looks like here |
-|---|---|
-| **Single Responsibility** | Route composes. Component renders. Generated SDK fetches. Store holds form state. One job per file. |
-| **Open/Closed** | Extend base UI components via wrappers, not by editing them. |
-| **Liskov** | Don't narrow types post-hoc. If a prop is `ReactNode`, don't assume string. |
-| **Interface Segregation** | Prefer small focused prop types. Split when a prop list grows past ~8 fields. |
-| **Dependency Inversion** | Import from `@/components/…` and `@/lib/…`. Never from `generated/` directly — always through a re-export. |
-| **KISS** | `useSuspenseQuery` + route `errorElement` replaces hand-rolled `isLoading` state. Don't build a state machine when the framework has one. |
-| **DRY** | Session query, query defaults, API client config — one file each. If you're writing a second copy, extract a helper. |
+| Principle                 | What it looks like here                                                                                                                   |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| **Single Responsibility** | Route composes. Component renders. Generated SDK fetches. Store holds form state. One job per file.                                       |
+| **Open/Closed**           | Extend base UI components via wrappers, not by editing them.                                                                              |
+| **Liskov**                | Don't narrow types post-hoc. If a prop is `ReactNode`, don't assume string.                                                               |
+| **Interface Segregation** | Prefer small focused prop types. Split when a prop list grows past ~8 fields.                                                             |
+| **Dependency Inversion**  | Import from `@/components/…` and `@/lib/…`. Never from `generated/` directly — always through a re-export.                                |
+| **KISS**                  | `useSuspenseQuery` + route `errorElement` replaces hand-rolled `isLoading` state. Don't build a state machine when the framework has one. |
+| **DRY**                   | Session query, query defaults, API client config — one file each. If you're writing a second copy, extract a helper.                      |
 
 ---
 
 ## 9. DO / DON'T quick reference
 
-| | DO | DON'T |
-|---|---|---|
-| New route | Add to `src/routes/index.tsx` with a `loader` using `queryClient.ensureQueryData` | Fetch inside `useEffect` |
-| Data fetch | `useSuspenseQuery(getXxxOptions(...))` from generated | Hand-write `queryKey` + `queryFn` |
-| Loading UI | `pendingElement` / skeleton component on the route | `const [loading, setLoading] = useState(true)` |
-| Error UI | `errorElement` on the route | `try { … } catch { setError(...) }` in the component |
-| Query defaults | Tune once in `src/lib/query/client.ts` | Pass `staleTime` on every `useQuery` call |
-| Shared query | Export a `queryOptions()` helper next to the resource | Inline the same `queryKey` literal in multiple files |
-| Global state | Query cache, URL params, or a Zustand store | React Context for anything that could be a query |
-| Package ops | `bun add / bun remove` | `npm install`, `npx`, `pnpm add` |
-| Type check | `bun run check` (`tsgo`) | `tsc` directly |
-| Commit gate | `bun run check` + `bun run fl` + `bun run test` must all pass | `--no-verify` |
+|                | DO                                                                                | DON'T                                                |
+| -------------- | --------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| New route      | Add to `src/routes/index.tsx` with a `loader` using `queryClient.ensureQueryData` | Fetch inside `useEffect`                             |
+| Data fetch     | `useSuspenseQuery(getXxxOptions(...))` from generated                             | Hand-write `queryKey` + `queryFn`                    |
+| Loading UI     | `pendingElement` / skeleton component on the route                                | `const [loading, setLoading] = useState(true)`       |
+| Error UI       | `errorElement` on the route                                                       | `try { … } catch { setError(...) }` in the component |
+| Query defaults | Tune once in `src/lib/query/client.ts`                                            | Pass `staleTime` on every `useQuery` call            |
+| Shared query   | Export a `queryOptions()` helper next to the resource                             | Inline the same `queryKey` literal in multiple files |
+| Global state   | Query cache, URL params, or a Zustand store                                       | React Context for anything that could be a query     |
+| Package ops    | `bun add / bun remove`                                                            | `npm install`, `npx`, `pnpm add`                     |
+| Type check     | `bun run check` (`tsgo`)                                                          | `tsc` directly                                       |
+| Commit gate    | `bun run check` + `bun run fl` + `bun run test` must all pass                     | `--no-verify`                                        |
 
 ---
 
