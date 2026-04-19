@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "react-router-v7": {
+      "source": "existential-birds/beagle",
+      "sourceType": "github",
+      "computedHash": "194c9e7306024d5ff9f8c2327754d07675fe816870574faa93986f9bd59a830b"
+    }
+  }
+}
