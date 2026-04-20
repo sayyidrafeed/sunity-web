@@ -5,6 +5,12 @@
 
 :root {
   --radius: 0.625rem;
+  --brand-yellow: #f7c85c;
+  --brand-green: #2f6b3f;
+  --brand-surface: #faf9f6;
+  --brand-text: #1f1f1d;
+  --brand-heading: #2f6b3f;
+  --brand-button-text: #15301c;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -31,6 +37,9 @@
 }
 
 .dark {
+  --brand-surface: #0c150d;
+  --brand-text: #e5e5e3;
+  --brand-heading: #6dbf8a;
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
@@ -57,6 +66,14 @@
 }
 
 @theme inline {
+  --font-outfit: 'Outfit', sans-serif;
+  --font-jakarta: 'Plus Jakarta Sans', sans-serif;
+  --color-brand-yellow: var(--brand-yellow);
+  --color-brand-green: var(--brand-green);
+  --color-brand-surface: var(--brand-surface);
+  --color-brand-text: var(--brand-text);
+  --color-brand-heading: var(--brand-heading);
+  --color-brand-button-text: var(--brand-button-text);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
