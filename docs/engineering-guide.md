@@ -9,7 +9,7 @@
 | Layer         | Choice                                                      | Why you care                                                                                         |
 | ------------- | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
 | Build         | **Vite 6** via `bun run` scripts                            | `bun run dev`, `bun run build`, `bun run check`, `bun run test`. Never run `vite` or `npx` directly. |
-| UI            | **React 18**                                                | Functional components only. No class components.                                                     |
+| UI            | **React 19**                                                | Functional components only. No class components.                                                     |
 | Routing       | **React Router 7** (data router)                            | Routes defined in `src/routes/index.tsx`. Features add their own route slices and merge them there.  |
 | Data          | **TanStack Query 5** + **hey-api** client                   | Backend OpenAPI spec generates a typed client + `queryOptions` helpers in `src/lib/api/generated/`.  |
 | Auth          | **Better Auth** via `authClient` (`src/lib/auth/client.ts`) | Session exposed as a shared `queryOptions` helper.                                                   |
