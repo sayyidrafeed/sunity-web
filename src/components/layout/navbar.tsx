@@ -9,7 +9,7 @@ export function Navbar() {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 flex h-[97px] w-full items-center justify-center border-b-[0.5px] border-[#C0C0C0] bg-brand-surface shadow-[0_4px_17.4px_rgba(0,0,0,0.25)]">
+    <nav className="sticky top-0 z-50 flex h-24 w-full items-center justify-center border-b border-border bg-brand-surface shadow-[0_4px_17.4px_rgba(0,0,0,0.25)]">
       <div className="flex h-full w-full max-w-[1329px] items-center justify-between px-4 xl:px-0">
         {/* Logo */}
         <Link to="/" className="group flex items-center gap-[13px]" aria-label="Beranda Sunity">
