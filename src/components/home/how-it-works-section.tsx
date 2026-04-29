@@ -2,22 +2,26 @@ const steps = [
   {
     icon: '/images/icon-campaign.png',
     title: 'Kampanye',
-    description: 'Jelajahi Kampanye pemasangan energi surya untuk rumah ibadah di berbagai daerah.',
+    description:
+      'Jelajahi Kampanye pemasangan energi surya untuk rumah ibadah di berbagai daerah.',
   },
   {
     icon: '/images/icon-contribute.png',
     title: 'Contribute',
-    description: 'Pilih Kampanye dan berikan donasi sesuai kemampuanmu dengan mudah dan aman.',
+    description:
+      'Pilih Kampanye dan berikan donasi sesuai kemampuanmu dengan mudah dan aman.',
   },
   {
     icon: '/images/icon-track.png',
     title: 'Track',
-    description: 'Pantau perkembangan Kampanye dan penggunaan dana secara transparan.',
+    description:
+      'Pantau perkembangan Kampanye dan penggunaan dana secara transparan.',
   },
   {
     icon: '/images/icon-impact.png',
     title: 'Impact',
-    description: 'Lihat dampak nyata dari kontribusimu dalam menghadirkan energi bersih.',
+    description:
+      'Lihat dampak nyata dari kontribusimu dalam menghadirkan energi bersih.',
   },
 ];
 
@@ -38,7 +42,9 @@ export function HowItWorksSection() {
                 <div>
                   <h3 className="font-outfit text-3xl font-bold text-white">{step.title}</h3>
 
-                  <p className="mt-1 max-w-md font-jakarta text-base leading-relaxed text-white/90">{step.description}</p>
+                  <p className="mt-1 max-w-md font-jakarta text-base leading-relaxed text-white/90">
+                    {step.description}
+                  </p>
                 </div>
               </div>
             ))}
@@ -64,7 +70,9 @@ export function HowItWorksSection() {
               <img src="/images/icon-sunity-badge.png" alt="Sunity" className="h-7 w-7 object-contain" />
               <div>
                 <p className="font-outfit text-sm font-bold leading-none text-brand-green">Sunity</p>
-                <p className="mt-1 font-jakarta text-[10px] font-semibold leading-none text-brand-green/80">Crowdfunding Platform</p>
+                <p className="mt-1 font-jakarta text-[10px] font-semibold leading-none text-brand-green/80">
+                  Crowdfunding Platform
+                </p>
               </div>
             </div>
 
