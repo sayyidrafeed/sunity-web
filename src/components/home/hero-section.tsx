@@ -1,5 +1,6 @@
 export function HeroSection() {
   return (
+
     <section className="mx-auto mt-8 max-w-7xl px-6">
       <div className="relative min-h-[520px] overflow-visible rounded-[32px]">
         <div className="absolute inset-0 z-0 overflow-hidden rounded-[32px]">
@@ -8,7 +9,6 @@ export function HeroSection() {
             alt="Solar panel"
             className="h-full w-full object-cover"
           />
-
           <div className="absolute inset-0 bg-black/30" />
         </div>
 
@@ -30,6 +30,7 @@ export function HeroSection() {
           <button className="mt-6 rounded-full bg-white px-6 py-3 text-sm font-semibold text-brand-green">
             Lihat Kampanye
           </button>
+
         </div>
       </div>
     </section>
