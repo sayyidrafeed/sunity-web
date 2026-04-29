@@ -1,5 +1,6 @@
 export function HeroSection() {
   return (
+
     <section className="relative z-0 mx-auto mt-8 max-w-7xl px-6 pb-24">
       <div className="relative min-h-[520px] overflow-visible rounded-[32px]">
         <div className="absolute inset-0 z-0 overflow-hidden rounded-[32px]">
@@ -33,4 +34,6 @@ export function HeroSection() {
       </div>
     </section>
   );
+
 }
+
