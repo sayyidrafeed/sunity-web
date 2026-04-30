@@ -4,11 +4,7 @@ export function HeroSection() {
       <div className="relative h-[520px] overflow-visible rounded-[32px]">
         {/* BACKGROUND CARD */}
         <div className="absolute inset-0 z-0 overflow-hidden rounded-[32px]">
-          <img
-            src="/images/solar-panel.png"
-            alt="Solar panel"
-            className="h-full w-full object-cover"
-          />
+          <img src="/images/solar-panel.png" alt="Solar panel" className="h-full w-full object-cover" />
 
           <div className="absolute inset-0 bg-black/30" />
         </div>
@@ -27,12 +23,11 @@ export function HeroSection() {
           </h1>
 
           <p className="mt-5 max-w-xl font-['Plus Jakarta Sans'] text-base leading-relaxed text-white/90">
-            Sunity adalah platform donasi berbasis komunitas untuk mendukung pemasangan energi surya di rumah ibadah. Bersama, kita bisa menghadirkan energi bersih dan memberi dampak nyata bagi lingkungan dan masyarakat.
+            Sunity adalah platform donasi berbasis komunitas untuk mendukung pemasangan energi surya di rumah ibadah. Bersama, kita bisa menghadirkan
+            energi bersih dan memberi dampak nyata bagi lingkungan dan masyarakat.
           </p>
 
-          <button className="mt-6 rounded-full bg-white px-6 py-3 text-sm font-semibold text-green-800">
-            Lihat Kampanye
-          </button>
+          <button className="mt-6 rounded-full bg-white px-6 py-3 text-sm font-semibold text-green-800">Lihat Kampanye</button>
         </div>
       </div>
     </section>
