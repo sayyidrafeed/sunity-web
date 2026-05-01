@@ -23,15 +23,14 @@ export function Navbar() {
 
     const howItWorksSection = document.getElementById('cara-kerja');
     const footerSection = document.getElementById('tentang-kami');
+    let animationFrameId = 0;
 
     const handleActiveSection = () => {
       const navbarOffset = 120;
       const bottomThreshold = 80;
 
-      // 🔥 FIX: detect footer lebih akurat
       if (footerSection) {
         const footerRect = footerSection.getBoundingClientRect();
-
         const isNearBottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - bottomThreshold;
 
         if ((footerRect.top <= navbarOffset && footerRect.bottom > navbarOffset) || isNearBottom) {
@@ -52,14 +51,29 @@ export function Navbar() {
       setActiveSection('beranda');
     };
 
+    const requestActiveSectionUpdate = () => {
+      if (animationFrameId) return;
+
+      animationFrameId = window.requestAnimationFrame(() => {
+        handleActiveSection();
+        animationFrameId = 0;
+      });
+    };
+
     handleActiveSection();
 
-    window.addEventListener('scroll', handleActiveSection, { passive: true });
-    window.addEventListener('resize', handleActiveSection);
+    window.addEventListener('scroll', requestActiveSectionUpdate, {
+      passive: true,
+    });
+    window.addEventListener('resize', requestActiveSectionUpdate);
 
     return () => {
-      window.removeEventListener('scroll', handleActiveSection);
-      window.removeEventListener('resize', handleActiveSection);
+      window.removeEventListener('scroll', requestActiveSectionUpdate);
+      window.removeEventListener('resize', requestActiveSectionUpdate);
+
+      if (animationFrameId) {
+        window.cancelAnimationFrame(animationFrameId);
+      }
     };
   }, [location.pathname]);
 

@@ -32,8 +32,8 @@ export function Footer() {
             <h4 className="font-jakarta text-sm font-semibold uppercase tracking-wide text-brand-light-gray">Company</h4>
 
             <div className="mt-4 flex flex-col gap-3 font-jakarta text-sm text-brand-text">
-              <Link to="/about" className="transition hover:text-brand-green">
-                About Us
+              <Link to="/#tentang-kami" className="transition hover:text-brand-green">
+                Tentang Kami
               </Link>
             </div>
           </div>
@@ -92,7 +92,7 @@ export function Footer() {
         <div className="mt-16 border-t border-border" />
 
         <div className="mt-7 flex flex-col items-center justify-between gap-4 font-jakarta text-sm text-brand-gray md:flex-row">
-          <p>© 2026 Sunity. All Right Reserved</p>
+          <p>© 2026 Sunity. Hak Cipta Dilindungi</p>
 
           <div className="flex items-center gap-2">
             <a href="#" className="transition hover:text-brand-green">
