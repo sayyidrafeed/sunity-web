@@ -13,7 +13,8 @@ export function HeroSection() {
         <img
           src="/images/solar-out.png"
           alt="Solar keluar"
-          className="absolute right-[-24px] bottom-[-155px] z-10 w-[1248px] max-w-none opacity-95 drop-shadow-[0_10px_30px_rgba(0,0,0,0.2)]" />
+          className="absolute right-[-24px] bottom-[-155px] z-10 w-[1248px] max-w-none opacity-95 drop-shadow-[0_10px_30px_rgba(0,0,0,0.2)]"
+        />
 
         {/* TEXT */}
         <div className="absolute left-10 top-1/2 z-20 max-w-2xl -translate-y-1/2 text-white">
