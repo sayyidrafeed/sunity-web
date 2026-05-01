@@ -19,28 +19,34 @@ export function Navbar() {
       return;
     }
 
-    const howItWorksSection = document.getElementById('cara-kerja');
+    const handleActiveSection = () => {
+      const howItWorksSection = document.getElementById('cara-kerja');
 
-    if (!howItWorksSection) {
-      setActiveSection('beranda');
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setActiveSection(entry.isIntersecting ? 'cara-kerja' : 'beranda');
-      },
-      {
-        root: null,
-        threshold: 0.35,
-        rootMargin: '-96px 0px -45% 0px',
+      if (!howItWorksSection) {
+        setActiveSection('beranda');
+        return;
       }
-    );
 
-    observer.observe(howItWorksSection);
+      const navbarOffset = 120;
+      const sectionTop = howItWorksSection.offsetTop - navbarOffset;
+      const sectionBottom = sectionTop + howItWorksSection.offsetHeight;
+      const scrollPosition = window.scrollY;
+
+      if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
+        setActiveSection('cara-kerja');
+      } else {
+        setActiveSection('beranda');
+      }
+    };
+
+    handleActiveSection();
+
+    window.addEventListener('scroll', handleActiveSection, { passive: true });
+    window.addEventListener('resize', handleActiveSection);
 
     return () => {
-      observer.disconnect();
+      window.removeEventListener('scroll', handleActiveSection);
+      window.removeEventListener('resize', handleActiveSection);
     };
   }, [location.pathname]);
 
@@ -58,9 +64,11 @@ export function Navbar() {
   const handleScrollToSection = (sectionId: string) => {
     if (location.pathname !== '/') {
       navigate('/');
+
       window.setTimeout(() => {
         scrollToSection(sectionId);
-      }, 0);
+      }, 100);
+
       return;
     }
 
@@ -70,7 +78,6 @@ export function Navbar() {
   return (
     <nav className="sticky top-0 z-50 flex h-24 w-full items-center justify-center border-b border-border bg-brand-surface shadow-[0_4px_17.4px_rgba(0,0,0,0.25)]">
       <div className="flex h-full w-full max-w-[1329px] items-center justify-between px-8 xl:px-10">
-        {/* Logo */}
         <Link to="/" className="group flex items-center gap-[13px]" aria-label="Beranda Sunity">
           <img src="/sunity.avif" alt="Sunity Logo" className="h-[56px] w-[40px] object-contain" />
           <span className="font-outfit text-[36px] font-bold leading-[45px] tracking-[-0.006em] text-brand-green transition-colors group-hover:text-brand-yellow">
@@ -78,7 +85,6 @@ export function Navbar() {
           </span>
         </Link>
 
-        {/* Links */}
         <div className="flex items-center gap-[18px]">
           {navItems.map((item) => {
             if (item.type === 'anchor') {
@@ -123,7 +129,6 @@ export function Navbar() {
           })}
         </div>
 
-        {/* Admin Login Button */}
         <Link
           to="/login"
           className="group mr-1 flex h-[40px] items-center justify-center gap-2 rounded-[59px] border-[1.5px] border-transparent bg-brand-green px-5 py-2 shadow-[0_10px_16.5px_rgba(47,107,63,0.25)] transition-all hover:border-brand-green hover:bg-transparent hover:shadow-none xl:mr-3"
