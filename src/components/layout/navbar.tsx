@@ -32,14 +32,9 @@ export function Navbar() {
       if (footerSection) {
         const footerRect = footerSection.getBoundingClientRect();
 
-        const isNearBottom =
-          window.innerHeight + window.scrollY >=
-          document.body.scrollHeight - bottomThreshold;
+        const isNearBottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - bottomThreshold;
 
-        if (
-          (footerRect.top <= navbarOffset && footerRect.bottom > navbarOffset) ||
-          isNearBottom
-        ) {
+        if ((footerRect.top <= navbarOffset && footerRect.bottom > navbarOffset) || isNearBottom) {
           setActiveSection('tentang-kami');
           return;
         }
@@ -48,10 +43,7 @@ export function Navbar() {
       if (howItWorksSection) {
         const howItWorksRect = howItWorksSection.getBoundingClientRect();
 
-        if (
-          howItWorksRect.top <= navbarOffset &&
-          howItWorksRect.bottom > navbarOffset
-        ) {
+        if (howItWorksRect.top <= navbarOffset && howItWorksRect.bottom > navbarOffset) {
           setActiveSection('cara-kerja');
           return;
         }
@@ -96,18 +88,14 @@ export function Navbar() {
       <div className="flex h-full w-full max-w-[1329px] items-center justify-between px-8 xl:px-10">
         <Link to="/" className="group flex items-center gap-[13px]">
           <img src="/sunity.avif" alt="Sunity Logo" className="h-[56px] w-[40px]" />
-          <span className="font-outfit text-[36px] font-bold text-brand-green group-hover:text-brand-yellow">
-            Sunity
-          </span>
+          <span className="font-outfit text-[36px] font-bold text-brand-green group-hover:text-brand-yellow">Sunity</span>
         </Link>
 
         <div className="flex items-center gap-[18px]">
           {navItems.map((item) => {
             if (item.type === 'anchor') {
               const targetSection = item.path.replace('#', '') as ActiveSection;
-              const isActive =
-                location.pathname === '/' &&
-                activeSection === targetSection;
+              const isActive = location.pathname === '/' && activeSection === targetSection;
 
               return (
                 <button
@@ -115,9 +103,7 @@ export function Navbar() {
                   type="button"
                   onClick={() => handleScrollToSection(item.path)}
                   className={`flex h-[40px] items-center px-6 font-jakarta text-[16px] transition-all ${
-                    isActive
-                      ? 'border-b-[3px] border-brand-green font-bold text-brand-green'
-                      : 'text-brand-light-gray hover:text-brand-green'
+                    isActive ? 'border-b-[3px] border-brand-green font-bold text-brand-green' : 'text-brand-light-gray hover:text-brand-green'
                   }`}
                 >
                   {item.name}
@@ -131,17 +117,12 @@ export function Navbar() {
                 to={item.path}
                 end={item.path === '/'}
                 className={({ isActive }) => {
-                  const isBerandaActive =
-                    item.path === '/' &&
-                    location.pathname === '/' &&
-                    activeSection === 'beranda';
+                  const isBerandaActive = item.path === '/' && location.pathname === '/' && activeSection === 'beranda';
 
                   const active = item.path === '/' ? isBerandaActive : isActive;
 
                   return `flex h-[40px] items-center px-6 font-jakarta text-[16px] transition-all ${
-                    active
-                      ? 'border-b-[3px] border-brand-green font-bold text-brand-green'
-                      : 'text-brand-light-gray hover:text-brand-green'
+                    active ? 'border-b-[3px] border-brand-green font-bold text-brand-green' : 'text-brand-light-gray hover:text-brand-green'
                   }`;
                 }}
               >

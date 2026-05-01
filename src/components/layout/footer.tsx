@@ -17,24 +17,19 @@ export function Footer() {
               <img src="/sunity.avif" alt="Sunity" className="h-12 w-9 object-contain" />
 
               <div>
-                <p className="font-outfit text-3xl font-bold leading-none text-brand-green">
-                  Sunity
-                </p>
-                <p className="mt-1 font-jakarta text-sm font-medium text-brand-green">
-                  Crowdfunding Platform
-                </p>
+                <p className="font-outfit text-3xl font-bold leading-none text-brand-green">Sunity</p>
+                <p className="mt-1 font-jakarta text-sm font-medium text-brand-green">Crowdfunding Platform</p>
               </div>
             </div>
 
             <p className="mt-5 max-w-[290px] font-jakarta text-sm leading-relaxed text-brand-text">
-              Platform donasi berbasis komunitas yang mendukung pemasangan energi surya di rumah ibadah. Bersama, kita menghadirkan energi bersih dan menciptakan dampak nyata bagi lingkungan dan masyarakat.
+              Platform donasi berbasis komunitas yang mendukung pemasangan energi surya di rumah ibadah. Bersama, kita menghadirkan energi bersih dan
+              menciptakan dampak nyata bagi lingkungan dan masyarakat.
             </p>
           </div>
 
           <div>
-            <h4 className="font-jakarta text-sm font-semibold uppercase tracking-wide text-brand-light-gray">
-              Company
-            </h4>
+            <h4 className="font-jakarta text-sm font-semibold uppercase tracking-wide text-brand-light-gray">Company</h4>
 
             <div className="mt-4 flex flex-col gap-3 font-jakarta text-sm text-brand-text">
               <Link to="/about" className="transition hover:text-brand-green">
@@ -44,9 +39,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="font-jakarta text-sm font-semibold uppercase tracking-wide text-brand-light-gray">
-              Navigation
-            </h4>
+            <h4 className="font-jakarta text-sm font-semibold uppercase tracking-wide text-brand-light-gray">Navigation</h4>
 
             <div className="mt-4 flex flex-col gap-3 font-jakarta text-sm text-brand-text">
               <Link to="/" className="transition hover:text-brand-green">
@@ -62,9 +55,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="font-jakarta text-sm font-semibold uppercase tracking-wide text-brand-light-gray">
-              Contact
-            </h4>
+            <h4 className="font-jakarta text-sm font-semibold uppercase tracking-wide text-brand-light-gray">Contact</h4>
 
             <div className="mt-4 flex flex-col gap-3 font-jakarta text-sm text-brand-text">
               <div className="flex items-center gap-3">
@@ -79,9 +70,7 @@ export function Footer() {
             </div>
 
             <div className="mt-7">
-              <p className="font-jakarta text-sm font-semibold uppercase tracking-wide text-brand-light-gray">
-                Follow Us
-              </p>
+              <p className="font-jakarta text-sm font-semibold uppercase tracking-wide text-brand-light-gray">Follow Us</p>
 
               <div className="mt-3 flex items-center gap-4">
                 <a href="#" aria-label="Instagram" className="transition hover:brightness-90">
