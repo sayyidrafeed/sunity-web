@@ -29,6 +29,7 @@ export function HowItWorksSection() {
   return (
     <section id="cara-kerja" className="relative overflow-hidden bg-brand-green px-6 py-24">
       <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-16 lg:grid-cols-2">
+        {/* LEFT */}
         <div className="relative z-10 pl-4 lg:pl-8">
           <h2 className="font-outfit text-4xl font-bold leading-tight text-white lg:text-[52px]">
             <span className="text-brand-yellow">Bagaimana</span> Alurnya?
@@ -37,7 +38,11 @@ export function HowItWorksSection() {
           <div className="mt-10 space-y-8 pl-2">
             {steps.map((step) => (
               <div key={step.title} className="flex items-start gap-6">
-                <img src={step.icon} alt={step.title} className="mt-1 h-14 w-14 object-contain" />
+                <img
+                  src={step.icon}
+                  alt={step.title}
+                  className="mt-1 h-14 w-14 object-contain"
+                />
 
                 <div>
                   <h3 className="font-outfit text-3xl font-bold text-white">{step.title}</h3>
@@ -51,6 +56,7 @@ export function HowItWorksSection() {
           </div>
         </div>
 
+        {/* RIGHT */}
         <div className="relative z-10 flex justify-center">
           <div className="relative h-[520px] w-full max-w-[520px]">
             <div className="absolute left-1/2 top-1/2 h-[360px] w-[360px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-yellow/50 blur-[80px]" />

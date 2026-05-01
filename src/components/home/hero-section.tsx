@@ -1,3 +1,5 @@
+import { Link } from 'react-router';
+
 export function HeroSection() {
   return (
     <section className="relative z-0 mx-auto mt-8 max-w-7xl px-6 pb-24">
@@ -47,10 +49,12 @@ export function HeroSection() {
           </p>
 
           <div className="mt-6 w-fit rounded-full border border-white/45 bg-white/15 p-2 shadow-[0_10px_30px_rgba(0,0,0,0.22)] backdrop-blur-md">
+
             <button className="flex items-center gap-4 rounded-full bg-brand-surface px-7 py-3 font-jakarta text-sm font-medium text-brand-green shadow-sm transition hover:bg-[#E6F4EA]">
+
               Lihat Kampanye
               <span className="text-lg">→</span>
-            </button>
+            </Link>
           </div>
         </div>
 
@@ -107,5 +111,6 @@ export function HeroSection() {
       </div>
     </section>
   );
+
 }
 
