@@ -122,18 +122,16 @@ export function Navbar() {
             );
           })}
         </div>
-
-        {/* Admin Login Button */}
-        <Link
-          to="/login"
-          className="group mr-1 flex h-[40px] items-center justify-center gap-2 rounded-[59px] border-[1.5px] border-transparent bg-brand-green px-5 py-2 shadow-[0_10px_16.5px_rgba(47,107,63,0.25)] transition-all hover:border-brand-green hover:bg-transparent hover:shadow-none xl:mr-3"
-        >
-          <span className="font-jakarta text-[16px] font-medium leading-[20px] tracking-[-0.006em] text-brand-surface transition-colors group-hover:text-brand-green">
-            Admin Login
-          </span>
-          <img src="/white-arrow.avif" alt="" aria-hidden="true" className="w-[20px] object-contain transition-opacity group-hover:hidden" />
-          <img src="/green-arrow.avif" alt="" aria-hidden="true" className="hidden w-[20px] object-contain transition-opacity group-hover:block" />
-        </Link>
+<a
+  href="/admin/login"
+  className="group mr-1 flex h-[40px] items-center justify-center gap-2 rounded-[59px] border-[1.5px] border-transparent bg-brand-green px-5 py-2 shadow-[0_10px_16.5px_rgba(47,107,63,0.25)] transition-all hover:border-brand-green hover:bg-transparent hover:shadow-none xl:mr-3"
+>
+  <span className="font-jakarta text-[16px] font-medium leading-[20px] tracking-[-0.006em] text-brand-surface transition-colors group-hover:text-brand-green">
+    Admin Login
+  </span>
+  <img src="/white-arrow.avif" alt="" aria-hidden="true" className="w-[20px] object-contain transition-opacity group-hover:hidden" />
+  <img src="/green-arrow.avif" alt="" aria-hidden="true" className="hidden w-[20px] object-contain transition-opacity group-hover:block" />
+</a>
       </div>
     </nav>
   );
