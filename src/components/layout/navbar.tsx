@@ -3,9 +3,7 @@ import { Link, NavLink, useLocation } from 'react-router';
 
 export function Navbar() {
   const location = useLocation();
-  const [activeSection, setActiveSection] = useState<'beranda' | 'cara-kerja'>(
-    'beranda',
-  );
+  const [activeSection, setActiveSection] = useState<'beranda' | 'cara-kerja'>('beranda');
 
   const navItems = [
     { name: 'Beranda', path: '/', type: 'route' },
@@ -61,16 +59,8 @@ export function Navbar() {
     <nav className="sticky top-0 z-50 flex h-24 w-full items-center justify-center border-b border-border bg-brand-surface shadow-[0_4px_17.4px_rgba(0,0,0,0.25)]">
       <div className="flex h-full w-full max-w-[1329px] items-center justify-between px-8 xl:px-10">
         {/* Logo */}
-        <Link
-          to="/"
-          className="group flex items-center gap-[13px]"
-          aria-label="Beranda Sunity"
-        >
-          <img
-            src="/sunity.avif"
-            alt="Sunity Logo"
-            className="h-[56px] w-[40px] object-contain"
-          />
+        <Link to="/" className="group flex items-center gap-[13px]" aria-label="Beranda Sunity">
+          <img src="/sunity.avif" alt="Sunity Logo" className="h-[56px] w-[40px] object-contain" />
           <span className="font-outfit text-[36px] font-bold leading-[45px] tracking-[-0.006em] text-brand-green transition-colors group-hover:text-brand-yellow">
             Sunity
           </span>
@@ -80,8 +70,7 @@ export function Navbar() {
         <div className="flex items-center gap-[18px]">
           {navItems.map((item) => {
             if (item.type === 'anchor') {
-              const isActive =
-                location.pathname === '/' && activeSection === 'cara-kerja';
+              const isActive = location.pathname === '/' && activeSection === 'cara-kerja';
 
               return (
                 <button
@@ -105,13 +94,9 @@ export function Navbar() {
                 to={item.path}
                 end={item.path === '/'}
                 className={({ isActive }) => {
-                  const isBerandaActive =
-                    item.path === '/' &&
-                    location.pathname === '/' &&
-                    activeSection === 'beranda';
+                  const isBerandaActive = item.path === '/' && location.pathname === '/' && activeSection === 'beranda';
 
-                  const shouldBeActive =
-                    item.path === '/' ? isBerandaActive : isActive;
+                  const shouldBeActive = item.path === '/' ? isBerandaActive : isActive;
 
                   return `flex h-[40px] items-center justify-center px-6 py-2.5 font-jakarta text-[16px] tracking-[-0.006em] transition-all ${
                     shouldBeActive
@@ -134,18 +119,8 @@ export function Navbar() {
           <span className="font-jakarta text-[16px] font-medium leading-[20px] tracking-[-0.006em] text-brand-surface transition-colors group-hover:text-brand-green">
             Admin Login
           </span>
-          <img
-            src="/white-arrow.avif"
-            alt=""
-            aria-hidden="true"
-            className="w-[20px] object-contain transition-opacity group-hover:hidden"
-          />
-          <img
-            src="/green-arrow.avif"
-            alt=""
-            aria-hidden="true"
-            className="hidden w-[20px] object-contain transition-opacity group-hover:block"
-          />
+          <img src="/white-arrow.avif" alt="" aria-hidden="true" className="w-[20px] object-contain transition-opacity group-hover:hidden" />
+          <img src="/green-arrow.avif" alt="" aria-hidden="true" className="hidden w-[20px] object-contain transition-opacity group-hover:block" />
         </Link>
       </div>
     </nav>

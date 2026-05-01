@@ -161,9 +161,7 @@ const activeCampaigns = [
 
 export default function Campaigns() {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [openDropdown, setOpenDropdown] = useState<'worship' | 'status' | null>(
-    null,
-  );
+  const [openDropdown, setOpenDropdown] = useState<'worship' | 'status' | null>(null);
   const [selectedWorship, setSelectedWorship] = useState('Rumah Ibadah');
   const [selectedStatus, setSelectedStatus] = useState('Status');
 
@@ -179,21 +177,15 @@ export default function Campaigns() {
     <main className="min-h-screen bg-[#FAF9F6] px-10 py-10">
       <p className="font-['Plus Jakarta Sans'] text-lg text-gray-500">Halo!</p>
 
-      <h1 className="mt-2 font-['Outfit'] text-[52px] font-bold text-[#2F6F44]">
-        Jelajahi Kampanye
-      </h1>
+      <h1 className="mt-2 font-['Outfit'] text-[52px] font-bold text-[#2F6F44]">Jelajahi Kampanye</h1>
 
       <div className="mt-8 flex items-center gap-3">
-        <p className="font-['Plus Jakarta Sans'] text-xl text-gray-700">
-          Browse By
-        </p>
+        <p className="font-['Plus Jakarta Sans'] text-xl text-gray-700">Browse By</p>
 
         <div className="relative">
           <button
             type="button"
-            onClick={() =>
-              setOpenDropdown(openDropdown === 'worship' ? null : 'worship')
-            }
+            onClick={() => setOpenDropdown(openDropdown === 'worship' ? null : 'worship')}
             className="flex items-center gap-3 rounded-full bg-white px-6 py-3 font-['Plus Jakarta Sans'] text-sm text-gray-500 shadow transition hover:text-[#2F6F44]"
           >
             {selectedWorship}
@@ -201,9 +193,7 @@ export default function Campaigns() {
               src="/images/dropdown-arrow.png"
               alt=""
               aria-hidden="true"
-              className={`h-4 w-4 object-contain transition-transform duration-300 ${
-                openDropdown === 'worship' ? 'rotate-180' : 'rotate-0'
-              }`}
+              className={`h-4 w-4 object-contain transition-transform duration-300 ${openDropdown === 'worship' ? 'rotate-180' : 'rotate-0'}`}
             />
           </button>
 
@@ -226,16 +216,12 @@ export default function Campaigns() {
           )}
         </div>
 
-        <button className="rounded-full bg-white px-6 py-3 font-['Plus Jakarta Sans'] text-sm text-gray-400 shadow">
-          Kota
-        </button>
+        <button className="rounded-full bg-white px-6 py-3 font-['Plus Jakarta Sans'] text-sm text-gray-400 shadow">Kota</button>
 
         <div className="relative">
           <button
             type="button"
-            onClick={() =>
-              setOpenDropdown(openDropdown === 'status' ? null : 'status')
-            }
+            onClick={() => setOpenDropdown(openDropdown === 'status' ? null : 'status')}
             className="flex items-center gap-3 rounded-full bg-white px-6 py-3 font-['Plus Jakarta Sans'] text-sm text-gray-500 shadow transition hover:text-[#2F6F44]"
           >
             {selectedStatus}
@@ -243,9 +229,7 @@ export default function Campaigns() {
               src="/images/dropdown-arrow.png"
               alt=""
               aria-hidden="true"
-              className={`h-4 w-4 object-contain transition-transform duration-300 ${
-                openDropdown === 'status' ? 'rotate-180' : 'rotate-0'
-              }`}
+              className={`h-4 w-4 object-contain transition-transform duration-300 ${openDropdown === 'status' ? 'rotate-180' : 'rotate-0'}`}
             />
           </button>
 
@@ -269,21 +253,13 @@ export default function Campaigns() {
         </div>
 
         <div className="flex flex-1 items-center justify-between rounded-full bg-white px-6 py-3 shadow">
-          <span className="font-['Plus Jakarta Sans'] text-sm text-gray-400">
-            Cari Kampanye...
-          </span>
+          <span className="font-['Plus Jakarta Sans'] text-sm text-gray-400">Cari Kampanye...</span>
 
-          <img
-            src="/images/search-icon.png"
-            alt="Search"
-            className="h-6 w-6 object-contain"
-          />
+          <img src="/images/search-icon.png" alt="Search" className="h-6 w-6 object-contain" />
         </div>
       </div>
 
-      <h2 className="mt-10 font-['Outfit'] text-3xl font-bold text-gray-900">
-        Butuh Dukungan
-      </h2>
+      <h2 className="mt-10 font-['Outfit'] text-3xl font-bold text-gray-900">Butuh Dukungan</h2>
 
       <section className="mt-8 overflow-hidden rounded-[22px] bg-white shadow-lg">
         <div className="relative h-[420px]">
@@ -298,38 +274,20 @@ export default function Campaigns() {
                     : 'translate-x-full opacity-0'
               }`}
             >
-              <div
-                className={`relative flex h-full flex-col justify-center overflow-hidden bg-gradient-to-r ${banner.gradient} px-10`}
-              >
+              <div className={`relative flex h-full flex-col justify-center overflow-hidden bg-gradient-to-r ${banner.gradient} px-10`}>
                 <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-r from-transparent to-black/10" />
                 <div className="pointer-events-none absolute inset-y-0 right-10 w-20 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
                 <div className="relative z-10 flex -translate-y-12 flex-col justify-center gap-6">
-                  <h3
-                    className={`font-['Outfit'] text-[42px] font-bold leading-tight ${banner.text}`}
-                  >
-                    {banner.title}
-                  </h3>
+                  <h3 className={`font-['Outfit'] text-[42px] font-bold leading-tight ${banner.text}`}>{banner.title}</h3>
 
-                  <button
-                    className={`w-fit font-['Plus Jakarta Sans'] text-sm underline ${banner.text}`}
-                  >
-                    Donasi Sekarang
-                  </button>
+                  <button className={`w-fit font-['Plus Jakarta Sans'] text-sm underline ${banner.text}`}>Donasi Sekarang</button>
 
-                  <p
-                    className={`font-['Outfit'] text-2xl font-bold ${banner.text}`}
-                  >
-                    #SunityEcoFaith
-                  </p>
+                  <p className={`font-['Outfit'] text-2xl font-bold ${banner.text}`}>#SunityEcoFaith</p>
                 </div>
               </div>
 
-              <img
-                src={banner.image}
-                alt={banner.title}
-                className="h-full w-full object-cover"
-              />
+              <img src={banner.image} alt={banner.title} className="h-full w-full object-cover" />
             </div>
           ))}
         </div>
@@ -342,111 +300,63 @@ export default function Campaigns() {
             type="button"
             onClick={() => setActiveIndex(index)}
             aria-label={`Lihat banner ${index + 1}`}
-            className={`h-4 rounded-full transition-all duration-300 ${
-              index === activeIndex ? 'w-16 bg-[#2F6F44]' : 'w-4 bg-gray-200'
-            }`}
+            className={`h-4 rounded-full transition-all duration-300 ${index === activeIndex ? 'w-16 bg-[#2F6F44]' : 'w-4 bg-gray-200'}`}
           />
         ))}
       </div>
 
       <section className="mt-14">
-        <h2 className="font-['Outfit'] text-3xl font-bold text-gray-900">
-          Kampanye Aktif
-        </h2>
+        <h2 className="font-['Outfit'] text-3xl font-bold text-gray-900">Kampanye Aktif</h2>
 
         <div className="mt-4 h-px w-full bg-gray-200" />
 
         <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
           {activeCampaigns.map((campaign) => (
-            <article
-              key={campaign.id}
-              className="rounded-[20px] border border-gray-200 bg-white p-5 shadow-[0_10px_30px_rgba(0,0,0,0.06)]"
-            >
+            <article key={campaign.id} className="rounded-[20px] border border-gray-200 bg-white p-5 shadow-[0_10px_30px_rgba(0,0,0,0.06)]">
               <div className="relative overflow-hidden rounded-[16px]">
-                <img
-                  src={campaign.image}
-                  alt={campaign.title}
-                  className="h-[180px] w-full object-cover"
-                />
+                <img src={campaign.image} alt={campaign.title} className="h-[180px] w-full object-cover" />
 
                 <div className="absolute right-3 top-3 flex h-7 items-center gap-2 rounded-full border border-blue-500 bg-[#EEF2FF] px-3">
-                  <img
-                    src="/images/icon-active.png"
-                    alt=""
-                    aria-hidden="true"
-                    className="h-4 w-4 shrink-0"
-                  />
-                  <span className="font-['Plus Jakarta Sans'] text-xs font-medium text-blue-600">
-                    Aktif
-                  </span>
+                  <img src="/images/icon-active.png" alt="" aria-hidden="true" className="h-4 w-4 shrink-0" />
+                  <span className="font-['Plus Jakarta Sans'] text-xs font-medium text-blue-600">Aktif</span>
                 </div>
               </div>
 
               <div className="mt-5 flex items-start justify-between gap-4">
-                <h3 className="font-['Outfit'] text-xl font-bold leading-tight text-gray-900">
-                  {campaign.title}
-                </h3>
+                <h3 className="font-['Outfit'] text-xl font-bold leading-tight text-gray-900">{campaign.title}</h3>
 
                 <div className="mt-1 flex items-center gap-1 font-['Plus Jakarta Sans'] text-xs text-gray-500">
-                  <img
-                    src="/images/icon-catholic.png"
-                    alt=""
-                    aria-hidden="true"
-                    className="h-4 w-4 object-contain"
-                  />
+                  <img src="/images/icon-catholic.png" alt="" aria-hidden="true" className="h-4 w-4 object-contain" />
                   {campaign.category}
                 </div>
               </div>
 
               <p className="mt-2 flex items-center gap-1 font-['Plus Jakarta Sans'] text-sm text-gray-400">
-                <img
-                  src="/images/icon-location.png"
-                  alt=""
-                  aria-hidden="true"
-                  className="h-4 w-4 object-contain"
-                />
+                <img src="/images/icon-location.png" alt="" aria-hidden="true" className="h-4 w-4 object-contain" />
                 {campaign.location}
               </p>
 
               <div className="mt-6 flex items-end justify-between">
                 <div>
-                  <p className="font-['Plus Jakarta Sans'] text-xs text-gray-400">
-                    Dana Terkumpul
-                  </p>
-                  <p className="font-['Outfit'] text-xl font-bold text-[#2F6F44]">
-                    {campaign.collected}
-                  </p>
+                  <p className="font-['Plus Jakarta Sans'] text-xs text-gray-400">Dana Terkumpul</p>
+                  <p className="font-['Outfit'] text-xl font-bold text-[#2F6F44]">{campaign.collected}</p>
                 </div>
 
                 <div className="text-right">
-                  <p className="font-['Plus Jakarta Sans'] text-xs text-gray-400">
-                    Sisa Hari
-                  </p>
-                  <p className="font-['Outfit'] text-xl font-bold text-[#2F6F44]">
-                    {campaign.daysLeft}
-                  </p>
+                  <p className="font-['Plus Jakarta Sans'] text-xs text-gray-400">Sisa Hari</p>
+                  <p className="font-['Outfit'] text-xl font-bold text-[#2F6F44]">{campaign.daysLeft}</p>
                 </div>
               </div>
 
               <div className="mt-3 h-4 overflow-hidden rounded-full bg-gray-200">
-                <div
-                  className="h-full rounded-full bg-[#2F6F44]"
-                  style={{ width: `${campaign.progress}%` }}
-                />
+                <div className="h-full rounded-full bg-[#2F6F44]" style={{ width: `${campaign.progress}%` }} />
               </div>
 
               <div className="mt-2 flex items-center justify-between font-['Plus Jakarta Sans'] text-sm">
-                <span className="font-semibold text-[#F6C85F]">
-                  {campaign.progress}%
-                </span>
+                <span className="font-semibold text-[#F6C85F]">{campaign.progress}%</span>
 
                 <span className="flex items-center gap-1 font-semibold text-gray-900">
-                  <img
-                    src="/images/icon-target-2.png"
-                    alt=""
-                    aria-hidden="true"
-                    className="h-4 w-4 object-contain"
-                  />
+                  <img src="/images/icon-target-2.png" alt="" aria-hidden="true" className="h-4 w-4 object-contain" />
                   Target: {campaign.target}
                 </span>
               </div>
