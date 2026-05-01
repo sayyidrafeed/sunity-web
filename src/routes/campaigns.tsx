@@ -5,13 +5,13 @@ const banners = [
     title: 'Hadirkan Cahaya Surya, Terangi Kesucian Pura Besakih',
     image: '/images/campaign-besakih.png',
     text: 'text-white',
-    gradient: 'from-[#2F6F44] via-[#3B9858] to-[#2F6F44]',
+    gradient: 'from-brand-green via-[#3B9858] to-brand-green',
   },
   {
     title: 'Dukung Klenteng Hong Tiek Terus Beroperasi',
     image: '/images/campaign-klenteng.png',
     text: 'text-[#8B1E1E]',
-    gradient: 'from-[#F6C85F] via-[#FFD96A] to-[#E9B833]',
+    gradient: 'from-brand-yellow via-[#FFD96A] to-[#E9B833]',
   },
   {
     title: 'Menjaga Kelestarian Bumi, Menjaga Kesucian Vihara.',
@@ -166,27 +166,27 @@ export default function Campaigns() {
   const [selectedStatus, setSelectedStatus] = useState('Status');
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    const timer = setTimeout(() => {
       setActiveIndex((current) => (current + 1) % banners.length);
     }, 3000);
 
-    return () => clearInterval(interval);
-  }, []);
+    return () => clearTimeout(timer);
+  }, [activeIndex]);
 
   return (
-    <main className="min-h-screen bg-[#FAF9F6] px-10 py-10">
-      <p className="font-['Plus Jakarta Sans'] text-lg text-gray-500">Halo!</p>
+    <main className="min-h-screen bg-brand-surface px-10 py-10">
+      <p className="font-jakarta text-lg text-gray-500">Halo!</p>
 
-      <h1 className="mt-2 font-['Outfit'] text-[52px] font-bold text-[#2F6F44]">Jelajahi Kampanye</h1>
+      <h1 className="mt-2 font-outfit text-[52px] font-bold text-brand-green">Jelajahi Kampanye</h1>
 
       <div className="mt-8 flex items-center gap-3">
-        <p className="font-['Plus Jakarta Sans'] text-xl text-gray-700">Browse By</p>
+        <p className="font-jakarta text-xl text-gray-700">Browse By</p>
 
         <div className="relative">
           <button
             type="button"
             onClick={() => setOpenDropdown(openDropdown === 'worship' ? null : 'worship')}
-            className="flex items-center gap-3 rounded-full bg-white px-6 py-3 font-['Plus Jakarta Sans'] text-sm text-gray-500 shadow transition hover:text-[#2F6F44]"
+            className="flex items-center gap-3 rounded-full bg-white px-6 py-3 font-jakarta text-sm text-gray-500 shadow transition hover:text-brand-green"
           >
             {selectedWorship}
             <img
@@ -207,7 +207,7 @@ export default function Campaigns() {
                     setSelectedWorship(option);
                     setOpenDropdown(null);
                   }}
-                  className="block w-full px-5 py-3 text-left font-['Plus Jakarta Sans'] text-sm text-gray-600 transition hover:bg-[#E6F4EA] hover:text-[#2F6F44]"
+                  className="block w-full px-5 py-3 text-left font-jakarta text-sm text-gray-600 transition hover:bg-[#E6F4EA] hover:text-brand-green"
                 >
                   {option}
                 </button>
@@ -216,13 +216,13 @@ export default function Campaigns() {
           )}
         </div>
 
-        <button className="rounded-full bg-white px-6 py-3 font-['Plus Jakarta Sans'] text-sm text-gray-400 shadow">Kota</button>
+        <button className="rounded-full bg-white px-6 py-3 font-jakarta text-sm text-gray-400 shadow">Kota</button>
 
         <div className="relative">
           <button
             type="button"
             onClick={() => setOpenDropdown(openDropdown === 'status' ? null : 'status')}
-            className="flex items-center gap-3 rounded-full bg-white px-6 py-3 font-['Plus Jakarta Sans'] text-sm text-gray-500 shadow transition hover:text-[#2F6F44]"
+            className="flex items-center gap-3 rounded-full bg-white px-6 py-3 font-jakarta text-sm text-gray-500 shadow transition hover:text-brand-green"
           >
             {selectedStatus}
             <img
@@ -243,7 +243,7 @@ export default function Campaigns() {
                     setSelectedStatus(option);
                     setOpenDropdown(null);
                   }}
-                  className="block w-full px-5 py-3 text-left font-['Plus Jakarta Sans'] text-sm text-gray-600 transition hover:bg-[#E6F4EA] hover:text-[#2F6F44]"
+                  className="block w-full px-5 py-3 text-left font-jakarta text-sm text-gray-600 transition hover:bg-[#E6F4EA] hover:text-brand-green"
                 >
                   {option}
                 </button>
@@ -253,13 +253,12 @@ export default function Campaigns() {
         </div>
 
         <div className="flex flex-1 items-center justify-between rounded-full bg-white px-6 py-3 shadow">
-          <span className="font-['Plus Jakarta Sans'] text-sm text-gray-400">Cari Kampanye...</span>
-
+          <span className="font-jakarta text-sm text-gray-400">Cari Kampanye...</span>
           <img src="/images/search-icon.png" alt="Search" className="h-6 w-6 object-contain" />
         </div>
       </div>
 
-      <h2 className="mt-10 font-['Outfit'] text-3xl font-bold text-gray-900">Butuh Dukungan</h2>
+      <h2 className="mt-10 font-outfit text-3xl font-bold text-gray-900">Butuh Dukungan</h2>
 
       <section className="mt-8 overflow-hidden rounded-[22px] bg-white shadow-lg">
         <div className="relative h-[420px]">
@@ -279,11 +278,11 @@ export default function Campaigns() {
                 <div className="pointer-events-none absolute inset-y-0 right-10 w-20 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
                 <div className="relative z-10 flex -translate-y-12 flex-col justify-center gap-6">
-                  <h3 className={`font-['Outfit'] text-[42px] font-bold leading-tight ${banner.text}`}>{banner.title}</h3>
+                  <h3 className={`font-outfit text-[42px] font-bold leading-tight ${banner.text}`}>{banner.title}</h3>
 
-                  <button className={`w-fit font-['Plus Jakarta Sans'] text-sm underline ${banner.text}`}>Donasi Sekarang</button>
+                  <button className={`w-fit font-jakarta text-sm underline ${banner.text}`}>Donasi Sekarang</button>
 
-                  <p className={`font-['Outfit'] text-2xl font-bold ${banner.text}`}>#SunityEcoFaith</p>
+                  <p className={`font-outfit text-2xl font-bold ${banner.text}`}>#SunityEcoFaith</p>
                 </div>
               </div>
 
@@ -300,13 +299,13 @@ export default function Campaigns() {
             type="button"
             onClick={() => setActiveIndex(index)}
             aria-label={`Lihat banner ${index + 1}`}
-            className={`h-4 rounded-full transition-all duration-300 ${index === activeIndex ? 'w-16 bg-[#2F6F44]' : 'w-4 bg-gray-200'}`}
+            className={`h-4 rounded-full transition-all duration-300 ${index === activeIndex ? 'w-16 bg-brand-green' : 'w-4 bg-gray-200'}`}
           />
         ))}
       </div>
 
       <section className="mt-14">
-        <h2 className="font-['Outfit'] text-3xl font-bold text-gray-900">Kampanye Aktif</h2>
+        <h2 className="font-outfit text-3xl font-bold text-gray-900">Kampanye Aktif</h2>
 
         <div className="mt-4 h-px w-full bg-gray-200" />
 
@@ -318,42 +317,42 @@ export default function Campaigns() {
 
                 <div className="absolute right-3 top-3 flex h-7 items-center gap-2 rounded-full border border-blue-500 bg-[#EEF2FF] px-3">
                   <img src="/images/icon-active.png" alt="" aria-hidden="true" className="h-4 w-4 shrink-0" />
-                  <span className="font-['Plus Jakarta Sans'] text-xs font-medium text-blue-600">Aktif</span>
+                  <span className="font-jakarta text-xs font-medium text-blue-600">Aktif</span>
                 </div>
               </div>
 
               <div className="mt-5 flex items-start justify-between gap-4">
-                <h3 className="font-['Outfit'] text-xl font-bold leading-tight text-gray-900">{campaign.title}</h3>
+                <h3 className="font-outfit text-xl font-bold leading-tight text-gray-900">{campaign.title}</h3>
 
-                <div className="mt-1 flex items-center gap-1 font-['Plus Jakarta Sans'] text-xs text-gray-500">
+                <div className="mt-1 flex items-center gap-1 font-jakarta text-xs text-gray-500">
                   <img src="/images/icon-catholic.png" alt="" aria-hidden="true" className="h-4 w-4 object-contain" />
                   {campaign.category}
                 </div>
               </div>
 
-              <p className="mt-2 flex items-center gap-1 font-['Plus Jakarta Sans'] text-sm text-gray-400">
+              <p className="mt-2 flex items-center gap-1 font-jakarta text-sm text-gray-400">
                 <img src="/images/icon-location.png" alt="" aria-hidden="true" className="h-4 w-4 object-contain" />
                 {campaign.location}
               </p>
 
               <div className="mt-6 flex items-end justify-between">
                 <div>
-                  <p className="font-['Plus Jakarta Sans'] text-xs text-gray-400">Dana Terkumpul</p>
-                  <p className="font-['Outfit'] text-xl font-bold text-[#2F6F44]">{campaign.collected}</p>
+                  <p className="font-jakarta text-xs text-gray-400">Dana Terkumpul</p>
+                  <p className="font-outfit text-xl font-bold text-brand-green">{campaign.collected}</p>
                 </div>
 
                 <div className="text-right">
-                  <p className="font-['Plus Jakarta Sans'] text-xs text-gray-400">Sisa Hari</p>
-                  <p className="font-['Outfit'] text-xl font-bold text-[#2F6F44]">{campaign.daysLeft}</p>
+                  <p className="font-jakarta text-xs text-gray-400">Sisa Hari</p>
+                  <p className="font-outfit text-xl font-bold text-brand-green">{campaign.daysLeft}</p>
                 </div>
               </div>
 
               <div className="mt-3 h-4 overflow-hidden rounded-full bg-gray-200">
-                <div className="h-full rounded-full bg-[#2F6F44]" style={{ width: `${campaign.progress}%` }} />
+                <div className="h-full rounded-full bg-brand-green" style={{ width: `${campaign.progress}%` }} />
               </div>
 
-              <div className="mt-2 flex items-center justify-between font-['Plus Jakarta Sans'] text-sm">
-                <span className="font-semibold text-[#F6C85F]">{campaign.progress}%</span>
+              <div className="mt-2 flex items-center justify-between font-jakarta text-sm">
+                <span className="font-semibold text-brand-yellow">{campaign.progress}%</span>
 
                 <span className="flex items-center gap-1 font-semibold text-gray-900">
                   <img src="/images/icon-target-2.png" alt="" aria-hidden="true" className="h-4 w-4 object-contain" />

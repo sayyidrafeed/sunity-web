@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Link, NavLink, useLocation } from 'react-router';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router';
 
 export function Navbar() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState<'beranda' | 'cara-kerja'>('beranda');
 
   const navItems = [
@@ -13,38 +14,37 @@ export function Navbar() {
   ];
 
   useEffect(() => {
-    const handleScroll = () => {
-      const howItWorksSection = document.getElementById('cara-kerja');
-
-      if (!howItWorksSection || location.pathname !== '/') {
-        setActiveSection('beranda');
-        return;
-      }
-
-      const sectionTop = howItWorksSection.offsetTop;
-      const scrollPosition = window.scrollY + 140;
-
-      if (scrollPosition >= sectionTop) {
-        setActiveSection('cara-kerja');
-      } else {
-        setActiveSection('beranda');
-      }
-    };
-
-    handleScroll();
-    window.addEventListener('scroll', handleScroll);
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [location.pathname]);
-
-  const handleScrollToSection = (sectionId: string) => {
     if (location.pathname !== '/') {
-      window.location.href = `/${sectionId}`;
+      setActiveSection('beranda');
       return;
     }
 
+    const howItWorksSection = document.getElementById('cara-kerja');
+
+    if (!howItWorksSection) {
+      setActiveSection('beranda');
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setActiveSection(entry.isIntersecting ? 'cara-kerja' : 'beranda');
+      },
+      {
+        root: null,
+        threshold: 0.35,
+        rootMargin: '-96px 0px -45% 0px',
+      }
+    );
+
+    observer.observe(howItWorksSection);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [location.pathname]);
+
+  const scrollToSection = (sectionId: string) => {
     const section = document.querySelector(sectionId);
 
     if (section) {
@@ -53,6 +53,18 @@ export function Navbar() {
         block: 'start',
       });
     }
+  };
+
+  const handleScrollToSection = (sectionId: string) => {
+    if (location.pathname !== '/') {
+      navigate('/');
+      window.setTimeout(() => {
+        scrollToSection(sectionId);
+      }, 0);
+      return;
+    }
+
+    scrollToSection(sectionId);
   };
 
   return (
