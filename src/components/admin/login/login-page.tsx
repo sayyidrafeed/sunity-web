@@ -15,7 +15,6 @@ export function LoginPage() {
 
   return (
     <div className="min-h-screen bg-[#FDFBF7] font-jakarta relative overflow-hidden">
-      
       {/* Background Gradient Kuning - Tetap di pojok kiri atas */}
       <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-[#F7C85C] rounded-full blur-[150px] opacity-60 -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
 
@@ -23,11 +22,10 @@ export function LoginPage() {
       <div className="flex h-screen">
         {/* Sisi Kiri - Judul, Deskripsi & Solar Panel */}
         <div className="w-1/2 flex flex-col justify-center px-20 z-10">
-          <h1 className="font-outfit font-semibold text-6xl text-[#2F6B3F] mb-6 leading-tight">
-            Bersama Hadirkan Energi Bersih untuk Rumah Ibadah.
-          </h1>
+          <h1 className="font-outfit font-semibold text-6xl text-[#2F6B3F] mb-6 leading-tight">Bersama Hadirkan Energi Bersih untuk Rumah Ibadah.</h1>
           <p className="text-gray-600 text-lg leading-relaxed mb-10 max-w-lg">
-            Akses panel administrator untuk mengelola sistem, memantau kontribusi, dan mendukung misi menghadirkan energi bersih yang berkelanjutan bagi rumah ibadah.
+            Akses panel administrator untuk mengelola sistem, memantau kontribusi, dan mendukung misi menghadirkan energi bersih yang berkelanjutan
+            bagi rumah ibadah.
           </p>
 
           {/* Solar Panel SVG - DIGEDEIN & DINAIKIN */}
@@ -38,23 +36,16 @@ export function LoginPage() {
 
         {/* Sisi Kanan - Background dengan thunder.svg */}
         <div className="w-1/2 rounded-tl-[100px] flex items-center justify-center relative overflow-hidden">
-          
           {/* Komponen thunder.svg sebagai Background Sisi Kanan */}
-          <img 
-            src="/thunder.svg" 
-            alt="Thunder Background" 
-            className="absolute inset-0 w-full h-full object-cover opacity-100"
-          />
-          
+          <img src="/thunder.svg" alt="Thunder Background" className="absolute inset-0 w-full h-full object-cover opacity-100" />
+
           {/* Card Login */}
           <div className="bg-white p-10 rounded-3xl shadow-xl w-full max-w-sm z-10">
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold text-gray-900">Sign In</h2>
             </div>
-            
-            <p className="text-gray-600 text-sm mb-8 text-center max-w-xs mx-auto">
-              Lanjutkan dengan akun Google untuk masuk sebagai administrator.
-            </p>
+
+            <p className="text-gray-600 text-sm mb-8 text-center max-w-xs mx-auto">Lanjutkan dengan akun Google untuk masuk sebagai administrator.</p>
 
             <button
               onClick={handleGoogleLogin}

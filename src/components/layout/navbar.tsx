@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router';
 
+type ActiveSection = 'beranda' | 'cara-kerja' | 'tentang-kami';
+
 export function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [activeSection, setActiveSection] = useState<'beranda' | 'cara-kerja'>('beranda');
+  const [activeSection, setActiveSection] = useState<ActiveSection>('beranda');
 
   const navItems = [
     { name: 'Beranda', path: '/', type: 'route' },
     { name: 'Cara Kerja', path: '#cara-kerja', type: 'anchor' },
     { name: 'Kampanye', path: '/campaigns', type: 'route' },
-    { name: 'Tentang Kami', path: '/about', type: 'route' },
+    { name: 'Tentang Kami', path: '#tentang-kami', type: 'anchor' },
   ];
 
   useEffect(() => {
@@ -19,31 +21,62 @@ export function Navbar() {
       return;
     }
 
-    const section = document.getElementById('cara-kerja');
-
-    if (!section) return;
+    const howItWorksSection = document.getElementById('cara-kerja');
+    const footerSection = document.getElementById('tentang-kami');
+    let animationFrameId = 0;
 
     const handleActiveSection = () => {
       const navbarOffset = 120;
-      const rect = section.getBoundingClientRect();
+      const bottomThreshold = 80;
 
-      if (rect.top <= navbarOffset && rect.bottom > navbarOffset) {
-        setActiveSection('cara-kerja');
-      } else {
-        setActiveSection('beranda');
+      if (footerSection) {
+        const footerRect = footerSection.getBoundingClientRect();
+        const isNearBottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - bottomThreshold;
+
+        if ((footerRect.top <= navbarOffset && footerRect.bottom > navbarOffset) || isNearBottom) {
+          setActiveSection('tentang-kami');
+          return;
+        }
       }
+
+      if (howItWorksSection) {
+        const howItWorksRect = howItWorksSection.getBoundingClientRect();
+
+        if (howItWorksRect.top <= navbarOffset && howItWorksRect.bottom > navbarOffset) {
+          setActiveSection('cara-kerja');
+          return;
+        }
+      }
+
+      setActiveSection('beranda');
+    };
+
+    const requestActiveSectionUpdate = () => {
+      if (animationFrameId) return;
+
+      animationFrameId = window.requestAnimationFrame(() => {
+        handleActiveSection();
+        animationFrameId = 0;
+      });
     };
 
     handleActiveSection();
 
-    window.addEventListener('scroll', handleActiveSection, { passive: true });
+    window.addEventListener('scroll', requestActiveSectionUpdate, {
+      passive: true,
+    });
+    window.addEventListener('resize', requestActiveSectionUpdate);
 
     return () => {
-      window.removeEventListener('scroll', handleActiveSection);
+      window.removeEventListener('scroll', requestActiveSectionUpdate);
+      window.removeEventListener('resize', requestActiveSectionUpdate);
+
+      if (animationFrameId) {
+        window.cancelAnimationFrame(animationFrameId);
+      }
     };
   }, [location.pathname]);
 
-  // scroll helper
   const scrollToSection = (sectionId: string) => {
     const section = document.querySelector(sectionId);
 
@@ -67,21 +100,21 @@ export function Navbar() {
   return (
     <nav className="sticky top-0 z-50 flex h-24 w-full items-center justify-center border-b border-border bg-brand-surface shadow-[0_4px_17.4px_rgba(0,0,0,0.25)]">
       <div className="flex h-full w-full max-w-[1329px] items-center justify-between px-8 xl:px-10">
-        {/* Logo */}
         <Link to="/" className="group flex items-center gap-[13px]">
           <img src="/sunity.avif" alt="Sunity Logo" className="h-[56px] w-[40px]" />
           <span className="font-outfit text-[36px] font-bold text-brand-green group-hover:text-brand-yellow">Sunity</span>
         </Link>
 
-        {/* Nav */}
         <div className="flex items-center gap-[18px]">
           {navItems.map((item) => {
             if (item.type === 'anchor') {
-              const isActive = location.pathname === '/' && activeSection === 'cara-kerja';
+              const targetSection = item.path.replace('#', '') as ActiveSection;
+              const isActive = location.pathname === '/' && activeSection === targetSection;
 
               return (
                 <button
                   key={item.name}
+                  type="button"
                   onClick={() => handleScrollToSection(item.path)}
                   className={`flex h-[40px] items-center px-6 font-jakarta text-[16px] transition-all ${
                     isActive ? 'border-b-[3px] border-brand-green font-bold text-brand-green' : 'text-brand-light-gray hover:text-brand-green'

@@ -46,11 +46,7 @@ export function MonitoringPage() {
       {/* Main Content */}
       <div className="flex-1 flex items-center justify-center p-8">
         <div className="flex flex-col items-center">
-          <img 
-            src="/no-hasil.svg" 
-            alt="Tidak Ada Hasil" 
-            className="w-full max-w-lg object-contain" 
-          />
+          <img src="/no-hasil.svg" alt="Tidak Ada Hasil" className="w-full max-w-lg object-contain" />
         </div>
       </div>
     </div>
