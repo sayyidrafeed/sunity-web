@@ -1,54 +1,42 @@
-import { Link, useNavigate } from 'react-router';
-
+/**
+ * MonitoringPage — /admin/monitoring
+ *
+ * Empty state shown when no energy monitoring data is available.
+ * Data will be available after a campaign is complete and installation
+ * is confirmed.
+ */
 export function MonitoringPage() {
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    navigate('/admin/login');
-  };
-
   return (
-    <div className="min-h-screen bg-gray-50 flex font-['Plus_Jakarta_Sans']">
-      {/* Sidebar */}
-      <div className="w-64 h-screen bg-[#2F6B3F] p-8 flex flex-col justify-between text-white sticky top-0 shrink-0">
-        <div>
-          <div className="flex items-center gap-2 mb-10">
-            <img src="/sunity2.svg" alt="Sunity" className="w-8 h-8" />
-            <h1 className="text-2xl text-[#F7C85C] font-['Outfit'] font-bold">Sunity</h1>
-          </div>
-          <nav className="space-y-4">
-            <Link to="/admin/dashboard" className="flex items-center gap-3 w-full p-3 text-white/60 hover:text-white transition">
-              <img src="/dashboard.svg" alt="Dashboard" className="w-5 h-5" /> Dashboard
-            </Link>
-            <button className="flex items-center gap-3 w-full bg-white/10 p-3 rounded-lg font-medium">
-              <img src="/monitoring.svg" alt="Monitoring" className="w-5 h-5" /> Monitoring Energi
-            </button>
-            <Link to="/admin/campaigns" className="flex items-center gap-3 w-full p-3 text-white/60 hover:text-white transition">
-              <img src="/kampanye.svg" alt="Kampanye" className="w-5 h-5" /> Kelola Kampanye
-            </Link>
-          </nav>
+    <div className="flex items-center justify-center min-h-screen" style={{ backgroundColor: '#FAF9F6' }}>
+      <section
+        className="flex flex-col items-center gap-[8px]"
+        style={{ width: '398px' }}
+        aria-labelledby="monitoring-empty-title"
+        aria-describedby="monitoring-empty-desc"
+      >
+        {/* Illustration */}
+        <div className="flex items-center justify-center" style={{ width: '234px', height: '184px' }}>
+          <img src="/404-dashboard.avif" alt="Ilustrasi tidak ada data monitoring energi" className="w-full h-full object-contain" />
         </div>
 
-        <div className="flex flex-col gap-4">
-          <button onClick={handleLogout} className="flex items-center gap-3 text-white/60 hover:text-white transition">
-            <span>⎋</span> Logout
-          </button>
-          <div className="bg-white p-3 rounded-xl flex items-center gap-3 text-gray-800">
-            <img src="/habatusauda.svg" alt="Avatar" className="w-10 h-10 rounded-full object-cover" />
-            <div>
-              <p className="text-sm font-bold">Habatusauda</p>
-              <p className="text-xs text-gray-500">Administrator</p>
-            </div>
-          </div>
+        {/* Text block */}
+        <div className="flex flex-col items-center gap-[4px]" style={{ width: '398px' }}>
+          <h1
+            id="monitoring-empty-title"
+            className="font-outfit font-medium text-[24px] leading-[30px] text-center tracking-[-0.006em] w-full"
+            style={{ color: '#1F1F1D' }}
+          >
+            Tidak Ada Hasil
+          </h1>
+          <p
+            id="monitoring-empty-desc"
+            className="font-jakarta font-normal text-[18px] leading-[23px] text-center tracking-[-0.006em] w-full"
+            style={{ color: '#5A5A57' }}
+          >
+            Dashboard Energi tersedia setelah kampanye selesai dan instalasi terkonfirmasi.
+          </p>
         </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="flex-1 flex items-center justify-center p-8">
-        <div className="flex flex-col items-center">
-          <img src="/no-hasil.svg" alt="Tidak Ada Hasil" className="w-full max-w-lg object-contain" />
-        </div>
-      </div>
+      </section>
     </div>
   );
 }
