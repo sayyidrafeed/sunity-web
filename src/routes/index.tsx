@@ -1,8 +1,7 @@
-import { createBrowserRouter } from 'react-router';
+import { createBrowserRouter, Navigate } from 'react-router';
 import { ErrorState } from '@/components/ui/error-state';
 import { NotFound } from '@/components/ui/not-found';
 import { RootLayout } from '@/components/layout/root-layout';
-import { LoginPage, DashboardPage, MonitoringPage, KelolaKampanyePage } from '@/components/admin'; // 👈 TAMBAHKAN DI SINI
 import Home from '@/routes/home';
 import Campaigns from '@/routes/campaigns';
 
@@ -21,7 +20,10 @@ export const router = createBrowserRouter([
       },
       {
         path: '/admin/login',
-        element: <LoginPage />,
+        lazy: () =>
+          import('@/components/admin/login/login-page').then((m) => ({
+            Component: m.LoginPage,
+          })),
       },
       {
         path: '*',
@@ -30,18 +32,38 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: '/admin/dashboard',
-    element: <DashboardPage />,
+    path: '/admin',
+    lazy: () =>
+      import('@/components/admin/layout/admin-layout').then((m) => ({
+        Component: m.AdminLayout,
+      })),
     errorElement: <ErrorState />,
-  },
-  {
-    path: '/admin/monitoring',
-    element: <MonitoringPage />,
-    errorElement: <ErrorState />,
-  },
-  {
-    path: '/admin/campaigns',
-    element: <KelolaKampanyePage />,
-    errorElement: <ErrorState />,
+    children: [
+      {
+        index: true,
+        element: <Navigate to="/admin/dashboard" replace />,
+      },
+      {
+        path: 'dashboard',
+        lazy: () =>
+          import('@/components/admin/dashboard/dashboard-page').then((m) => ({
+            Component: m.DashboardPage,
+          })),
+      },
+      {
+        path: 'monitoring',
+        lazy: () =>
+          import('@/components/admin/monitoring/monitoring-page').then((m) => ({
+            Component: m.MonitoringPage,
+          })),
+      },
+      {
+        path: 'campaigns',
+        lazy: () =>
+          import('@/components/admin/campaigns/campaigns-page').then((m) => ({
+            Component: m.CampaignsPage,
+          })),
+      },
+    ],
   },
 ]);
