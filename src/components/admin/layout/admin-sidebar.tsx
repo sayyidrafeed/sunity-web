@@ -92,7 +92,7 @@ export function AdminSidebar() {
 
       <div className="flex-1" />
 
-      <div className="flex flex-col gap-[13px] px-[27px]" style={{ paddingBottom: '6.15%' }}>
+      <div className="flex flex-col gap-[13px] px-[27px] pb-8">
         <button
           type="button"
           onClick={handleLogout}
@@ -110,8 +110,7 @@ export function AdminSidebar() {
         </button>
 
         <div
-          className="flex flex-row items-center px-[10px] gap-[10px] w-[221px] h-[62px] rounded-[8px]"
-          style={{ backgroundColor: '#FAF9F6' }}
+          className="flex flex-row items-center px-[10px] gap-[10px] w-[221px] h-[62px] rounded-[8px] bg-brand-surface"
           role="complementary"
           aria-label="Profil admin"
         >

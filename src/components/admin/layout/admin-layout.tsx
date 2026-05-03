@@ -11,10 +11,10 @@ import { AdminSidebar } from '@/components/admin/layout/admin-sidebar';
  */
 export function AdminLayout() {
   return (
-    <div className="flex min-h-screen" style={{ backgroundColor: '#FAF9F6' }}>
+    <div className="flex min-h-screen bg-brand-surface">
       <AdminSidebar />
 
-      <main id="admin-main-content" className="flex-1 overflow-auto" style={{ backgroundColor: '#FAF9F6' }}>
+      <main id="admin-main-content" className="flex-1 overflow-auto bg-brand-surface">
         <Outlet />
       </main>
     </div>
