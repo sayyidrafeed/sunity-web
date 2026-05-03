@@ -37,7 +37,7 @@ export function AdminSidebar() {
 
   const handleLogout = () => {
     // TODO: clear auth state when backend is integrated
-    void navigate('/admin/login');
+    void navigate('/');
   };
 
   return (
