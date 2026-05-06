@@ -63,8 +63,9 @@ export function LoginPage() {
         {/* Right Section (Login Card) */}
         <div className="mt-16 flex w-full justify-center lg:ml-[170px] lg:mt-0 lg:w-[466px] lg:justify-start">
           <div
-            className={`flex w-full max-w-[466px] flex-col items-start gap-[32px] rounded-[25px] border border-[#DDDDDD] p-8 shadow-[0_9px_41.8px_rgba(31,31,29,0.25)] sm:p-[42px_36px] transition-colors duration-300 ${status === 'error' ? 'bg-[#FBE9E9] border-transparent' : 'bg-brand-surface'
-              }`}
+            className={`flex w-full max-w-[466px] flex-col items-start gap-[32px] rounded-[25px] border border-[#DDDDDD] p-8 shadow-[0_9px_41.8px_rgba(31,31,29,0.25)] sm:p-[42px_36px] transition-colors duration-300 ${
+              status === 'error' ? 'bg-[#FBE9E9] border-transparent' : 'bg-brand-surface'
+            }`}
           >
             <div className="flex w-full flex-col items-start gap-[5px]">
               <h2 className="font-outfit text-[24px] font-medium leading-[30px] tracking-[-0.006em] text-black">Sign In</h2>
