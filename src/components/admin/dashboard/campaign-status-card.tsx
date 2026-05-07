@@ -3,6 +3,16 @@ import { useState, useRef, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
+// Status to SubStatus mapping
+const STATUS_SUBSTATUS_MAP: Record<string, string> = {
+  Aktif: 'Sedang Berjalan',
+  Instalasi: 'Proses Pemasangan',
+  Selesai: 'Kampanye Berakhir',
+};
+
+// Derived list of available status options from the mapping
+const STATUS_OPTIONS = Object.keys(STATUS_SUBSTATUS_MAP);
+
 interface CampaignStatusCardProps {
   status: string;
   subStatus: string;
@@ -21,15 +31,32 @@ export function CampaignStatusCard({
   const [pendingStatus, setPendingStatus] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown when clicking outside
+  // Sync props to state when they change (prop updates after mount)
+  useEffect(() => {
+    setStatus(initialStatus);
+    setSubStatus(initialSubStatus);
+  }, [initialStatus, initialSubStatus]);
+
+  // Close dropdown when clicking outside or pressing Escape
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false);
       }
     }
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setIsDropdownOpen(false);
+      }
+    }
+
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, []);
 
   const handleStatusSelect = (newStatus: string) => {
@@ -43,16 +70,13 @@ export function CampaignStatusCard({
   };
 
   const confirmStatusChange = () => {
-    setStatus(pendingStatus);
-    // Update subStatus based on status
-    if (pendingStatus === 'Aktif') setSubStatus('Sedang Berjalan');
-    else if (pendingStatus === 'Instalasi') setSubStatus('Proses Pemasangan');
-    else if (pendingStatus === 'Selesai') setSubStatus('Kampanye Berakhir');
-
+    const newSubStatus = STATUS_SUBSTATUS_MAP[pendingStatus];
+    if (newSubStatus) {
+      setStatus(pendingStatus);
+      setSubStatus(newSubStatus);
+    }
     setIsModalOpen(false);
   };
-
-  const statusOptions = ['Aktif', 'Instalasi', 'Selesai'];
 
   return (
     <>
@@ -65,31 +89,40 @@ export function CampaignStatusCard({
             </div>
           </div>
 
-          {/* Action Chevron */}
-          <div
-            className="absolute right-0 top-0 cursor-pointer text-[#3951DC] p-1 rounded-full hover:bg-[#E2E6FD]/50 transition-all duration-300 z-10"
+          {/* Action Chevron Button */}
+          <button
+            type="button"
+            aria-label="Ubah status kampanye"
+            aria-expanded={isDropdownOpen}
+            aria-haspopup="menu"
+            className="absolute right-0 top-0 text-[#3951DC] p-1 rounded-full hover:bg-[#E2E6FD]/50 transition-all duration-300 z-10"
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           >
             <ChevronDown className={cn('w-6 h-6 transition-transform duration-300', isDropdownOpen && 'rotate-180')} />
-          </div>
+          </button>
 
           {/* Dropdown Menu */}
           {isDropdownOpen && (
             <div
               ref={dropdownRef}
+              role="menu"
               className="absolute right-0 top-10 w-[147px] bg-[#FAF9F6] border border-[#DDDDDD] shadow-[0px_14px_37.8px_rgba(54,53,53,0.1)] rounded-[12px] py-2 z-20 animate-in fade-in zoom-in duration-200"
             >
-              {statusOptions.map((option) => (
-                <div
+              {STATUS_OPTIONS.map((option) => (
+                <button
                   key={option}
+                  type="button"
+                  role="menuitem"
+                  aria-label={`Ubah status ke ${option}`}
+                  aria-current={status === option ? 'true' : 'false'}
                   className={cn(
-                    'px-4 py-2 cursor-pointer font-jakarta text-sm transition-colors hover:bg-[#E2E6FD]/50',
+                    'w-full px-4 py-2 text-left font-jakarta text-sm transition-colors hover:bg-[#E2E6FD]/50 focus:bg-[#E2E6FD]/50 focus:outline-none',
                     status === option ? 'text-[#3951DC] font-bold' : 'text-[#363535]'
                   )}
                   onClick={() => handleStatusSelect(option)}
                 >
                   {option}
-                </div>
+                </button>
               ))}
             </div>
           )}
