@@ -1,15 +1,18 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
+import { APP_NAME, LOGIN_PAGE, IMAGES } from '@/lib/constants';
 
 export function LoginPage() {
   const navigate = useNavigate();
   const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
 
-  const handleLogin = () => {
-    setStatus('loading');
+  // Handle simulated login flow with proper cleanup
+  useEffect(() => {
+    if (status !== 'loading') {
+      return;
+    }
 
-    // Simulate login flow
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       // Toggle between success and error for testing purposes based on a random or sequential logic
       // We will make it error on first try, success on second try to demonstrate both states
       const attempts = Number(sessionStorage.getItem('login_attempts') || '0');
@@ -23,6 +26,13 @@ export function LoginPage() {
         navigate('/admin/dashboard');
       }
     }, 1500);
+
+    // Cleanup: clear timeout if component unmounts or status changes
+    return () => clearTimeout(timeoutId);
+  }, [status, navigate]);
+
+  const handleLogin = () => {
+    setStatus('loading');
   };
 
   return (
@@ -36,7 +46,7 @@ export function LoginPage() {
 
         {/* Right Background Image */}
         <div className="absolute inset-y-0 right-0 z-0 pointer-events-none hidden lg:block">
-          <img src="/thunder-bg.avif" alt="Background pattern" className="h-full w-[827px] object-cover object-left" />
+          <img src={IMAGES.BACKGROUND_THUNDER} alt="Background pattern" className="h-full w-[827px] object-cover object-left" />
         </div>
       </div>
 
@@ -46,17 +56,16 @@ export function LoginPage() {
         <div className="flex w-full max-w-[596px] flex-col items-start gap-[22px] lg:mt-0 lg:h-[calc(100vh-6rem)] lg:justify-center">
           <div className="flex flex-col items-start gap-[22px]">
             <h1 className="font-outfit text-[36px] font-semibold leading-[1.2] tracking-[-0.006em] text-brand-green md:text-[45px] md:leading-[57px]">
-              Bersama Hadirkan Energi Bersih untuk Rumah Ibadah.
+              {LOGIN_PAGE.HEADING}
             </h1>
             <p className="max-w-[546px] font-jakarta text-[16px] font-normal leading-[1.4] tracking-[-0.006em] text-[#1F1F1D] md:text-[18px] md:leading-[23px]">
-              Akses panel administrator untuk mengelola sistem, memantau kontribusi, dan mendukung misi menghadirkan energi bersih yang berkelanjutan
-              bagi rumah ibadah.
+              {LOGIN_PAGE.DESCRIPTION}
             </p>
           </div>
 
           <div className="relative mt-8 h-[238px] w-[178px] lg:mt-12">
             <div className="absolute bottom-[35px] left-1/2 h-[30px] w-[130px] -translate-x-1/2 rounded-[50%] bg-[#BFD1C3]" />
-            <img src="/solar-panel.svg" alt="Solar Panel Illustration" className="absolute inset-0 z-10 h-full w-full object-contain" />
+            <img src={IMAGES.SOLAR_PANEL} alt="Solar Panel Illustration" className="absolute inset-0 z-10 h-full w-full object-contain" />
           </div>
         </div>
 
@@ -68,10 +77,8 @@ export function LoginPage() {
             }`}
           >
             <div className="flex w-full flex-col items-start gap-[5px]">
-              <h2 className="font-outfit text-[24px] font-medium leading-[30px] tracking-[-0.006em] text-black">Sign In</h2>
-              <p className="font-jakarta text-[16px] font-normal leading-[20px] tracking-[-0.006em] text-black">
-                Lanjutkan dengan akun Google untuk masuk sebagai administrator.
-              </p>
+              <h2 className="font-outfit text-[24px] font-medium leading-[30px] tracking-[-0.006em] text-black">{LOGIN_PAGE.SIGN_IN_HEADING}</h2>
+              <p className="font-jakarta text-[16px] font-normal leading-[20px] tracking-[-0.006em] text-black">{LOGIN_PAGE.SIGN_IN_DESCRIPTION}</p>
             </div>
 
             <div className="flex w-full flex-col items-start gap-[12px]">
@@ -81,9 +88,9 @@ export function LoginPage() {
                 disabled={status === 'loading'}
                 className="flex w-full items-center justify-center gap-[8px] rounded-[10px] bg-brand-green p-[12px_10px] shadow-[0_10px_16.5px_rgba(47,107,63,0.25)] transition-transform hover:scale-[1.02] active:scale-95 disabled:opacity-70 disabled:hover:scale-100"
               >
-                <img src="/google-icon.avif" alt="Google Icon" className="h-[23px] w-[23px] brightness-0 invert" />
+                <img src={IMAGES.GOOGLE_ICON} alt="Google Icon" className="h-[23px] w-[23px] brightness-0 invert" />
                 <span className="font-jakarta text-[16px] font-medium leading-[20px] tracking-[-0.006em] text-brand-surface">
-                  {status === 'loading' ? 'Memproses..' : 'Masuk dengan Google'}
+                  {status === 'loading' ? LOGIN_PAGE.BUTTON_LOADING : LOGIN_PAGE.BUTTON_IDLE}
                 </span>
               </button>
 
@@ -100,7 +107,7 @@ export function LoginPage() {
                     </svg>
                   </div>
                   <span className="font-jakarta text-[14px] font-normal leading-[18px] tracking-[-0.006em] text-brand-danger">
-                    Gagal masuk dengan Google. Silakan coba lagi.
+                    {LOGIN_PAGE.ERROR_MESSAGE}
                   </span>
                 </div>
               )}
@@ -109,10 +116,12 @@ export function LoginPage() {
         </div>
       </div>
 
-      {/* Watermark Sunity */}
-      <div className="pointer-events-none absolute bottom-0 left-[96px] z-0 flex items-center gap-[23px] pb-12 opacity-[0.17]">
-        <img src="/sunity-grey.avif" alt="Sunity Grey Logo" className="h-[128px] w-[92px] object-contain" />
-        <span className="font-outfit text-[100px] font-bold leading-[126px] tracking-[-0.006em] text-[#C0C0C0]">Sunity</span>
+      {/* Watermark Sunity - Responsive & Mobile-Friendly */}
+      <div className="pointer-events-none absolute bottom-0 left-4 sm:left-8 lg:left-[96px] z-0 flex items-center gap-3 sm:gap-[23px] pb-6 sm:pb-12 opacity-[0.17]">
+        <img src={IMAGES.SUNITY_LOGO_GREY} alt={`${APP_NAME} Grey Logo`} className="h-16 w-12 sm:h-[128px] sm:w-[92px] object-contain" />
+        <span className="font-outfit text-[40px] sm:text-[60px] lg:text-[100px] font-bold leading-[50px] sm:leading-[76px] lg:leading-[126px] tracking-[-0.006em] text-[#C0C0C0] truncate sm:truncate-none">
+          {APP_NAME}
+        </span>
       </div>
     </div>
   );
