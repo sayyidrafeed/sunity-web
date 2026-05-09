@@ -3,20 +3,31 @@
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
 import type {
-  ChangeEmailData,
-  ChangeEmailErrors,
-  ChangeEmailResponses,
-  ChangePasswordData,
-  ChangePasswordErrors,
-  ChangePasswordResponses,
-  DeleteUserData,
-  DeleteUserErrors,
-  DeleteUserResponses,
+  ChangeEmailPostData,
+  ChangeEmailPostErrors,
+  ChangeEmailPostResponses,
+  ChangePasswordPostData,
+  ChangePasswordPostErrors,
+  ChangePasswordPostResponses,
+  DeleteAdminCampaignsByIdData,
+  DeleteAdminCampaignsByIdErrors,
+  DeleteAdminCampaignsByIdResponses,
+  DeleteUserPostData,
+  DeleteUserPostErrors,
+  DeleteUserPostResponses,
   GetAccountInfoData,
   GetAccountInfoErrors,
   GetAccountInfoResponses,
+  GetAdminCampaignsData,
+  GetAdminCampaignsErrors,
+  GetAdminCampaignsResponses,
   GetCallbackByIdData,
   GetCallbackByIdErrors,
+  GetCampaignsByIdData,
+  GetCampaignsByIdErrors,
+  GetCampaignsByIdResponses,
+  GetCampaignsData,
+  GetCampaignsResponses,
   GetDeleteUserCallbackData,
   GetDeleteUserCallbackErrors,
   GetDeleteUserCallbackResponses,
@@ -26,26 +37,43 @@ import type {
   GetOkData,
   GetOkErrors,
   GetOkResponses,
-  GetSession2Data,
-  GetSession2Errors,
-  GetSession2Responses,
-  GetSessionData,
-  GetSessionErrors,
-  GetSessionResponses,
+  GetSessionGetData,
+  GetSessionGetErrors,
+  GetSessionGetResponses,
+  GetSessionPostData,
+  GetSessionPostErrors,
+  GetSessionPostResponses,
   GetVerifyEmailData,
   GetVerifyEmailErrors,
   GetVerifyEmailResponses,
-  LinkSocialAccountData,
-  LinkSocialAccountErrors,
-  LinkSocialAccountResponses,
-  ListUserAccountsData,
-  ListUserAccountsErrors,
-  ListUserAccountsResponses,
-  ListUserSessionsData,
-  ListUserSessionsErrors,
-  ListUserSessionsResponses,
+  LinkSocialAccountPostData,
+  LinkSocialAccountPostErrors,
+  LinkSocialAccountPostResponses,
+  ListUserAccountsGetData,
+  ListUserAccountsGetErrors,
+  ListUserAccountsGetResponses,
+  ListUserSessionsGetData,
+  ListUserSessionsGetErrors,
+  ListUserSessionsGetResponses,
+  PatchAdminCampaignsByIdPublishData,
+  PatchAdminCampaignsByIdPublishErrors,
+  PatchAdminCampaignsByIdPublishResponses,
+  PatchAdminCampaignsByIdStatusData,
+  PatchAdminCampaignsByIdStatusErrors,
+  PatchAdminCampaignsByIdStatusResponses,
+  PatchCampaignsByIdData,
+  PatchCampaignsByIdErrors,
+  PatchCampaignsByIdResponses,
+  PostAdminCampaignsByIdAssetsData,
+  PostAdminCampaignsByIdAssetsErrors,
+  PostAdminCampaignsByIdAssetsResponses,
+  PostAssetsUploadData,
+  PostAssetsUploadErrors,
+  PostAssetsUploadResponses,
   PostCallbackByIdData,
   PostCallbackByIdErrors,
+  PostCampaignsData,
+  PostCampaignsResponses,
   PostGetAccessTokenData,
   PostGetAccessTokenErrors,
   PostGetAccessTokenResponses,
@@ -64,39 +92,39 @@ import type {
   PostUnlinkAccountData,
   PostUnlinkAccountErrors,
   PostUnlinkAccountResponses,
-  RequestPasswordResetData,
-  RequestPasswordResetErrors,
-  RequestPasswordResetResponses,
-  ResetPasswordCallbackData,
-  ResetPasswordCallbackErrors,
-  ResetPasswordCallbackResponses,
-  ResetPasswordData,
-  ResetPasswordErrors,
-  ResetPasswordResponses,
-  SendVerificationEmailData,
-  SendVerificationEmailErrors,
-  SendVerificationEmailResponses,
-  SignInEmailData,
-  SignInEmailErrors,
-  SignInEmailResponses,
-  SignOutData,
-  SignOutErrors,
-  SignOutResponses,
-  SignUpWithEmailAndPasswordData,
-  SignUpWithEmailAndPasswordErrors,
-  SignUpWithEmailAndPasswordResponses,
-  SocialSignInData,
-  SocialSignInErrors,
-  SocialSignInResponses,
-  UpdateSessionData,
-  UpdateSessionErrors,
-  UpdateSessionResponses,
-  UpdateUserData,
-  UpdateUserErrors,
-  UpdateUserResponses,
-  VerifyPasswordData,
-  VerifyPasswordErrors,
-  VerifyPasswordResponses,
+  RequestPasswordResetPostData,
+  RequestPasswordResetPostErrors,
+  RequestPasswordResetPostResponses,
+  ResetPasswordCallbackGetData,
+  ResetPasswordCallbackGetErrors,
+  ResetPasswordCallbackGetResponses,
+  ResetPasswordPostData,
+  ResetPasswordPostErrors,
+  ResetPasswordPostResponses,
+  SendVerificationEmailPostData,
+  SendVerificationEmailPostErrors,
+  SendVerificationEmailPostResponses,
+  SignInEmailPostData,
+  SignInEmailPostErrors,
+  SignInEmailPostResponses,
+  SignOutPostData,
+  SignOutPostErrors,
+  SignOutPostResponses,
+  SignUpWithEmailAndPasswordPostData,
+  SignUpWithEmailAndPasswordPostErrors,
+  SignUpWithEmailAndPasswordPostResponses,
+  SocialSignInPostData,
+  SocialSignInPostErrors,
+  SocialSignInPostResponses,
+  UpdateSessionPostData,
+  UpdateSessionPostErrors,
+  UpdateSessionPostResponses,
+  UpdateUserPostData,
+  UpdateUserPostErrors,
+  UpdateUserPostResponses,
+  VerifyPasswordPostData,
+  VerifyPasswordPostErrors,
+  VerifyPasswordPostResponses,
 } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<
@@ -118,10 +146,210 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
 };
 
 /**
+ * List all public campaigns with assets
+ */
+export const getCampaigns = <ThrowOnError extends boolean = false>(options?: Options<GetCampaignsData, ThrowOnError>) =>
+  (options?.client ?? client).get<GetCampaignsResponses, unknown, ThrowOnError>({
+    security: [
+      {
+        in: 'cookie',
+        name: 'apiKeyCookie',
+        type: 'apiKey',
+      },
+      { scheme: 'bearer', type: 'http' },
+    ],
+    url: '/campaigns',
+    ...options,
+  });
+
+/**
+ * Create a new campaign
+ */
+export const postCampaigns = <ThrowOnError extends boolean = false>(options?: Options<PostCampaignsData, ThrowOnError>) =>
+  (options?.client ?? client).post<PostCampaignsResponses, unknown, ThrowOnError>({
+    security: [
+      {
+        in: 'cookie',
+        name: 'apiKeyCookie',
+        type: 'apiKey',
+      },
+      { scheme: 'bearer', type: 'http' },
+    ],
+    url: '/campaigns',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    },
+  });
+
+/**
+ * Get campaign details with all assets
+ */
+export const getCampaignsById = <ThrowOnError extends boolean = false>(options: Options<GetCampaignsByIdData, ThrowOnError>) =>
+  (options.client ?? client).get<GetCampaignsByIdResponses, GetCampaignsByIdErrors, ThrowOnError>({
+    security: [
+      {
+        in: 'cookie',
+        name: 'apiKeyCookie',
+        type: 'apiKey',
+      },
+      { scheme: 'bearer', type: 'http' },
+    ],
+    url: '/campaigns/{id}',
+    ...options,
+  });
+
+/**
+ * Update campaign
+ */
+export const patchCampaignsById = <ThrowOnError extends boolean = false>(options: Options<PatchCampaignsByIdData, ThrowOnError>) =>
+  (options.client ?? client).patch<PatchCampaignsByIdResponses, PatchCampaignsByIdErrors, ThrowOnError>({
+    security: [
+      {
+        in: 'cookie',
+        name: 'apiKeyCookie',
+        type: 'apiKey',
+      },
+      { scheme: 'bearer', type: 'http' },
+    ],
+    url: '/campaigns/{id}',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+
+/**
+ * List all campaigns including unpublished (admin only)
+ */
+export const getAdminCampaigns = <ThrowOnError extends boolean = false>(options?: Options<GetAdminCampaignsData, ThrowOnError>) =>
+  (options?.client ?? client).get<GetAdminCampaignsResponses, GetAdminCampaignsErrors, ThrowOnError>({
+    security: [
+      {
+        in: 'cookie',
+        name: 'apiKeyCookie',
+        type: 'apiKey',
+      },
+      { scheme: 'bearer', type: 'http' },
+    ],
+    url: '/admin/campaigns',
+    ...options,
+  });
+
+/**
+ * Update campaign status (admin only)
+ */
+export const patchAdminCampaignsByIdStatus = <ThrowOnError extends boolean = false>(
+  options: Options<PatchAdminCampaignsByIdStatusData, ThrowOnError>
+) =>
+  (options.client ?? client).patch<PatchAdminCampaignsByIdStatusResponses, PatchAdminCampaignsByIdStatusErrors, ThrowOnError>({
+    security: [
+      {
+        in: 'cookie',
+        name: 'apiKeyCookie',
+        type: 'apiKey',
+      },
+      { scheme: 'bearer', type: 'http' },
+    ],
+    url: '/admin/campaigns/{id}/status',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+
+/**
+ * Publish campaign (admin only)
+ */
+export const patchAdminCampaignsByIdPublish = <ThrowOnError extends boolean = false>(
+  options: Options<PatchAdminCampaignsByIdPublishData, ThrowOnError>
+) =>
+  (options.client ?? client).patch<PatchAdminCampaignsByIdPublishResponses, PatchAdminCampaignsByIdPublishErrors, ThrowOnError>({
+    security: [
+      {
+        in: 'cookie',
+        name: 'apiKeyCookie',
+        type: 'apiKey',
+      },
+      { scheme: 'bearer', type: 'http' },
+    ],
+    url: '/admin/campaigns/{id}/publish',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+
+/**
+ * Delete campaign (admin only)
+ */
+export const deleteAdminCampaignsById = <ThrowOnError extends boolean = false>(options: Options<DeleteAdminCampaignsByIdData, ThrowOnError>) =>
+  (options.client ?? client).delete<DeleteAdminCampaignsByIdResponses, DeleteAdminCampaignsByIdErrors, ThrowOnError>({
+    security: [
+      {
+        in: 'cookie',
+        name: 'apiKeyCookie',
+        type: 'apiKey',
+      },
+      { scheme: 'bearer', type: 'http' },
+    ],
+    url: '/admin/campaigns/{id}',
+    ...options,
+  });
+
+/**
+ * Attach asset to campaign (admin only)
+ */
+export const postAdminCampaignsByIdAssets = <ThrowOnError extends boolean = false>(
+  options: Options<PostAdminCampaignsByIdAssetsData, ThrowOnError>
+) =>
+  (options.client ?? client).post<PostAdminCampaignsByIdAssetsResponses, PostAdminCampaignsByIdAssetsErrors, ThrowOnError>({
+    security: [
+      {
+        in: 'cookie',
+        name: 'apiKeyCookie',
+        type: 'apiKey',
+      },
+      { scheme: 'bearer', type: 'http' },
+    ],
+    url: '/admin/campaigns/{id}/assets',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+
+/**
+ * Create asset upload session with signed R2 URL
+ */
+export const postAssetsUpload = <ThrowOnError extends boolean = false>(options?: Options<PostAssetsUploadData, ThrowOnError>) =>
+  (options?.client ?? client).post<PostAssetsUploadResponses, PostAssetsUploadErrors, ThrowOnError>({
+    security: [
+      {
+        in: 'cookie',
+        name: 'apiKeyCookie',
+        type: 'apiKey',
+      },
+      { scheme: 'bearer', type: 'http' },
+    ],
+    url: '/assets/upload',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    },
+  });
+
+/**
  * Sign in with a social provider
  */
-export const socialSignIn = <ThrowOnError extends boolean = false>(options: Options<SocialSignInData, ThrowOnError>) =>
-  (options.client ?? client).post<SocialSignInResponses, SocialSignInErrors, ThrowOnError>({
+export const socialSignInPost = <ThrowOnError extends boolean = false>(options: Options<SocialSignInPostData, ThrowOnError>) =>
+  (options.client ?? client).post<SocialSignInPostResponses, SocialSignInPostErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/sign-in/social',
     ...options,
@@ -152,8 +380,8 @@ export const postCallbackById = <ThrowOnError extends boolean = false>(options?:
 /**
  * Get the current session
  */
-export const getSession = <ThrowOnError extends boolean = false>(options?: Options<GetSessionData, ThrowOnError>) =>
-  (options?.client ?? client).get<GetSessionResponses, GetSessionErrors, ThrowOnError>({
+export const getSessionGet = <ThrowOnError extends boolean = false>(options?: Options<GetSessionGetData, ThrowOnError>) =>
+  (options?.client ?? client).get<GetSessionGetResponses, GetSessionGetErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/get-session',
     ...options,
@@ -162,8 +390,8 @@ export const getSession = <ThrowOnError extends boolean = false>(options?: Optio
 /**
  * Get the current session
  */
-export const getSession2 = <ThrowOnError extends boolean = false>(options?: Options<GetSession2Data, ThrowOnError>) =>
-  (options?.client ?? client).post<GetSession2Responses, GetSession2Errors, ThrowOnError>({
+export const getSessionPost = <ThrowOnError extends boolean = false>(options?: Options<GetSessionPostData, ThrowOnError>) =>
+  (options?.client ?? client).post<GetSessionPostResponses, GetSessionPostErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/get-session',
     ...options,
@@ -176,8 +404,8 @@ export const getSession2 = <ThrowOnError extends boolean = false>(options?: Opti
 /**
  * Sign out the current user
  */
-export const signOut = <ThrowOnError extends boolean = false>(options?: Options<SignOutData, ThrowOnError>) =>
-  (options?.client ?? client).post<SignOutResponses, SignOutErrors, ThrowOnError>({
+export const signOutPost = <ThrowOnError extends boolean = false>(options?: Options<SignOutPostData, ThrowOnError>) =>
+  (options?.client ?? client).post<SignOutPostResponses, SignOutPostErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/sign-out',
     ...options,
@@ -190,8 +418,10 @@ export const signOut = <ThrowOnError extends boolean = false>(options?: Options<
 /**
  * Sign up a user using email and password
  */
-export const signUpWithEmailAndPassword = <ThrowOnError extends boolean = false>(options?: Options<SignUpWithEmailAndPasswordData, ThrowOnError>) =>
-  (options?.client ?? client).post<SignUpWithEmailAndPasswordResponses, SignUpWithEmailAndPasswordErrors, ThrowOnError>({
+export const signUpWithEmailAndPasswordPost = <ThrowOnError extends boolean = false>(
+  options?: Options<SignUpWithEmailAndPasswordPostData, ThrowOnError>
+) =>
+  (options?.client ?? client).post<SignUpWithEmailAndPasswordPostResponses, SignUpWithEmailAndPasswordPostErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/sign-up/email',
     ...options,
@@ -204,8 +434,8 @@ export const signUpWithEmailAndPassword = <ThrowOnError extends boolean = false>
 /**
  * Sign in with email and password
  */
-export const signInEmail = <ThrowOnError extends boolean = false>(options: Options<SignInEmailData, ThrowOnError>) =>
-  (options.client ?? client).post<SignInEmailResponses, SignInEmailErrors, ThrowOnError>({
+export const signInEmailPost = <ThrowOnError extends boolean = false>(options: Options<SignInEmailPostData, ThrowOnError>) =>
+  (options.client ?? client).post<SignInEmailPostResponses, SignInEmailPostErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/sign-in/email',
     ...options,
@@ -218,8 +448,8 @@ export const signInEmail = <ThrowOnError extends boolean = false>(options: Optio
 /**
  * Reset the password for a user
  */
-export const resetPassword = <ThrowOnError extends boolean = false>(options: Options<ResetPasswordData, ThrowOnError>) =>
-  (options.client ?? client).post<ResetPasswordResponses, ResetPasswordErrors, ThrowOnError>({
+export const resetPasswordPost = <ThrowOnError extends boolean = false>(options: Options<ResetPasswordPostData, ThrowOnError>) =>
+  (options.client ?? client).post<ResetPasswordPostResponses, ResetPasswordPostErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/reset-password',
     ...options,
@@ -232,8 +462,8 @@ export const resetPassword = <ThrowOnError extends boolean = false>(options: Opt
 /**
  * Verify the current user's password
  */
-export const verifyPassword = <ThrowOnError extends boolean = false>(options: Options<VerifyPasswordData, ThrowOnError>) =>
-  (options.client ?? client).post<VerifyPasswordResponses, VerifyPasswordErrors, ThrowOnError>({
+export const verifyPasswordPost = <ThrowOnError extends boolean = false>(options: Options<VerifyPasswordPostData, ThrowOnError>) =>
+  (options.client ?? client).post<VerifyPasswordPostResponses, VerifyPasswordPostErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/verify-password',
     ...options,
@@ -256,8 +486,8 @@ export const getVerifyEmail = <ThrowOnError extends boolean = false>(options: Op
 /**
  * Send a verification email to the user
  */
-export const sendVerificationEmail = <ThrowOnError extends boolean = false>(options?: Options<SendVerificationEmailData, ThrowOnError>) =>
-  (options?.client ?? client).post<SendVerificationEmailResponses, SendVerificationEmailErrors, ThrowOnError>({
+export const sendVerificationEmailPost = <ThrowOnError extends boolean = false>(options?: Options<SendVerificationEmailPostData, ThrowOnError>) =>
+  (options?.client ?? client).post<SendVerificationEmailPostResponses, SendVerificationEmailPostErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/send-verification-email',
     ...options,
@@ -267,8 +497,8 @@ export const sendVerificationEmail = <ThrowOnError extends boolean = false>(opti
     },
   });
 
-export const changeEmail = <ThrowOnError extends boolean = false>(options: Options<ChangeEmailData, ThrowOnError>) =>
-  (options.client ?? client).post<ChangeEmailResponses, ChangeEmailErrors, ThrowOnError>({
+export const changeEmailPost = <ThrowOnError extends boolean = false>(options: Options<ChangeEmailPostData, ThrowOnError>) =>
+  (options.client ?? client).post<ChangeEmailPostResponses, ChangeEmailPostErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/change-email',
     ...options,
@@ -281,8 +511,8 @@ export const changeEmail = <ThrowOnError extends boolean = false>(options: Optio
 /**
  * Change the password of the user
  */
-export const changePassword = <ThrowOnError extends boolean = false>(options: Options<ChangePasswordData, ThrowOnError>) =>
-  (options.client ?? client).post<ChangePasswordResponses, ChangePasswordErrors, ThrowOnError>({
+export const changePasswordPost = <ThrowOnError extends boolean = false>(options: Options<ChangePasswordPostData, ThrowOnError>) =>
+  (options.client ?? client).post<ChangePasswordPostResponses, ChangePasswordPostErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/change-password',
     ...options,
@@ -295,8 +525,8 @@ export const changePassword = <ThrowOnError extends boolean = false>(options: Op
 /**
  * Update the current session
  */
-export const updateSession = <ThrowOnError extends boolean = false>(options?: Options<UpdateSessionData, ThrowOnError>) =>
-  (options?.client ?? client).post<UpdateSessionResponses, UpdateSessionErrors, ThrowOnError>({
+export const updateSessionPost = <ThrowOnError extends boolean = false>(options?: Options<UpdateSessionPostData, ThrowOnError>) =>
+  (options?.client ?? client).post<UpdateSessionPostResponses, UpdateSessionPostErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/update-session',
     ...options,
@@ -309,8 +539,8 @@ export const updateSession = <ThrowOnError extends boolean = false>(options?: Op
 /**
  * Update the current user
  */
-export const updateUser = <ThrowOnError extends boolean = false>(options?: Options<UpdateUserData, ThrowOnError>) =>
-  (options?.client ?? client).post<UpdateUserResponses, UpdateUserErrors, ThrowOnError>({
+export const updateUserPost = <ThrowOnError extends boolean = false>(options?: Options<UpdateUserPostData, ThrowOnError>) =>
+  (options?.client ?? client).post<UpdateUserPostResponses, UpdateUserPostErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/update-user',
     ...options,
@@ -323,8 +553,8 @@ export const updateUser = <ThrowOnError extends boolean = false>(options?: Optio
 /**
  * Delete the user
  */
-export const deleteUser = <ThrowOnError extends boolean = false>(options?: Options<DeleteUserData, ThrowOnError>) =>
-  (options?.client ?? client).post<DeleteUserResponses, DeleteUserErrors, ThrowOnError>({
+export const deleteUserPost = <ThrowOnError extends boolean = false>(options?: Options<DeleteUserPostData, ThrowOnError>) =>
+  (options?.client ?? client).post<DeleteUserPostResponses, DeleteUserPostErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/delete-user',
     ...options,
@@ -337,8 +567,8 @@ export const deleteUser = <ThrowOnError extends boolean = false>(options?: Optio
 /**
  * Send a password reset email to the user
  */
-export const requestPasswordReset = <ThrowOnError extends boolean = false>(options: Options<RequestPasswordResetData, ThrowOnError>) =>
-  (options.client ?? client).post<RequestPasswordResetResponses, RequestPasswordResetErrors, ThrowOnError>({
+export const requestPasswordResetPost = <ThrowOnError extends boolean = false>(options: Options<RequestPasswordResetPostData, ThrowOnError>) =>
+  (options.client ?? client).post<RequestPasswordResetPostResponses, RequestPasswordResetPostErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/request-password-reset',
     ...options,
@@ -351,8 +581,8 @@ export const requestPasswordReset = <ThrowOnError extends boolean = false>(optio
 /**
  * Redirects the user to the callback URL with the token
  */
-export const resetPasswordCallback = <ThrowOnError extends boolean = false>(options: Options<ResetPasswordCallbackData, ThrowOnError>) =>
-  (options.client ?? client).get<ResetPasswordCallbackResponses, ResetPasswordCallbackErrors, ThrowOnError>({
+export const resetPasswordCallbackGet = <ThrowOnError extends boolean = false>(options: Options<ResetPasswordCallbackGetData, ThrowOnError>) =>
+  (options.client ?? client).get<ResetPasswordCallbackGetResponses, ResetPasswordCallbackGetErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/reset-password/{token}',
     ...options,
@@ -361,8 +591,8 @@ export const resetPasswordCallback = <ThrowOnError extends boolean = false>(opti
 /**
  * List all active sessions for the user
  */
-export const listUserSessions = <ThrowOnError extends boolean = false>(options?: Options<ListUserSessionsData, ThrowOnError>) =>
-  (options?.client ?? client).get<ListUserSessionsResponses, ListUserSessionsErrors, ThrowOnError>({
+export const listUserSessionsGet = <ThrowOnError extends boolean = false>(options?: Options<ListUserSessionsGetData, ThrowOnError>) =>
+  (options?.client ?? client).get<ListUserSessionsGetResponses, ListUserSessionsGetErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/list-sessions',
     ...options,
@@ -413,8 +643,8 @@ export const postRevokeOtherSessions = <ThrowOnError extends boolean = false>(op
 /**
  * Link a social account to the user
  */
-export const linkSocialAccount = <ThrowOnError extends boolean = false>(options: Options<LinkSocialAccountData, ThrowOnError>) =>
-  (options.client ?? client).post<LinkSocialAccountResponses, LinkSocialAccountErrors, ThrowOnError>({
+export const linkSocialAccountPost = <ThrowOnError extends boolean = false>(options: Options<LinkSocialAccountPostData, ThrowOnError>) =>
+  (options.client ?? client).post<LinkSocialAccountPostResponses, LinkSocialAccountPostErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/link-social',
     ...options,
@@ -427,8 +657,8 @@ export const linkSocialAccount = <ThrowOnError extends boolean = false>(options:
 /**
  * List all accounts linked to the user
  */
-export const listUserAccounts = <ThrowOnError extends boolean = false>(options?: Options<ListUserAccountsData, ThrowOnError>) =>
-  (options?.client ?? client).get<ListUserAccountsResponses, ListUserAccountsErrors, ThrowOnError>({
+export const listUserAccountsGet = <ThrowOnError extends boolean = false>(options?: Options<ListUserAccountsGetData, ThrowOnError>) =>
+  (options?.client ?? client).get<ListUserAccountsGetResponses, ListUserAccountsGetErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/list-accounts',
     ...options,

@@ -2,6 +2,10 @@
 
 import { z } from 'zod';
 
+export const zError = z.object({
+  error: z.union([z.string(), z.record(z.unknown())]),
+});
+
 export const zUser = z.object({
   id: z.string().optional(),
   name: z.string(),
@@ -57,7 +61,306 @@ export const zUserWritable = z.object({
   updatedAt: z.string().datetime().default('Generated at runtime'),
 });
 
-export const zSocialSignInBody = z.object({
+export const zGetCampaignsQuery = z.object({
+  page: z.number().int().gte(1).optional().default(1),
+  limit: z.number().int().gte(1).optional().default(12),
+  search: z.string().optional(),
+  city: z.string().optional(),
+  type: z.enum(['Masjid', 'Mushalla', 'Gereja', 'Pura', 'Vihara', 'Klenteng']).optional(),
+  status: z.enum(['Aktif', 'Instalasi', 'Selesai']).optional(),
+});
+
+/**
+ * List of public campaigns with cover images and pagination
+ */
+export const zGetCampaignsResponse = z.object({
+  data: z.array(
+    z.object({
+      id: z.string().uuid(),
+      title: z.string(),
+      city: z.string(),
+      religionType: z.string(),
+      status: z.string(),
+      targetIdr: z.string(),
+      raisedIdr: z.string(),
+      donorCount: z.number(),
+      deadline: z.string().datetime(),
+      progressPercent: z.number(),
+      coverImage: z
+        .object({
+          assetId: z.string().uuid(),
+          publicUrl: z.string().url(),
+          storageKey: z.string(),
+        })
+        .nullish(),
+    })
+  ),
+  pagination: z.object({
+    page: z.number(),
+    limit: z.number(),
+    total: z.number(),
+  }),
+  filters: z
+    .object({
+      cities: z.array(z.string()).optional(),
+      types: z.array(z.string()).optional(),
+      statuses: z.array(z.string()).optional(),
+    })
+    .optional(),
+});
+
+export const zPostCampaignsBody = z.object({
+  title: z.string().min(1),
+  description: z.string().min(1),
+  targetIdr: z.string(),
+  panelCapacityKwp: z.string(),
+  estimatedKwhAnnual: z.string().optional(),
+  estimatedIdrSavings: z.string().optional(),
+  coverImageUrl: z.string().url().optional(),
+  deadline: z.string().datetime(),
+  worshipPlaceName: z.string().min(1),
+  city: z.string().min(1),
+  religionType: z.enum(['Masjid', 'Mushalla', 'Gereja', 'Pura', 'Vihara', 'Klenteng']),
+});
+
+/**
+ * Campaign created
+ */
+export const zPostCampaignsResponse = z.object({
+  id: z.string().uuid(),
+});
+
+export const zGetCampaignsByIdPath = z.object({
+  id: z.string().uuid(),
+});
+
+/**
+ * Campaign details with images
+ */
+export const zGetCampaignsByIdResponse = z.object({
+  id: z.string().uuid(),
+  title: z.string(),
+  description: z.string(),
+  status: z.string(),
+  targetIdr: z.string(),
+  raisedIdr: z.string(),
+  donorCount: z.number(),
+  deadline: z.string().datetime(),
+  progressPercent: z.number(),
+  worshipPlace: z.object({
+    name: z.string(),
+    city: z.string(),
+    religionType: z.string(),
+  }),
+  energyImpact: z.object({
+    panelCapacityKwp: z.string(),
+    estimatedKwhAnnual: z.string().optional(),
+    estimatedIdrSavings: z.string().optional(),
+  }),
+  images: z
+    .object({
+      cover: z
+        .object({
+          assetId: z.string().uuid(),
+          publicUrl: z.string().url(),
+          storageKey: z.string(),
+        })
+        .nullish(),
+      gallery: z
+        .array(
+          z.object({
+            assetId: z.string().uuid(),
+            publicUrl: z.string().url(),
+            storageKey: z.string(),
+            caption: z.string().optional(),
+          })
+        )
+        .optional()
+        .default([]),
+      transparency: z
+        .array(
+          z.object({
+            assetId: z.string().uuid(),
+            publicUrl: z.string().url(),
+            storageKey: z.string(),
+            caption: z.string().optional(),
+          })
+        )
+        .optional()
+        .default([]),
+      installation: z
+        .array(
+          z.object({
+            assetId: z.string().uuid(),
+            publicUrl: z.string().url(),
+            storageKey: z.string(),
+            caption: z.string().optional(),
+          })
+        )
+        .optional()
+        .default([]),
+    })
+    .optional(),
+  published: z.boolean(),
+});
+
+export const zPatchCampaignsByIdBody = z.object({
+  title: z.string().min(1).optional(),
+  description: z.string().min(1).optional(),
+  targetIdr: z.string().optional(),
+  panelCapacityKwp: z.string().optional(),
+  estimatedKwhAnnual: z.string().optional(),
+  estimatedIdrSavings: z.string().optional(),
+  coverImageUrl: z.string().url().optional(),
+  deadline: z.string().datetime().optional(),
+  worshipPlaceName: z.string().min(1).optional(),
+  city: z.string().min(1).optional(),
+  religionType: z.enum(['Masjid', 'Mushalla', 'Gereja', 'Pura', 'Vihara', 'Klenteng']).optional(),
+});
+
+export const zPatchCampaignsByIdPath = z.object({
+  id: z.string().uuid(),
+});
+
+/**
+ * Campaign updated
+ */
+export const zPatchCampaignsByIdResponse = z.object({
+  id: z.string().uuid(),
+});
+
+export const zGetAdminCampaignsQuery = z.object({
+  page: z.number().int().gte(1).optional().default(1),
+  limit: z.number().int().gte(1).optional().default(12),
+  search: z.string().optional(),
+  city: z.string().optional(),
+  type: z.enum(['Masjid', 'Mushalla', 'Gereja', 'Pura', 'Vihara', 'Klenteng']).optional(),
+  status: z.enum(['Aktif', 'Instalasi', 'Selesai']).optional(),
+  includeUnpublished: z.boolean().nullish().default(false),
+});
+
+/**
+ * List of campaigns with optional unpublished filter
+ */
+export const zGetAdminCampaignsResponse = z.object({
+  data: z.array(
+    z.object({
+      id: z.string().uuid(),
+      title: z.string(),
+      city: z.string(),
+      religionType: z.string(),
+      status: z.string(),
+      targetIdr: z.string(),
+      raisedIdr: z.string(),
+      donorCount: z.number(),
+      deadline: z.string().datetime(),
+      progressPercent: z.number(),
+      coverImage: z
+        .object({
+          assetId: z.string().uuid(),
+          publicUrl: z.string().url(),
+          storageKey: z.string(),
+        })
+        .nullish(),
+    })
+  ),
+  pagination: z.object({
+    page: z.number(),
+    limit: z.number(),
+    total: z.number(),
+  }),
+  filters: z
+    .object({
+      cities: z.array(z.string()).optional(),
+      types: z.array(z.string()).optional(),
+      statuses: z.array(z.string()).optional(),
+    })
+    .optional(),
+});
+
+export const zPatchAdminCampaignsByIdStatusBody = z.object({
+  status: z.enum(['Aktif', 'Instalasi', 'Selesai']),
+});
+
+export const zPatchAdminCampaignsByIdStatusPath = z.object({
+  id: z.string().uuid(),
+});
+
+/**
+ * Campaign status updated
+ */
+export const zPatchAdminCampaignsByIdStatusResponse = z.object({
+  id: z.string().uuid(),
+});
+
+export const zPatchAdminCampaignsByIdPublishBody = z.object({
+  isPublished: z.boolean(),
+});
+
+export const zPatchAdminCampaignsByIdPublishPath = z.object({
+  id: z.string().uuid(),
+});
+
+/**
+ * Campaign published
+ */
+export const zPatchAdminCampaignsByIdPublishResponse = z.object({
+  id: z.string().uuid(),
+});
+
+export const zDeleteAdminCampaignsByIdPath = z.object({
+  id: z.string().uuid(),
+});
+
+/**
+ * Campaign deleted
+ */
+export const zDeleteAdminCampaignsByIdResponse = z.object({
+  success: z.literal(true),
+});
+
+export const zPostAdminCampaignsByIdAssetsBody = z.object({
+  assetId: z.string().uuid(),
+  kind: z.enum(['cover', 'gallery', 'transparency', 'installation', 'report']),
+  sortOrder: z.number().int().gte(0),
+  caption: z.string().optional(),
+});
+
+export const zPostAdminCampaignsByIdAssetsPath = z.object({
+  id: z.string().uuid(),
+});
+
+/**
+ * Asset attached to campaign
+ */
+export const zPostAdminCampaignsByIdAssetsResponse = z.object({
+  success: z.boolean(),
+});
+
+export const zPostAssetsUploadBody = z.object({
+  purpose: z.enum(['campaign']),
+  kind: z.enum(['cover', 'gallery', 'transparency', 'installation', 'report']),
+  mimeType: z.string(),
+  sizeBytes: z.number().int().gt(0),
+  originalFileName: z.string().min(1),
+});
+
+/**
+ * Upload session created
+ */
+export const zPostAssetsUploadResponse = z.object({
+  assetId: z.string().uuid(),
+  storageKey: z.string(),
+  publicUrl: z.string().url(),
+  upload: z.object({
+    method: z.string(),
+    url: z.string().url(),
+    headers: z.record(z.string()),
+    expiresAt: z.string().datetime(),
+  }),
+});
+
+export const zSocialSignInPostBody = z.object({
   callbackURL: z.unknown().optional(),
   newUserCallbackURL: z.unknown().optional(),
   errorCallbackURL: z.unknown().optional(),
@@ -73,7 +376,7 @@ export const zSocialSignInBody = z.object({
 /**
  * Session response when idToken is provided
  */
-export const zSocialSignInResponse = z.object({
+export const zSocialSignInPostResponse = z.object({
   token: z.string(),
   user: zUser,
   url: z.string().optional(),
@@ -82,18 +385,18 @@ export const zSocialSignInResponse = z.object({
 
 export const zPostCallbackByIdBody = z.record(z.unknown());
 
-export const zGetSession2Body = z.record(z.unknown());
+export const zGetSessionPostBody = z.record(z.unknown());
 
-export const zSignOutBody = z.record(z.unknown());
+export const zSignOutPostBody = z.record(z.unknown());
 
 /**
  * Success
  */
-export const zSignOutResponse = z.object({
+export const zSignOutPostResponse = z.object({
   success: z.boolean().optional(),
 });
 
-export const zSignUpWithEmailAndPasswordBody = z.object({
+export const zSignUpWithEmailAndPasswordPostBody = z.object({
   name: z.string(),
   email: z.string(),
   password: z.string(),
@@ -105,7 +408,7 @@ export const zSignUpWithEmailAndPasswordBody = z.object({
 /**
  * Successfully created user
  */
-export const zSignUpWithEmailAndPasswordResponse = z.object({
+export const zSignUpWithEmailAndPasswordPostResponse = z.object({
   token: z.string().nullish(),
   user: z.object({
     id: z.string(),
@@ -118,7 +421,7 @@ export const zSignUpWithEmailAndPasswordResponse = z.object({
   }),
 });
 
-export const zSignInEmailBody = z.object({
+export const zSignInEmailPostBody = z.object({
   email: z.string(),
   password: z.string(),
   callbackURL: z.unknown().optional(),
@@ -128,14 +431,14 @@ export const zSignInEmailBody = z.object({
 /**
  * Session response when idToken is provided
  */
-export const zSignInEmailResponse = z.object({
+export const zSignInEmailPostResponse = z.object({
   redirect: z.literal(false),
   token: z.string(),
   url: z.string().nullish(),
   user: zUser,
 });
 
-export const zResetPasswordBody = z.object({
+export const zResetPasswordPostBody = z.object({
   newPassword: z.string(),
   token: z.unknown().optional(),
 });
@@ -143,18 +446,18 @@ export const zResetPasswordBody = z.object({
 /**
  * Success
  */
-export const zResetPasswordResponse = z.object({
+export const zResetPasswordPostResponse = z.object({
   status: z.boolean().optional(),
 });
 
-export const zVerifyPasswordBody = z.object({
+export const zVerifyPasswordPostBody = z.object({
   password: z.string(),
 });
 
 /**
  * Success
  */
-export const zVerifyPasswordResponse = z.object({
+export const zVerifyPasswordPostResponse = z.object({
   status: z.boolean().optional(),
 });
 
@@ -171,7 +474,7 @@ export const zGetVerifyEmailResponse = z.object({
   status: z.boolean(),
 });
 
-export const zSendVerificationEmailBody = z.object({
+export const zSendVerificationEmailPostBody = z.object({
   email: z.string(),
   callbackURL: z.string().nullish(),
 });
@@ -179,11 +482,11 @@ export const zSendVerificationEmailBody = z.object({
 /**
  * Success
  */
-export const zSendVerificationEmailResponse = z.object({
+export const zSendVerificationEmailPostResponse = z.object({
   status: z.boolean().optional(),
 });
 
-export const zChangeEmailBody = z.object({
+export const zChangeEmailPostBody = z.object({
   newEmail: z.string(),
   callbackURL: z.unknown().optional(),
 });
@@ -191,13 +494,13 @@ export const zChangeEmailBody = z.object({
 /**
  * Email change request processed successfully
  */
-export const zChangeEmailResponse = z.object({
+export const zChangeEmailPostResponse = z.object({
   user: zUser.optional(),
   status: z.boolean(),
   message: z.enum(['Email updated', 'Verification email sent']).optional(),
 });
 
-export const zChangePasswordBody = z.object({
+export const zChangePasswordPostBody = z.object({
   newPassword: z.string(),
   currentPassword: z.string(),
   revokeOtherSessions: z.unknown().optional(),
@@ -206,7 +509,7 @@ export const zChangePasswordBody = z.object({
 /**
  * Password successfully changed
  */
-export const zChangePasswordResponse = z.object({
+export const zChangePasswordPostResponse = z.object({
   token: z.string().nullish(),
   user: z.object({
     id: z.string(),
@@ -219,16 +522,16 @@ export const zChangePasswordResponse = z.object({
   }),
 });
 
-export const zUpdateSessionBody = z.record(z.unknown());
+export const zUpdateSessionPostBody = z.record(z.unknown());
 
 /**
  * Success
  */
-export const zUpdateSessionResponse = z.object({
+export const zUpdateSessionPostResponse = z.object({
   session: zSession.optional(),
 });
 
-export const zUpdateUserBody = z.object({
+export const zUpdateUserPostBody = z.object({
   name: z.string().optional(),
   image: z.string().nullish(),
 });
@@ -236,11 +539,11 @@ export const zUpdateUserBody = z.object({
 /**
  * Success
  */
-export const zUpdateUserResponse = z.object({
+export const zUpdateUserPostResponse = z.object({
   user: zUser.optional(),
 });
 
-export const zDeleteUserBody = z.object({
+export const zDeleteUserPostBody = z.object({
   callbackURL: z.string().optional(),
   password: z.string().optional(),
   token: z.string().optional(),
@@ -249,12 +552,12 @@ export const zDeleteUserBody = z.object({
 /**
  * User deletion processed successfully
  */
-export const zDeleteUserResponse = z.object({
+export const zDeleteUserPostResponse = z.object({
   success: z.boolean(),
   message: z.enum(['User deleted', 'Verification email sent']),
 });
 
-export const zRequestPasswordResetBody = z.object({
+export const zRequestPasswordResetPostBody = z.object({
   email: z.string(),
   redirectTo: z.unknown().optional(),
 });
@@ -262,30 +565,30 @@ export const zRequestPasswordResetBody = z.object({
 /**
  * Success
  */
-export const zRequestPasswordResetResponse = z.object({
+export const zRequestPasswordResetPostResponse = z.object({
   status: z.boolean().optional(),
   message: z.string().optional(),
 });
 
-export const zResetPasswordCallbackPath = z.object({
+export const zResetPasswordCallbackGetPath = z.object({
   token: z.string(),
 });
 
-export const zResetPasswordCallbackQuery = z.object({
+export const zResetPasswordCallbackGetQuery = z.object({
   callbackURL: z.string(),
 });
 
 /**
  * Success
  */
-export const zResetPasswordCallbackResponse = z.object({
+export const zResetPasswordCallbackGetResponse = z.object({
   token: z.string().optional(),
 });
 
 /**
  * Success
  */
-export const zListUserSessionsResponse = z.array(zSession);
+export const zListUserSessionsGetResponse = z.array(zSession);
 
 export const zPostRevokeSessionBody = z.object({
   token: z.string(),
@@ -316,7 +619,7 @@ export const zPostRevokeOtherSessionsResponse = z.object({
   status: z.boolean(),
 });
 
-export const zLinkSocialAccountBody = z.object({
+export const zLinkSocialAccountPostBody = z.object({
   callbackURL: z.unknown().optional(),
   provider: z.string(),
   idToken: z.unknown().optional(),
@@ -330,7 +633,7 @@ export const zLinkSocialAccountBody = z.object({
 /**
  * Success
  */
-export const zLinkSocialAccountResponse = z.object({
+export const zLinkSocialAccountPostResponse = z.object({
   url: z.string().optional(),
   redirect: z.boolean(),
   status: z.boolean().optional(),
@@ -339,7 +642,7 @@ export const zLinkSocialAccountResponse = z.object({
 /**
  * Success
  */
-export const zListUserAccountsResponse = z.array(
+export const zListUserAccountsGetResponse = z.array(
   z.object({
     id: z.string(),
     providerId: z.string(),
