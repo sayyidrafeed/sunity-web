@@ -11,6 +11,9 @@ import type {
   ChangePasswordPostResponses,
   DeleteAdminCampaignsByIdData,
   DeleteAdminCampaignsByIdErrors,
+  DeleteAdminCampaignsByIdExpensesByExpenseIdData,
+  DeleteAdminCampaignsByIdExpensesByExpenseIdErrors,
+  DeleteAdminCampaignsByIdExpensesByExpenseIdResponses,
   DeleteAdminCampaignsByIdResponses,
   DeleteUserPostData,
   DeleteUserPostErrors,
@@ -18,9 +21,20 @@ import type {
   GetAccountInfoData,
   GetAccountInfoErrors,
   GetAccountInfoResponses,
+  GetAdminCampaignsByIdActivitiesData,
+  GetAdminCampaignsByIdActivitiesErrors,
+  GetAdminCampaignsByIdActivitiesResponses,
+  GetAdminCampaignsByIdExpensesData,
+  GetAdminCampaignsByIdExpensesErrors,
+  GetAdminCampaignsByIdExpensesResponses,
   GetAdminCampaignsData,
   GetAdminCampaignsErrors,
   GetAdminCampaignsResponses,
+  GetAdminWorshipPlacesByIdData,
+  GetAdminWorshipPlacesByIdErrors,
+  GetAdminWorshipPlacesByIdResponses,
+  GetAdminWorshipPlacesData,
+  GetAdminWorshipPlacesResponses,
   GetCallbackByIdData,
   GetCallbackByIdErrors,
   GetCampaignsByIdData,
@@ -55,18 +69,29 @@ import type {
   ListUserSessionsGetData,
   ListUserSessionsGetErrors,
   ListUserSessionsGetResponses,
+  PatchAdminCampaignsByIdExpensesByExpenseIdData,
+  PatchAdminCampaignsByIdExpensesByExpenseIdErrors,
+  PatchAdminCampaignsByIdExpensesByExpenseIdResponses,
   PatchAdminCampaignsByIdPublishData,
   PatchAdminCampaignsByIdPublishErrors,
   PatchAdminCampaignsByIdPublishResponses,
   PatchAdminCampaignsByIdStatusData,
   PatchAdminCampaignsByIdStatusErrors,
   PatchAdminCampaignsByIdStatusResponses,
+  PatchAdminWorshipPlacesByIdData,
+  PatchAdminWorshipPlacesByIdErrors,
+  PatchAdminWorshipPlacesByIdResponses,
   PatchCampaignsByIdData,
   PatchCampaignsByIdErrors,
   PatchCampaignsByIdResponses,
   PostAdminCampaignsByIdAssetsData,
   PostAdminCampaignsByIdAssetsErrors,
   PostAdminCampaignsByIdAssetsResponses,
+  PostAdminCampaignsByIdExpensesData,
+  PostAdminCampaignsByIdExpensesErrors,
+  PostAdminCampaignsByIdExpensesResponses,
+  PostAdminWorshipPlacesData,
+  PostAdminWorshipPlacesResponses,
   PostAssetsUploadData,
   PostAssetsUploadErrors,
   PostAssetsUploadResponses,
@@ -226,14 +251,7 @@ export const patchCampaignsById = <ThrowOnError extends boolean = false>(options
  */
 export const getAdminCampaigns = <ThrowOnError extends boolean = false>(options?: Options<GetAdminCampaignsData, ThrowOnError>) =>
   (options?.client ?? client).get<GetAdminCampaignsResponses, GetAdminCampaignsErrors, ThrowOnError>({
-    security: [
-      {
-        in: 'cookie',
-        name: 'apiKeyCookie',
-        type: 'apiKey',
-      },
-      { scheme: 'bearer', type: 'http' },
-    ],
+    security: [{ scheme: 'bearer', type: 'http' }],
     url: '/admin/campaigns',
     ...options,
   });
@@ -245,14 +263,7 @@ export const patchAdminCampaignsByIdStatus = <ThrowOnError extends boolean = fal
   options: Options<PatchAdminCampaignsByIdStatusData, ThrowOnError>
 ) =>
   (options.client ?? client).patch<PatchAdminCampaignsByIdStatusResponses, PatchAdminCampaignsByIdStatusErrors, ThrowOnError>({
-    security: [
-      {
-        in: 'cookie',
-        name: 'apiKeyCookie',
-        type: 'apiKey',
-      },
-      { scheme: 'bearer', type: 'http' },
-    ],
+    security: [{ scheme: 'bearer', type: 'http' }],
     url: '/admin/campaigns/{id}/status',
     ...options,
     headers: {
@@ -268,14 +279,7 @@ export const patchAdminCampaignsByIdPublish = <ThrowOnError extends boolean = fa
   options: Options<PatchAdminCampaignsByIdPublishData, ThrowOnError>
 ) =>
   (options.client ?? client).patch<PatchAdminCampaignsByIdPublishResponses, PatchAdminCampaignsByIdPublishErrors, ThrowOnError>({
-    security: [
-      {
-        in: 'cookie',
-        name: 'apiKeyCookie',
-        type: 'apiKey',
-      },
-      { scheme: 'bearer', type: 'http' },
-    ],
+    security: [{ scheme: 'bearer', type: 'http' }],
     url: '/admin/campaigns/{id}/publish',
     ...options,
     headers: {
@@ -289,14 +293,7 @@ export const patchAdminCampaignsByIdPublish = <ThrowOnError extends boolean = fa
  */
 export const deleteAdminCampaignsById = <ThrowOnError extends boolean = false>(options: Options<DeleteAdminCampaignsByIdData, ThrowOnError>) =>
   (options.client ?? client).delete<DeleteAdminCampaignsByIdResponses, DeleteAdminCampaignsByIdErrors, ThrowOnError>({
-    security: [
-      {
-        in: 'cookie',
-        name: 'apiKeyCookie',
-        type: 'apiKey',
-      },
-      { scheme: 'bearer', type: 'http' },
-    ],
+    security: [{ scheme: 'bearer', type: 'http' }],
     url: '/admin/campaigns/{id}',
     ...options,
   });
@@ -308,14 +305,7 @@ export const postAdminCampaignsByIdAssets = <ThrowOnError extends boolean = fals
   options: Options<PostAdminCampaignsByIdAssetsData, ThrowOnError>
 ) =>
   (options.client ?? client).post<PostAdminCampaignsByIdAssetsResponses, PostAdminCampaignsByIdAssetsErrors, ThrowOnError>({
-    security: [
-      {
-        in: 'cookie',
-        name: 'apiKeyCookie',
-        type: 'apiKey',
-      },
-      { scheme: 'bearer', type: 'http' },
-    ],
+    security: [{ scheme: 'bearer', type: 'http' }],
     url: '/admin/campaigns/{id}/assets',
     ...options,
     headers: {
@@ -343,6 +333,130 @@ export const postAssetsUpload = <ThrowOnError extends boolean = false>(options?:
       'Content-Type': 'application/json',
       ...options?.headers,
     },
+  });
+
+/**
+ * List worship places
+ */
+export const getAdminWorshipPlaces = <ThrowOnError extends boolean = false>(options?: Options<GetAdminWorshipPlacesData, ThrowOnError>) =>
+  (options?.client ?? client).get<GetAdminWorshipPlacesResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/admin/worship-places',
+    ...options,
+  });
+
+/**
+ * Create worship place
+ */
+export const postAdminWorshipPlaces = <ThrowOnError extends boolean = false>(options?: Options<PostAdminWorshipPlacesData, ThrowOnError>) =>
+  (options?.client ?? client).post<PostAdminWorshipPlacesResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/admin/worship-places',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    },
+  });
+
+/**
+ * Get worship place by id
+ */
+export const getAdminWorshipPlacesById = <ThrowOnError extends boolean = false>(options: Options<GetAdminWorshipPlacesByIdData, ThrowOnError>) =>
+  (options.client ?? client).get<GetAdminWorshipPlacesByIdResponses, GetAdminWorshipPlacesByIdErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/admin/worship-places/{id}',
+    ...options,
+  });
+
+/**
+ * Update worship place
+ */
+export const patchAdminWorshipPlacesById = <ThrowOnError extends boolean = false>(options: Options<PatchAdminWorshipPlacesByIdData, ThrowOnError>) =>
+  (options.client ?? client).patch<PatchAdminWorshipPlacesByIdResponses, PatchAdminWorshipPlacesByIdErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/admin/worship-places/{id}',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+
+/**
+ * List campaign expenses
+ */
+export const getAdminCampaignsByIdExpenses = <ThrowOnError extends boolean = false>(
+  options: Options<GetAdminCampaignsByIdExpensesData, ThrowOnError>
+) =>
+  (options.client ?? client).get<GetAdminCampaignsByIdExpensesResponses, GetAdminCampaignsByIdExpensesErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/admin/campaigns/{id}/expenses',
+    ...options,
+  });
+
+/**
+ * Create campaign expense
+ */
+export const postAdminCampaignsByIdExpenses = <ThrowOnError extends boolean = false>(
+  options: Options<PostAdminCampaignsByIdExpensesData, ThrowOnError>
+) =>
+  (options.client ?? client).post<PostAdminCampaignsByIdExpensesResponses, PostAdminCampaignsByIdExpensesErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/admin/campaigns/{id}/expenses',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+
+/**
+ * Delete expense
+ */
+export const deleteAdminCampaignsByIdExpensesByExpenseId = <ThrowOnError extends boolean = false>(
+  options: Options<DeleteAdminCampaignsByIdExpensesByExpenseIdData, ThrowOnError>
+) =>
+  (options.client ?? client).delete<
+    DeleteAdminCampaignsByIdExpensesByExpenseIdResponses,
+    DeleteAdminCampaignsByIdExpensesByExpenseIdErrors,
+    ThrowOnError
+  >({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/admin/campaigns/{id}/expenses/{expenseId}',
+    ...options,
+  });
+
+/**
+ * Update expense
+ */
+export const patchAdminCampaignsByIdExpensesByExpenseId = <ThrowOnError extends boolean = false>(
+  options: Options<PatchAdminCampaignsByIdExpensesByExpenseIdData, ThrowOnError>
+) =>
+  (options.client ?? client).patch<
+    PatchAdminCampaignsByIdExpensesByExpenseIdResponses,
+    PatchAdminCampaignsByIdExpensesByExpenseIdErrors,
+    ThrowOnError
+  >({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/admin/campaigns/{id}/expenses/{expenseId}',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+
+/**
+ * List campaign activity logs
+ */
+export const getAdminCampaignsByIdActivities = <ThrowOnError extends boolean = false>(
+  options: Options<GetAdminCampaignsByIdActivitiesData, ThrowOnError>
+) =>
+  (options.client ?? client).get<GetAdminCampaignsByIdActivitiesResponses, GetAdminCampaignsByIdActivitiesErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/admin/campaigns/{id}/activities',
+    ...options,
   });
 
 /**

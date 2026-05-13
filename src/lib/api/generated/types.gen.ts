@@ -5,11 +5,57 @@ export type ClientOptions = {
 };
 
 export type Error = {
-  error:
+  error: {
+    code: string;
+    message: string;
+  };
+};
+
+export type WorshipPlace = {
+  id: string;
+  name: string;
+  religionType: string;
+  address: string;
+  city: string;
+  contactPerson: string | null;
+  contactPhone: string | null;
+  currentCondition: string | null;
+  personInCharge: string | null;
+  thumbnailAssetId: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type Expense = {
+  id: string;
+  campaignId: string;
+  title: string;
+  description: string | null;
+  amountIdr: number;
+  spentAt: string;
+  receiptAssetId: string | null;
+  category: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ActivityLog = {
+  id: string;
+  campaignId: string | null;
+  actorId: string;
+  action: string;
+  entityType: string | null;
+  entityId: string | null;
+  metadata:
     | string
+    | number
+    | boolean
+    | unknown
     | {
         [key: string]: unknown;
-      };
+      }
+    | Array<unknown>;
+  createdAt: string;
 };
 
 export type User = {
@@ -76,7 +122,9 @@ export type GetCampaignsData = {
     search?: string;
     city?: string;
     type?: 'Masjid' | 'Mushalla' | 'Gereja' | 'Pura' | 'Vihara' | 'Klenteng';
-    status?: 'Aktif' | 'Instalasi' | 'Selesai';
+    status?: 'DRAFT' | 'AKTIF' | 'INSTALASI' | 'SELESAI' | 'ARCHIVED';
+    sortBy?: 'createdAt' | 'deadline' | 'raisedProgress' | 'targetIdr';
+    order?: 'asc' | 'desc';
   };
   url: '/campaigns';
 };
@@ -89,11 +137,14 @@ export type GetCampaignsResponses = {
     data: Array<{
       id: string;
       title: string;
-      city: string;
-      religionType: string;
+      worshipPlace: {
+        name: string;
+        city: string;
+        religionType: string;
+      };
       status: string;
-      targetIdr: string;
-      raisedIdr: string;
+      targetIdr: number;
+      raisedIdr: number;
       donorCount: number;
       deadline: string;
       progressPercent: number;
@@ -122,15 +173,19 @@ export type PostCampaignsData = {
   body?: {
     title: string;
     description: string;
-    targetIdr: string;
+    targetIdr: number;
     panelCapacityKwp: string;
     estimatedKwhAnnual?: string;
-    estimatedIdrSavings?: string;
+    estimatedIdrSavings?: number;
     coverImageUrl?: string;
     deadline: string;
-    worshipPlaceName: string;
-    city: string;
-    religionType: 'Masjid' | 'Mushalla' | 'Gereja' | 'Pura' | 'Vihara' | 'Klenteng';
+    worshipPlaceId: string;
+    fundUsage?: string;
+    energyProducedKwhMonthly?: string;
+    beneficiaries?: number;
+    carbonReductionKgMonthly?: string;
+    electricitySavingsIdrMonthly?: number;
+    impactDescription?: string;
   };
   path?: never;
   query?: never;
@@ -175,8 +230,8 @@ export type GetCampaignsByIdResponses = {
     title: string;
     description: string;
     status: string;
-    targetIdr: string;
-    raisedIdr: string;
+    targetIdr: number;
+    raisedIdr: number;
     donorCount: number;
     deadline: string;
     progressPercent: number;
@@ -188,7 +243,15 @@ export type GetCampaignsByIdResponses = {
     energyImpact: {
       panelCapacityKwp: string;
       estimatedKwhAnnual?: string;
-      estimatedIdrSavings?: string;
+      estimatedIdrSavings?: number;
+    };
+    impact: {
+      fundUsage?: string;
+      energyProducedKwhMonthly?: string;
+      beneficiaries?: number;
+      carbonReductionKgMonthly?: string;
+      electricitySavingsIdrMonthly?: number;
+      impactDescription?: string;
     };
     images?: {
       cover?: {
@@ -225,15 +288,19 @@ export type PatchCampaignsByIdData = {
   body?: {
     title?: string;
     description?: string;
-    targetIdr?: string;
+    targetIdr?: number;
     panelCapacityKwp?: string;
     estimatedKwhAnnual?: string;
-    estimatedIdrSavings?: string;
+    estimatedIdrSavings?: number;
     coverImageUrl?: string;
     deadline?: string;
-    worshipPlaceName?: string;
-    city?: string;
-    religionType?: 'Masjid' | 'Mushalla' | 'Gereja' | 'Pura' | 'Vihara' | 'Klenteng';
+    worshipPlaceId?: string;
+    fundUsage?: string;
+    energyProducedKwhMonthly?: string;
+    beneficiaries?: number;
+    carbonReductionKgMonthly?: string;
+    electricitySavingsIdrMonthly?: number;
+    impactDescription?: string;
   };
   path: {
     id: string;
@@ -271,7 +338,9 @@ export type GetAdminCampaignsData = {
     search?: string;
     city?: string;
     type?: 'Masjid' | 'Mushalla' | 'Gereja' | 'Pura' | 'Vihara' | 'Klenteng';
-    status?: 'Aktif' | 'Instalasi' | 'Selesai';
+    status?: 'DRAFT' | 'AKTIF' | 'INSTALASI' | 'SELESAI' | 'ARCHIVED';
+    sortBy?: 'createdAt' | 'deadline' | 'raisedProgress' | 'targetIdr';
+    order?: 'asc' | 'desc';
     includeUnpublished?: boolean | null;
   };
   url: '/admin/campaigns';
@@ -294,11 +363,14 @@ export type GetAdminCampaignsResponses = {
     data: Array<{
       id: string;
       title: string;
-      city: string;
-      religionType: string;
+      worshipPlace: {
+        name: string;
+        city: string;
+        religionType: string;
+      };
       status: string;
-      targetIdr: string;
-      raisedIdr: string;
+      targetIdr: number;
+      raisedIdr: number;
       donorCount: number;
       deadline: string;
       progressPercent: number;
@@ -325,7 +397,7 @@ export type GetAdminCampaignsResponse = GetAdminCampaignsResponses[keyof GetAdmi
 
 export type PatchAdminCampaignsByIdStatusData = {
   body?: {
-    status: 'Aktif' | 'Instalasi' | 'Selesai';
+    status: 'DRAFT' | 'AKTIF' | 'INSTALASI' | 'SELESAI' | 'ARCHIVED';
   };
   path: {
     id: string;
@@ -490,6 +562,301 @@ export type PostAssetsUploadResponses = {
 };
 
 export type PostAssetsUploadResponse = PostAssetsUploadResponses[keyof PostAssetsUploadResponses];
+
+export type GetAdminWorshipPlacesData = {
+  body?: never;
+  path?: never;
+  query?: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    city?: string;
+  };
+  url: '/admin/worship-places';
+};
+
+export type GetAdminWorshipPlacesResponses = {
+  /**
+   * List of worship places
+   */
+  200: {
+    data: Array<WorshipPlace>;
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+    };
+  };
+};
+
+export type GetAdminWorshipPlacesResponse = GetAdminWorshipPlacesResponses[keyof GetAdminWorshipPlacesResponses];
+
+export type PostAdminWorshipPlacesData = {
+  body?: {
+    name: string;
+    religionType: 'Masjid' | 'Mushalla' | 'Gereja' | 'Pura' | 'Vihara' | 'Klenteng';
+    address: string;
+    city: string;
+    contactPerson?: string;
+    contactPhone?: string;
+    currentCondition?: string;
+    personInCharge?: string;
+    thumbnailAssetId?: string;
+  };
+  path?: never;
+  query?: never;
+  url: '/admin/worship-places';
+};
+
+export type PostAdminWorshipPlacesResponses = {
+  /**
+   * Worship place created
+   */
+  201: WorshipPlace;
+};
+
+export type PostAdminWorshipPlacesResponse = PostAdminWorshipPlacesResponses[keyof PostAdminWorshipPlacesResponses];
+
+export type GetAdminWorshipPlacesByIdData = {
+  body?: never;
+  path: {
+    id: string;
+  };
+  query?: never;
+  url: '/admin/worship-places/{id}';
+};
+
+export type GetAdminWorshipPlacesByIdErrors = {
+  /**
+   * Not found
+   */
+  404: Error;
+};
+
+export type GetAdminWorshipPlacesByIdError = GetAdminWorshipPlacesByIdErrors[keyof GetAdminWorshipPlacesByIdErrors];
+
+export type GetAdminWorshipPlacesByIdResponses = {
+  /**
+   * Worship place
+   */
+  200: WorshipPlace;
+};
+
+export type GetAdminWorshipPlacesByIdResponse = GetAdminWorshipPlacesByIdResponses[keyof GetAdminWorshipPlacesByIdResponses];
+
+export type PatchAdminWorshipPlacesByIdData = {
+  body?: {
+    name?: string;
+    religionType?: 'Masjid' | 'Mushalla' | 'Gereja' | 'Pura' | 'Vihara' | 'Klenteng';
+    address?: string;
+    city?: string;
+    contactPerson?: string;
+    contactPhone?: string;
+    currentCondition?: string;
+    personInCharge?: string;
+    thumbnailAssetId?: string;
+  };
+  path: {
+    id: string;
+  };
+  query?: never;
+  url: '/admin/worship-places/{id}';
+};
+
+export type PatchAdminWorshipPlacesByIdErrors = {
+  /**
+   * Not found
+   */
+  404: Error;
+};
+
+export type PatchAdminWorshipPlacesByIdError = PatchAdminWorshipPlacesByIdErrors[keyof PatchAdminWorshipPlacesByIdErrors];
+
+export type PatchAdminWorshipPlacesByIdResponses = {
+  /**
+   * Worship place updated
+   */
+  200: WorshipPlace;
+};
+
+export type PatchAdminWorshipPlacesByIdResponse = PatchAdminWorshipPlacesByIdResponses[keyof PatchAdminWorshipPlacesByIdResponses];
+
+export type GetAdminCampaignsByIdExpensesData = {
+  body?: never;
+  path: {
+    id: string;
+  };
+  query?: {
+    page?: number;
+    limit?: number;
+  };
+  url: '/admin/campaigns/{id}/expenses';
+};
+
+export type GetAdminCampaignsByIdExpensesErrors = {
+  /**
+   * Campaign not found
+   */
+  404: Error;
+};
+
+export type GetAdminCampaignsByIdExpensesError = GetAdminCampaignsByIdExpensesErrors[keyof GetAdminCampaignsByIdExpensesErrors];
+
+export type GetAdminCampaignsByIdExpensesResponses = {
+  /**
+   * List of expenses
+   */
+  200: {
+    data: Array<Expense>;
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+    };
+  };
+};
+
+export type GetAdminCampaignsByIdExpensesResponse = GetAdminCampaignsByIdExpensesResponses[keyof GetAdminCampaignsByIdExpensesResponses];
+
+export type PostAdminCampaignsByIdExpensesData = {
+  body?: {
+    title: string;
+    description?: string;
+    amountIdr: number;
+    spentAt: string;
+    receiptAssetId?: string;
+    category: 'EQUIPMENT' | 'INSTALLATION' | 'MATERIAL' | 'OPERATIONAL' | 'OTHER';
+  };
+  path: {
+    id: string;
+  };
+  query?: never;
+  url: '/admin/campaigns/{id}/expenses';
+};
+
+export type PostAdminCampaignsByIdExpensesErrors = {
+  /**
+   * Campaign not found
+   */
+  404: Error;
+};
+
+export type PostAdminCampaignsByIdExpensesError = PostAdminCampaignsByIdExpensesErrors[keyof PostAdminCampaignsByIdExpensesErrors];
+
+export type PostAdminCampaignsByIdExpensesResponses = {
+  /**
+   * Expense created
+   */
+  201: Expense;
+};
+
+export type PostAdminCampaignsByIdExpensesResponse = PostAdminCampaignsByIdExpensesResponses[keyof PostAdminCampaignsByIdExpensesResponses];
+
+export type DeleteAdminCampaignsByIdExpensesByExpenseIdData = {
+  body?: never;
+  path: {
+    id: string;
+    expenseId: string;
+  };
+  query?: never;
+  url: '/admin/campaigns/{id}/expenses/{expenseId}';
+};
+
+export type DeleteAdminCampaignsByIdExpensesByExpenseIdErrors = {
+  /**
+   * Expense not found
+   */
+  404: Error;
+};
+
+export type DeleteAdminCampaignsByIdExpensesByExpenseIdError =
+  DeleteAdminCampaignsByIdExpensesByExpenseIdErrors[keyof DeleteAdminCampaignsByIdExpensesByExpenseIdErrors];
+
+export type DeleteAdminCampaignsByIdExpensesByExpenseIdResponses = {
+  /**
+   * Expense deleted
+   */
+  200: {
+    success: true;
+  };
+};
+
+export type DeleteAdminCampaignsByIdExpensesByExpenseIdResponse =
+  DeleteAdminCampaignsByIdExpensesByExpenseIdResponses[keyof DeleteAdminCampaignsByIdExpensesByExpenseIdResponses];
+
+export type PatchAdminCampaignsByIdExpensesByExpenseIdData = {
+  body?: {
+    title?: string;
+    description?: string;
+    amountIdr?: number;
+    spentAt?: string;
+    receiptAssetId?: string;
+    category?: 'EQUIPMENT' | 'INSTALLATION' | 'MATERIAL' | 'OPERATIONAL' | 'OTHER';
+  };
+  path: {
+    id: string;
+    expenseId: string;
+  };
+  query?: never;
+  url: '/admin/campaigns/{id}/expenses/{expenseId}';
+};
+
+export type PatchAdminCampaignsByIdExpensesByExpenseIdErrors = {
+  /**
+   * Expense not found
+   */
+  404: Error;
+};
+
+export type PatchAdminCampaignsByIdExpensesByExpenseIdError =
+  PatchAdminCampaignsByIdExpensesByExpenseIdErrors[keyof PatchAdminCampaignsByIdExpensesByExpenseIdErrors];
+
+export type PatchAdminCampaignsByIdExpensesByExpenseIdResponses = {
+  /**
+   * Expense updated
+   */
+  200: Expense;
+};
+
+export type PatchAdminCampaignsByIdExpensesByExpenseIdResponse =
+  PatchAdminCampaignsByIdExpensesByExpenseIdResponses[keyof PatchAdminCampaignsByIdExpensesByExpenseIdResponses];
+
+export type GetAdminCampaignsByIdActivitiesData = {
+  body?: never;
+  path: {
+    id: string;
+  };
+  query?: {
+    page?: number;
+    limit?: number;
+  };
+  url: '/admin/campaigns/{id}/activities';
+};
+
+export type GetAdminCampaignsByIdActivitiesErrors = {
+  /**
+   * Campaign not found
+   */
+  404: Error;
+};
+
+export type GetAdminCampaignsByIdActivitiesError = GetAdminCampaignsByIdActivitiesErrors[keyof GetAdminCampaignsByIdActivitiesErrors];
+
+export type GetAdminCampaignsByIdActivitiesResponses = {
+  /**
+   * List of activity logs
+   */
+  200: {
+    data: Array<ActivityLog>;
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+    };
+  };
+};
+
+export type GetAdminCampaignsByIdActivitiesResponse = GetAdminCampaignsByIdActivitiesResponses[keyof GetAdminCampaignsByIdActivitiesResponses];
 
 export type SocialSignInPostData = {
   body: {

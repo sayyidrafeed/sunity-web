@@ -6,5 +6,5 @@
     "no-explicit-any": "error",
     "max-lines": ["warn", 200]
   },
-  "ignorePatterns": ["node_modules", "dist", "*.gen.ts"]
+  "ignorePatterns": ["node_modules", "dist", "*.gen.ts", "src/lib/api/generated/"]
 }

@@ -3,7 +3,49 @@
 import { z } from 'zod';
 
 export const zError = z.object({
-  error: z.union([z.string(), z.record(z.unknown())]),
+  error: z.object({
+    code: z.string(),
+    message: z.string(),
+  }),
+});
+
+export const zWorshipPlace = z.object({
+  id: z.string().uuid(),
+  name: z.string(),
+  religionType: z.string(),
+  address: z.string(),
+  city: z.string(),
+  contactPerson: z.string().nullable(),
+  contactPhone: z.string().nullable(),
+  currentCondition: z.string().nullable(),
+  personInCharge: z.string().nullable(),
+  thumbnailAssetId: z.string().uuid().nullable(),
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
+});
+
+export const zExpense = z.object({
+  id: z.string().uuid(),
+  campaignId: z.string().uuid(),
+  title: z.string(),
+  description: z.string().nullable(),
+  amountIdr: z.number().int().gte(-9007199254740991).lte(9007199254740991),
+  spentAt: z.string().datetime(),
+  receiptAssetId: z.string().uuid().nullable(),
+  category: z.string(),
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
+});
+
+export const zActivityLog = z.object({
+  id: z.string().uuid(),
+  campaignId: z.string().uuid().nullable(),
+  actorId: z.string(),
+  action: z.string(),
+  entityType: z.string().nullable(),
+  entityId: z.string().uuid().nullable(),
+  metadata: z.union([z.string(), z.number(), z.boolean(), z.unknown(), z.record(z.unknown()), z.array(z.unknown())]),
+  createdAt: z.string().datetime(),
 });
 
 export const zUser = z.object({
@@ -67,7 +109,9 @@ export const zGetCampaignsQuery = z.object({
   search: z.string().optional(),
   city: z.string().optional(),
   type: z.enum(['Masjid', 'Mushalla', 'Gereja', 'Pura', 'Vihara', 'Klenteng']).optional(),
-  status: z.enum(['Aktif', 'Instalasi', 'Selesai']).optional(),
+  status: z.enum(['DRAFT', 'AKTIF', 'INSTALASI', 'SELESAI', 'ARCHIVED']).optional(),
+  sortBy: z.enum(['createdAt', 'deadline', 'raisedProgress', 'targetIdr']).optional().default('createdAt'),
+  order: z.enum(['asc', 'desc']).optional().default('desc'),
 });
 
 /**
@@ -78,11 +122,14 @@ export const zGetCampaignsResponse = z.object({
     z.object({
       id: z.string().uuid(),
       title: z.string(),
-      city: z.string(),
-      religionType: z.string(),
+      worshipPlace: z.object({
+        name: z.string(),
+        city: z.string(),
+        religionType: z.string(),
+      }),
       status: z.string(),
-      targetIdr: z.string(),
-      raisedIdr: z.string(),
+      targetIdr: z.number(),
+      raisedIdr: z.number(),
       donorCount: z.number(),
       deadline: z.string().datetime(),
       progressPercent: z.number(),
@@ -110,17 +157,21 @@ export const zGetCampaignsResponse = z.object({
 });
 
 export const zPostCampaignsBody = z.object({
-  title: z.string().min(1),
-  description: z.string().min(1),
-  targetIdr: z.string(),
+  title: z.string().min(1).max(200),
+  description: z.string().min(1).max(5000),
+  targetIdr: z.number().int().gt(100000).lte(100000000000),
   panelCapacityKwp: z.string(),
   estimatedKwhAnnual: z.string().optional(),
-  estimatedIdrSavings: z.string().optional(),
+  estimatedIdrSavings: z.number().int().gt(0).optional(),
   coverImageUrl: z.string().url().optional(),
   deadline: z.string().datetime(),
-  worshipPlaceName: z.string().min(1),
-  city: z.string().min(1),
-  religionType: z.enum(['Masjid', 'Mushalla', 'Gereja', 'Pura', 'Vihara', 'Klenteng']),
+  worshipPlaceId: z.string().uuid(),
+  fundUsage: z.string().optional(),
+  energyProducedKwhMonthly: z.string().optional(),
+  beneficiaries: z.number().int().gt(0).optional(),
+  carbonReductionKgMonthly: z.string().optional(),
+  electricitySavingsIdrMonthly: z.number().int().gt(0).optional(),
+  impactDescription: z.string().optional(),
 });
 
 /**
@@ -142,8 +193,8 @@ export const zGetCampaignsByIdResponse = z.object({
   title: z.string(),
   description: z.string(),
   status: z.string(),
-  targetIdr: z.string(),
-  raisedIdr: z.string(),
+  targetIdr: z.number(),
+  raisedIdr: z.number(),
   donorCount: z.number(),
   deadline: z.string().datetime(),
   progressPercent: z.number(),
@@ -155,7 +206,15 @@ export const zGetCampaignsByIdResponse = z.object({
   energyImpact: z.object({
     panelCapacityKwp: z.string(),
     estimatedKwhAnnual: z.string().optional(),
-    estimatedIdrSavings: z.string().optional(),
+    estimatedIdrSavings: z.number().optional(),
+  }),
+  impact: z.object({
+    fundUsage: z.string().optional(),
+    energyProducedKwhMonthly: z.string().optional(),
+    beneficiaries: z.number().optional(),
+    carbonReductionKgMonthly: z.string().optional(),
+    electricitySavingsIdrMonthly: z.number().optional(),
+    impactDescription: z.string().optional(),
   }),
   images: z
     .object({
@@ -205,17 +264,21 @@ export const zGetCampaignsByIdResponse = z.object({
 });
 
 export const zPatchCampaignsByIdBody = z.object({
-  title: z.string().min(1).optional(),
-  description: z.string().min(1).optional(),
-  targetIdr: z.string().optional(),
+  title: z.string().min(1).max(200).optional(),
+  description: z.string().min(1).max(5000).optional(),
+  targetIdr: z.number().int().gt(100000).lte(100000000000).optional(),
   panelCapacityKwp: z.string().optional(),
   estimatedKwhAnnual: z.string().optional(),
-  estimatedIdrSavings: z.string().optional(),
+  estimatedIdrSavings: z.number().int().gt(0).optional(),
   coverImageUrl: z.string().url().optional(),
   deadline: z.string().datetime().optional(),
-  worshipPlaceName: z.string().min(1).optional(),
-  city: z.string().min(1).optional(),
-  religionType: z.enum(['Masjid', 'Mushalla', 'Gereja', 'Pura', 'Vihara', 'Klenteng']).optional(),
+  worshipPlaceId: z.string().uuid().optional(),
+  fundUsage: z.string().optional(),
+  energyProducedKwhMonthly: z.string().optional(),
+  beneficiaries: z.number().int().gt(0).optional(),
+  carbonReductionKgMonthly: z.string().optional(),
+  electricitySavingsIdrMonthly: z.number().int().gt(0).optional(),
+  impactDescription: z.string().optional(),
 });
 
 export const zPatchCampaignsByIdPath = z.object({
@@ -235,7 +298,9 @@ export const zGetAdminCampaignsQuery = z.object({
   search: z.string().optional(),
   city: z.string().optional(),
   type: z.enum(['Masjid', 'Mushalla', 'Gereja', 'Pura', 'Vihara', 'Klenteng']).optional(),
-  status: z.enum(['Aktif', 'Instalasi', 'Selesai']).optional(),
+  status: z.enum(['DRAFT', 'AKTIF', 'INSTALASI', 'SELESAI', 'ARCHIVED']).optional(),
+  sortBy: z.enum(['createdAt', 'deadline', 'raisedProgress', 'targetIdr']).optional().default('createdAt'),
+  order: z.enum(['asc', 'desc']).optional().default('desc'),
   includeUnpublished: z.boolean().nullish().default(false),
 });
 
@@ -247,11 +312,14 @@ export const zGetAdminCampaignsResponse = z.object({
     z.object({
       id: z.string().uuid(),
       title: z.string(),
-      city: z.string(),
-      religionType: z.string(),
+      worshipPlace: z.object({
+        name: z.string(),
+        city: z.string(),
+        religionType: z.string(),
+      }),
       status: z.string(),
-      targetIdr: z.string(),
-      raisedIdr: z.string(),
+      targetIdr: z.number(),
+      raisedIdr: z.number(),
       donorCount: z.number(),
       deadline: z.string().datetime(),
       progressPercent: z.number(),
@@ -279,7 +347,7 @@ export const zGetAdminCampaignsResponse = z.object({
 });
 
 export const zPatchAdminCampaignsByIdStatusBody = z.object({
-  status: z.enum(['Aktif', 'Instalasi', 'Selesai']),
+  status: z.enum(['DRAFT', 'AKTIF', 'INSTALASI', 'SELESAI', 'ARCHIVED']),
 });
 
 export const zPatchAdminCampaignsByIdStatusPath = z.object({
@@ -357,6 +425,169 @@ export const zPostAssetsUploadResponse = z.object({
     url: z.string().url(),
     headers: z.record(z.string()),
     expiresAt: z.string().datetime(),
+  }),
+});
+
+export const zGetAdminWorshipPlacesQuery = z.object({
+  page: z.number().int().gte(1).optional().default(1),
+  limit: z.number().int().gte(1).optional().default(12),
+  search: z.string().optional(),
+  city: z.string().optional(),
+});
+
+/**
+ * List of worship places
+ */
+export const zGetAdminWorshipPlacesResponse = z.object({
+  data: z.array(zWorshipPlace),
+  pagination: z.object({
+    page: z.number(),
+    limit: z.number(),
+    total: z.number(),
+  }),
+});
+
+export const zPostAdminWorshipPlacesBody = z.object({
+  name: z.string().min(1).max(200),
+  religionType: z.enum(['Masjid', 'Mushalla', 'Gereja', 'Pura', 'Vihara', 'Klenteng']),
+  address: z.string().min(1).max(500),
+  city: z.string().min(1),
+  contactPerson: z.string().optional(),
+  contactPhone: z
+    .string()
+    .regex(/^(\+62|08)\d{8,13}$/)
+    .optional(),
+  currentCondition: z.string().optional(),
+  personInCharge: z.string().optional(),
+  thumbnailAssetId: z.string().uuid().optional(),
+});
+
+/**
+ * Worship place created
+ */
+export const zPostAdminWorshipPlacesResponse = zWorshipPlace;
+
+export const zGetAdminWorshipPlacesByIdPath = z.object({
+  id: z.string().uuid(),
+});
+
+/**
+ * Worship place
+ */
+export const zGetAdminWorshipPlacesByIdResponse = zWorshipPlace;
+
+export const zPatchAdminWorshipPlacesByIdBody = z.object({
+  name: z.string().min(1).max(200).optional(),
+  religionType: z.enum(['Masjid', 'Mushalla', 'Gereja', 'Pura', 'Vihara', 'Klenteng']).optional(),
+  address: z.string().min(1).max(500).optional(),
+  city: z.string().min(1).optional(),
+  contactPerson: z.string().optional(),
+  contactPhone: z
+    .string()
+    .regex(/^(\+62|08)\d{8,13}$/)
+    .optional(),
+  currentCondition: z.string().optional(),
+  personInCharge: z.string().optional(),
+  thumbnailAssetId: z.string().uuid().optional(),
+});
+
+export const zPatchAdminWorshipPlacesByIdPath = z.object({
+  id: z.string().uuid(),
+});
+
+/**
+ * Worship place updated
+ */
+export const zPatchAdminWorshipPlacesByIdResponse = zWorshipPlace;
+
+export const zGetAdminCampaignsByIdExpensesPath = z.object({
+  id: z.string().uuid(),
+});
+
+export const zGetAdminCampaignsByIdExpensesQuery = z.object({
+  page: z.number().int().gte(1).optional().default(1),
+  limit: z.number().int().gte(1).optional().default(12),
+});
+
+/**
+ * List of expenses
+ */
+export const zGetAdminCampaignsByIdExpensesResponse = z.object({
+  data: z.array(zExpense),
+  pagination: z.object({
+    page: z.number(),
+    limit: z.number(),
+    total: z.number(),
+  }),
+});
+
+export const zPostAdminCampaignsByIdExpensesBody = z.object({
+  title: z.string().min(1),
+  description: z.string().optional(),
+  amountIdr: z.number().int().gt(0),
+  spentAt: z.string().datetime(),
+  receiptAssetId: z.string().uuid().optional(),
+  category: z.enum(['EQUIPMENT', 'INSTALLATION', 'MATERIAL', 'OPERATIONAL', 'OTHER']),
+});
+
+export const zPostAdminCampaignsByIdExpensesPath = z.object({
+  id: z.string().uuid(),
+});
+
+/**
+ * Expense created
+ */
+export const zPostAdminCampaignsByIdExpensesResponse = zExpense;
+
+export const zDeleteAdminCampaignsByIdExpensesByExpenseIdPath = z.object({
+  id: z.string().uuid(),
+  expenseId: z.string().uuid(),
+});
+
+/**
+ * Expense deleted
+ */
+export const zDeleteAdminCampaignsByIdExpensesByExpenseIdResponse = z.object({
+  success: z.literal(true),
+});
+
+export const zPatchAdminCampaignsByIdExpensesByExpenseIdBody = z.object({
+  title: z.string().min(1).optional(),
+  description: z.string().optional(),
+  amountIdr: z.number().int().gt(0).optional(),
+  spentAt: z.string().datetime().optional(),
+  receiptAssetId: z.string().uuid().optional(),
+  category: z.enum(['EQUIPMENT', 'INSTALLATION', 'MATERIAL', 'OPERATIONAL', 'OTHER']).optional(),
+});
+
+export const zPatchAdminCampaignsByIdExpensesByExpenseIdPath = z.object({
+  id: z.string().uuid(),
+  expenseId: z.string().uuid(),
+});
+
+/**
+ * Expense updated
+ */
+export const zPatchAdminCampaignsByIdExpensesByExpenseIdResponse = zExpense;
+
+export const zGetAdminCampaignsByIdActivitiesPath = z.object({
+  id: z.string().uuid(),
+});
+
+export const zGetAdminCampaignsByIdActivitiesQuery = z.object({
+  page: z.number().int().gte(1).optional().default(1),
+  limit: z.number().int().gte(1).optional().default(12),
+});
+
+/**
+ * List of activity logs
+ */
+export const zGetAdminCampaignsByIdActivitiesResponse = z.object({
+  data: z.array(zActivityLog),
+  pagination: z.object({
+    page: z.number(),
+    limit: z.number(),
+    total: z.number(),
   }),
 });
 

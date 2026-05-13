@@ -7,9 +7,14 @@ import {
   changeEmailPost,
   changePasswordPost,
   deleteAdminCampaignsById,
+  deleteAdminCampaignsByIdExpensesByExpenseId,
   deleteUserPost,
   getAccountInfo,
   getAdminCampaigns,
+  getAdminCampaignsByIdActivities,
+  getAdminCampaignsByIdExpenses,
+  getAdminWorshipPlaces,
+  getAdminWorshipPlacesById,
   getCallbackById,
   getCampaigns,
   getCampaignsById,
@@ -23,10 +28,14 @@ import {
   listUserAccountsGet,
   listUserSessionsGet,
   type Options,
+  patchAdminCampaignsByIdExpensesByExpenseId,
   patchAdminCampaignsByIdPublish,
   patchAdminCampaignsByIdStatus,
+  patchAdminWorshipPlacesById,
   patchCampaignsById,
   postAdminCampaignsByIdAssets,
+  postAdminCampaignsByIdExpenses,
+  postAdminWorshipPlaces,
   postAssetsUpload,
   postCallbackById,
   postCampaigns,
@@ -57,6 +66,9 @@ import type {
   ChangePasswordPostResponse,
   DeleteAdminCampaignsByIdData,
   DeleteAdminCampaignsByIdError,
+  DeleteAdminCampaignsByIdExpensesByExpenseIdData,
+  DeleteAdminCampaignsByIdExpensesByExpenseIdError,
+  DeleteAdminCampaignsByIdExpensesByExpenseIdResponse,
   DeleteAdminCampaignsByIdResponse,
   DeleteUserPostData,
   DeleteUserPostError,
@@ -64,9 +76,20 @@ import type {
   GetAccountInfoData,
   GetAccountInfoError,
   GetAccountInfoResponse,
+  GetAdminCampaignsByIdActivitiesData,
+  GetAdminCampaignsByIdActivitiesError,
+  GetAdminCampaignsByIdActivitiesResponse,
+  GetAdminCampaignsByIdExpensesData,
+  GetAdminCampaignsByIdExpensesError,
+  GetAdminCampaignsByIdExpensesResponse,
   GetAdminCampaignsData,
   GetAdminCampaignsError,
   GetAdminCampaignsResponse,
+  GetAdminWorshipPlacesByIdData,
+  GetAdminWorshipPlacesByIdError,
+  GetAdminWorshipPlacesByIdResponse,
+  GetAdminWorshipPlacesData,
+  GetAdminWorshipPlacesResponse,
   GetCallbackByIdData,
   GetCallbackByIdError,
   GetCampaignsByIdData,
@@ -99,18 +122,29 @@ import type {
   ListUserSessionsGetData,
   ListUserSessionsGetError,
   ListUserSessionsGetResponse,
+  PatchAdminCampaignsByIdExpensesByExpenseIdData,
+  PatchAdminCampaignsByIdExpensesByExpenseIdError,
+  PatchAdminCampaignsByIdExpensesByExpenseIdResponse,
   PatchAdminCampaignsByIdPublishData,
   PatchAdminCampaignsByIdPublishError,
   PatchAdminCampaignsByIdPublishResponse,
   PatchAdminCampaignsByIdStatusData,
   PatchAdminCampaignsByIdStatusError,
   PatchAdminCampaignsByIdStatusResponse,
+  PatchAdminWorshipPlacesByIdData,
+  PatchAdminWorshipPlacesByIdError,
+  PatchAdminWorshipPlacesByIdResponse,
   PatchCampaignsByIdData,
   PatchCampaignsByIdError,
   PatchCampaignsByIdResponse,
   PostAdminCampaignsByIdAssetsData,
   PostAdminCampaignsByIdAssetsError,
   PostAdminCampaignsByIdAssetsResponse,
+  PostAdminCampaignsByIdExpensesData,
+  PostAdminCampaignsByIdExpensesError,
+  PostAdminCampaignsByIdExpensesResponse,
+  PostAdminWorshipPlacesData,
+  PostAdminWorshipPlacesResponse,
   PostAssetsUploadData,
   PostAssetsUploadError,
   PostAssetsUploadResponse,
@@ -522,6 +556,338 @@ export const postAssetsUploadMutation = (
   };
   return mutationOptions;
 };
+
+export const getAdminWorshipPlacesQueryKey = (options?: Options<GetAdminWorshipPlacesData>) => createQueryKey('getAdminWorshipPlaces', options);
+
+/**
+ * List worship places
+ */
+export const getAdminWorshipPlacesOptions = (options?: Options<GetAdminWorshipPlacesData>) =>
+  queryOptions<GetAdminWorshipPlacesResponse, DefaultError, GetAdminWorshipPlacesResponse, ReturnType<typeof getAdminWorshipPlacesQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+      const { data } = await getAdminWorshipPlaces({
+        ...options,
+        ...queryKey[0],
+        signal,
+        throwOnError: true,
+      });
+      return data;
+    },
+    queryKey: getAdminWorshipPlacesQueryKey(options),
+  });
+
+export const getAdminWorshipPlacesInfiniteQueryKey = (options?: Options<GetAdminWorshipPlacesData>): QueryKey<Options<GetAdminWorshipPlacesData>> =>
+  createQueryKey('getAdminWorshipPlaces', options, true);
+
+/**
+ * List worship places
+ */
+export const getAdminWorshipPlacesInfiniteOptions = (options?: Options<GetAdminWorshipPlacesData>) =>
+  infiniteQueryOptions<
+    GetAdminWorshipPlacesResponse,
+    DefaultError,
+    InfiniteData<GetAdminWorshipPlacesResponse>,
+    QueryKey<Options<GetAdminWorshipPlacesData>>,
+    number | Pick<QueryKey<Options<GetAdminWorshipPlacesData>>[0], 'body' | 'headers' | 'path' | 'query'>
+  >(
+    // @ts-ignore
+    {
+      queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<GetAdminWorshipPlacesData>>[0], 'body' | 'headers' | 'path' | 'query'> =
+          typeof pageParam === 'object'
+            ? pageParam
+            : {
+                query: {
+                  page: pageParam,
+                },
+              };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await getAdminWorshipPlaces({
+          ...options,
+          ...params,
+          signal,
+          throwOnError: true,
+        });
+        return data;
+      },
+      queryKey: getAdminWorshipPlacesInfiniteQueryKey(options),
+    }
+  );
+
+/**
+ * Create worship place
+ */
+export const postAdminWorshipPlacesMutation = (
+  options?: Partial<Options<PostAdminWorshipPlacesData>>
+): UseMutationOptions<PostAdminWorshipPlacesResponse, DefaultError, Options<PostAdminWorshipPlacesData>> => {
+  const mutationOptions: UseMutationOptions<PostAdminWorshipPlacesResponse, DefaultError, Options<PostAdminWorshipPlacesData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await postAdminWorshipPlaces({
+        ...options,
+        ...fnOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};
+
+export const getAdminWorshipPlacesByIdQueryKey = (options: Options<GetAdminWorshipPlacesByIdData>) =>
+  createQueryKey('getAdminWorshipPlacesById', options);
+
+/**
+ * Get worship place by id
+ */
+export const getAdminWorshipPlacesByIdOptions = (options: Options<GetAdminWorshipPlacesByIdData>) =>
+  queryOptions<
+    GetAdminWorshipPlacesByIdResponse,
+    GetAdminWorshipPlacesByIdError,
+    GetAdminWorshipPlacesByIdResponse,
+    ReturnType<typeof getAdminWorshipPlacesByIdQueryKey>
+  >({
+    queryFn: async ({ queryKey, signal }) => {
+      const { data } = await getAdminWorshipPlacesById({
+        ...options,
+        ...queryKey[0],
+        signal,
+        throwOnError: true,
+      });
+      return data;
+    },
+    queryKey: getAdminWorshipPlacesByIdQueryKey(options),
+  });
+
+/**
+ * Update worship place
+ */
+export const patchAdminWorshipPlacesByIdMutation = (
+  options?: Partial<Options<PatchAdminWorshipPlacesByIdData>>
+): UseMutationOptions<PatchAdminWorshipPlacesByIdResponse, PatchAdminWorshipPlacesByIdError, Options<PatchAdminWorshipPlacesByIdData>> => {
+  const mutationOptions: UseMutationOptions<
+    PatchAdminWorshipPlacesByIdResponse,
+    PatchAdminWorshipPlacesByIdError,
+    Options<PatchAdminWorshipPlacesByIdData>
+  > = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await patchAdminWorshipPlacesById({
+        ...options,
+        ...fnOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};
+
+export const getAdminCampaignsByIdExpensesQueryKey = (options: Options<GetAdminCampaignsByIdExpensesData>) =>
+  createQueryKey('getAdminCampaignsByIdExpenses', options);
+
+/**
+ * List campaign expenses
+ */
+export const getAdminCampaignsByIdExpensesOptions = (options: Options<GetAdminCampaignsByIdExpensesData>) =>
+  queryOptions<
+    GetAdminCampaignsByIdExpensesResponse,
+    GetAdminCampaignsByIdExpensesError,
+    GetAdminCampaignsByIdExpensesResponse,
+    ReturnType<typeof getAdminCampaignsByIdExpensesQueryKey>
+  >({
+    queryFn: async ({ queryKey, signal }) => {
+      const { data } = await getAdminCampaignsByIdExpenses({
+        ...options,
+        ...queryKey[0],
+        signal,
+        throwOnError: true,
+      });
+      return data;
+    },
+    queryKey: getAdminCampaignsByIdExpensesQueryKey(options),
+  });
+
+export const getAdminCampaignsByIdExpensesInfiniteQueryKey = (
+  options: Options<GetAdminCampaignsByIdExpensesData>
+): QueryKey<Options<GetAdminCampaignsByIdExpensesData>> => createQueryKey('getAdminCampaignsByIdExpenses', options, true);
+
+/**
+ * List campaign expenses
+ */
+export const getAdminCampaignsByIdExpensesInfiniteOptions = (options: Options<GetAdminCampaignsByIdExpensesData>) =>
+  infiniteQueryOptions<
+    GetAdminCampaignsByIdExpensesResponse,
+    GetAdminCampaignsByIdExpensesError,
+    InfiniteData<GetAdminCampaignsByIdExpensesResponse>,
+    QueryKey<Options<GetAdminCampaignsByIdExpensesData>>,
+    number | Pick<QueryKey<Options<GetAdminCampaignsByIdExpensesData>>[0], 'body' | 'headers' | 'path' | 'query'>
+  >(
+    // @ts-ignore
+    {
+      queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<GetAdminCampaignsByIdExpensesData>>[0], 'body' | 'headers' | 'path' | 'query'> =
+          typeof pageParam === 'object'
+            ? pageParam
+            : {
+                query: {
+                  page: pageParam,
+                },
+              };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await getAdminCampaignsByIdExpenses({
+          ...options,
+          ...params,
+          signal,
+          throwOnError: true,
+        });
+        return data;
+      },
+      queryKey: getAdminCampaignsByIdExpensesInfiniteQueryKey(options),
+    }
+  );
+
+/**
+ * Create campaign expense
+ */
+export const postAdminCampaignsByIdExpensesMutation = (
+  options?: Partial<Options<PostAdminCampaignsByIdExpensesData>>
+): UseMutationOptions<PostAdminCampaignsByIdExpensesResponse, PostAdminCampaignsByIdExpensesError, Options<PostAdminCampaignsByIdExpensesData>> => {
+  const mutationOptions: UseMutationOptions<
+    PostAdminCampaignsByIdExpensesResponse,
+    PostAdminCampaignsByIdExpensesError,
+    Options<PostAdminCampaignsByIdExpensesData>
+  > = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await postAdminCampaignsByIdExpenses({
+        ...options,
+        ...fnOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};
+
+/**
+ * Delete expense
+ */
+export const deleteAdminCampaignsByIdExpensesByExpenseIdMutation = (
+  options?: Partial<Options<DeleteAdminCampaignsByIdExpensesByExpenseIdData>>
+): UseMutationOptions<
+  DeleteAdminCampaignsByIdExpensesByExpenseIdResponse,
+  DeleteAdminCampaignsByIdExpensesByExpenseIdError,
+  Options<DeleteAdminCampaignsByIdExpensesByExpenseIdData>
+> => {
+  const mutationOptions: UseMutationOptions<
+    DeleteAdminCampaignsByIdExpensesByExpenseIdResponse,
+    DeleteAdminCampaignsByIdExpensesByExpenseIdError,
+    Options<DeleteAdminCampaignsByIdExpensesByExpenseIdData>
+  > = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await deleteAdminCampaignsByIdExpensesByExpenseId({
+        ...options,
+        ...fnOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};
+
+/**
+ * Update expense
+ */
+export const patchAdminCampaignsByIdExpensesByExpenseIdMutation = (
+  options?: Partial<Options<PatchAdminCampaignsByIdExpensesByExpenseIdData>>
+): UseMutationOptions<
+  PatchAdminCampaignsByIdExpensesByExpenseIdResponse,
+  PatchAdminCampaignsByIdExpensesByExpenseIdError,
+  Options<PatchAdminCampaignsByIdExpensesByExpenseIdData>
+> => {
+  const mutationOptions: UseMutationOptions<
+    PatchAdminCampaignsByIdExpensesByExpenseIdResponse,
+    PatchAdminCampaignsByIdExpensesByExpenseIdError,
+    Options<PatchAdminCampaignsByIdExpensesByExpenseIdData>
+  > = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await patchAdminCampaignsByIdExpensesByExpenseId({
+        ...options,
+        ...fnOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};
+
+export const getAdminCampaignsByIdActivitiesQueryKey = (options: Options<GetAdminCampaignsByIdActivitiesData>) =>
+  createQueryKey('getAdminCampaignsByIdActivities', options);
+
+/**
+ * List campaign activity logs
+ */
+export const getAdminCampaignsByIdActivitiesOptions = (options: Options<GetAdminCampaignsByIdActivitiesData>) =>
+  queryOptions<
+    GetAdminCampaignsByIdActivitiesResponse,
+    GetAdminCampaignsByIdActivitiesError,
+    GetAdminCampaignsByIdActivitiesResponse,
+    ReturnType<typeof getAdminCampaignsByIdActivitiesQueryKey>
+  >({
+    queryFn: async ({ queryKey, signal }) => {
+      const { data } = await getAdminCampaignsByIdActivities({
+        ...options,
+        ...queryKey[0],
+        signal,
+        throwOnError: true,
+      });
+      return data;
+    },
+    queryKey: getAdminCampaignsByIdActivitiesQueryKey(options),
+  });
+
+export const getAdminCampaignsByIdActivitiesInfiniteQueryKey = (
+  options: Options<GetAdminCampaignsByIdActivitiesData>
+): QueryKey<Options<GetAdminCampaignsByIdActivitiesData>> => createQueryKey('getAdminCampaignsByIdActivities', options, true);
+
+/**
+ * List campaign activity logs
+ */
+export const getAdminCampaignsByIdActivitiesInfiniteOptions = (options: Options<GetAdminCampaignsByIdActivitiesData>) =>
+  infiniteQueryOptions<
+    GetAdminCampaignsByIdActivitiesResponse,
+    GetAdminCampaignsByIdActivitiesError,
+    InfiniteData<GetAdminCampaignsByIdActivitiesResponse>,
+    QueryKey<Options<GetAdminCampaignsByIdActivitiesData>>,
+    number | Pick<QueryKey<Options<GetAdminCampaignsByIdActivitiesData>>[0], 'body' | 'headers' | 'path' | 'query'>
+  >(
+    // @ts-ignore
+    {
+      queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<GetAdminCampaignsByIdActivitiesData>>[0], 'body' | 'headers' | 'path' | 'query'> =
+          typeof pageParam === 'object'
+            ? pageParam
+            : {
+                query: {
+                  page: pageParam,
+                },
+              };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await getAdminCampaignsByIdActivities({
+          ...options,
+          ...params,
+          signal,
+          throwOnError: true,
+        });
+        return data;
+      },
+      queryKey: getAdminCampaignsByIdActivitiesInfiniteQueryKey(options),
+    }
+  );
 
 /**
  * Sign in with a social provider
