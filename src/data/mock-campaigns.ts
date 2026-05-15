@@ -1,3 +1,14 @@
+export interface EnergyDashboardMetrics {
+  totalEnergyKwh: string;
+  averageEnergyPerDayKwh: string;
+  sinceDate: string;
+  progressPercent: number;
+  carbonReductionTon: string;
+  carbonReductionMomPercent: number;
+  costSavingsIdrMonthly: string;
+  equivalentHousesPerYear: number;
+}
+
 export const MOCK_CAMPAIGNS = [
   {
     id: '1',
@@ -7,6 +18,7 @@ export const MOCK_CAMPAIGNS = [
     raisedIdr: 70000000,
     deadline: '2026-06-15T00:00:00Z',
     progressPercent: 70,
+    status: 'Aktif',
     coverImage: { publicUrl: '/images/campaigns/featured/campaign-besakih.png' },
   },
   {
@@ -17,6 +29,7 @@ export const MOCK_CAMPAIGNS = [
     raisedIdr: 70000000,
     deadline: '2026-06-15T00:00:00Z',
     progressPercent: 70,
+    status: 'Aktif',
     coverImage: { publicUrl: '/images/campaigns/featured/campaign-klenteng.png' },
   },
   {
@@ -27,6 +40,7 @@ export const MOCK_CAMPAIGNS = [
     raisedIdr: 70000000,
     deadline: '2026-06-15T00:00:00Z',
     progressPercent: 70,
+    status: 'Aktif',
     coverImage: { publicUrl: '/images/campaigns/featured/campaign-vihara.png' },
   },
   {
@@ -37,6 +51,7 @@ export const MOCK_CAMPAIGNS = [
     raisedIdr: 70000000,
     deadline: '2026-06-15T00:00:00Z',
     progressPercent: 70,
+    status: 'Aktif',
     coverImage: { publicUrl: '/images/campaigns/featured/campaign-besakih.png' },
   },
   {
@@ -47,6 +62,7 @@ export const MOCK_CAMPAIGNS = [
     raisedIdr: 70000000,
     deadline: '2026-06-15T00:00:00Z',
     progressPercent: 70,
+    status: 'Aktif',
     coverImage: { publicUrl: '/images/campaigns/featured/campaign-klenteng.png' },
   },
   {
@@ -57,6 +73,7 @@ export const MOCK_CAMPAIGNS = [
     raisedIdr: 70000000,
     deadline: '2026-06-15T00:00:00Z',
     progressPercent: 70,
+    status: 'Aktif',
     coverImage: { publicUrl: '/images/campaigns/featured/campaign-vihara.png' },
   },
   {
@@ -67,6 +84,7 @@ export const MOCK_CAMPAIGNS = [
     raisedIdr: 70000000,
     deadline: '2026-06-15T00:00:00Z',
     progressPercent: 70,
+    status: 'Aktif',
     coverImage: { publicUrl: '/images/campaigns/featured/campaign-besakih.png' },
   },
   {
@@ -77,6 +95,7 @@ export const MOCK_CAMPAIGNS = [
     raisedIdr: 70000000,
     deadline: '2026-06-15T00:00:00Z',
     progressPercent: 70,
+    status: 'Aktif',
     coverImage: { publicUrl: '/images/campaigns/featured/campaign-klenteng.png' },
   },
   {
@@ -87,36 +106,127 @@ export const MOCK_CAMPAIGNS = [
     raisedIdr: 70000000,
     deadline: '2026-06-15T00:00:00Z',
     progressPercent: 70,
+    status: 'Aktif',
     coverImage: { publicUrl: '/images/campaigns/featured/campaign-vihara.png' },
   },
   {
     id: '10',
-    title: 'Dukung Pembangunan Rumah Ibadah',
+    title: 'Pemasangan Panel Surya Vihara Buddha',
     worshipPlace: { name: 'Vihara Buddha', city: 'Jakarta', religionType: 'Buddha' },
     targetIdr: 100000000,
-    raisedIdr: 70000000,
-    deadline: '2026-06-15T00:00:00Z',
-    progressPercent: 70,
+    raisedIdr: 100000000,
+    deadline: '2025-12-31T00:00:00Z',
+    progressPercent: 100,
+    status: 'Selesai',
     coverImage: { publicUrl: '/images/campaigns/featured/campaign-besakih.png' },
+    energyDashboard: {
+      totalEnergyKwh: '12.342',
+      averageEnergyPerDayKwh: '34',
+      sinceDate: 'Jan 2026',
+      progressPercent: 75,
+      carbonReductionTon: '9.2',
+      carbonReductionMomPercent: 5,
+      costSavingsIdrMonthly: '750K',
+      equivalentHousesPerYear: 10,
+    },
   },
   {
     id: '11',
-    title: 'Dukung Pembangunan Rumah Ibadah',
+    title: 'Pemasangan Panel Surya Pura Hindu',
     worshipPlace: { name: 'Pura Hindu', city: 'Jakarta', religionType: 'Hindu' },
     targetIdr: 100000000,
-    raisedIdr: 70000000,
-    deadline: '2026-06-15T00:00:00Z',
-    progressPercent: 70,
+    raisedIdr: 100000000,
+    deadline: '2025-12-31T00:00:00Z',
+    progressPercent: 100,
+    status: 'Selesai',
     coverImage: { publicUrl: '/images/campaigns/featured/campaign-klenteng.png' },
+    energyDashboard: {
+      totalEnergyKwh: '8.500',
+      averageEnergyPerDayKwh: '25',
+      sinceDate: 'Feb 2026',
+      progressPercent: 60,
+      carbonReductionTon: '6.4',
+      carbonReductionMomPercent: -2,
+      costSavingsIdrMonthly: '500K',
+      equivalentHousesPerYear: 7,
+    },
   },
   {
     id: '12',
-    title: 'Dukung Pembangunan Rumah Ibadah',
+    title: 'Pemasangan Panel Surya Klenteng Konghucu',
     worshipPlace: { name: 'Klenteng Konghucu', city: 'Jakarta', religionType: 'Konghucu' },
     targetIdr: 100000000,
-    raisedIdr: 70000000,
-    deadline: '2026-06-15T00:00:00Z',
-    progressPercent: 70,
+    raisedIdr: 100000000,
+    deadline: '2025-12-31T00:00:00Z',
+    progressPercent: 100,
+    status: 'Selesai',
     coverImage: { publicUrl: '/images/campaigns/featured/campaign-vihara.png' },
+    energyDashboard: {
+      totalEnergyKwh: '15.200',
+      averageEnergyPerDayKwh: '42',
+      sinceDate: 'Mar 2026',
+      progressPercent: 90,
+      carbonReductionTon: '11.5',
+      carbonReductionMomPercent: 8,
+      costSavingsIdrMonthly: '900K',
+      equivalentHousesPerYear: 12,
+    },
   },
+];
+
+
+export const MOCK_CAMPAIGN_DETAIL = {
+  id: '3',
+  title: 'Pemasangan Panel Surya Masjid Al-Ikhlas',
+  description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris. Maecenas vitae mattis tellus. Nullam quis imperdiet augue. Vestibulum auctor ornare leo, non suscipit magna interdum eu. Curabitur pellentesque nibh nibh, at maximus ante fermentum sit amet. Pellentesque commodo lacus at sodales sodales. Quisque sagittis orci ut diam condimentum, vel euismod erat placerat. In iaculis arcu eros, eget tempus orci facilisis id.`,
+  status: 'AKTIF',
+  energyDashboard: {
+    totalEnergyKwh: '12.342',
+    averageEnergyPerDayKwh: '34',
+    sinceDate: 'Jan 2026',
+    progressPercent: 75,
+    carbonReductionTon: '9.2',
+    carbonReductionMomPercent: 5,
+    costSavingsIdrMonthly: '750K',
+    equivalentHousesPerYear: 10,
+  },
+  targetIdr: 100000000,
+  raisedIdr: 70000000,
+  donorCount: 1024,
+  deadline: '2026-06-15T00:00:00Z',
+  progressPercent: 70,
+  worshipPlace: {
+    name: 'Masjid Al-Ikhlas',
+    city: 'Jakarta',
+    religionType: 'Islam',
+    address: 'Jl. Ahmad Yani No. 123, Jakarta',
+  },
+  energyImpact: {
+    panelCapacityKwp: '10',
+    estimatedKwhAnnual: '12000',
+    estimatedIdrSavings: 15000000,
+  },
+  impact: {
+    fundUsage: 'Pembelian panel surya dan biaya instalasi',
+    energyProducedKwhMonthly: '1000',
+    beneficiaries: 500,
+    carbonReductionKgMonthly: '800',
+    electricitySavingsIdrMonthly: 1250000,
+    impactDescription: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris. Maecenas vitae mattis tellus. Nullam quis imperdiet augue. Vestibulum auctor ornare leo, non suscipit magna interdum eu. Curabitur pellentesque nibh nibh, at maximus ante fermentum sit amet. Pellentesque commodo lacus at sodales sodales. Quisque sagittis orci ut diam condimentum, vel euismod erat placerat. In iaculis arcu eros, eget tempus orci facilisis id.`,
+  },
+  images: {
+    cover: {
+      publicUrl: '/images/review-campaign-1.png',
+    },
+  },
+};
+
+export const MOCK_DONORS = [
+  { id: '1', name: 'Anonymous', amount: 100000, createdAt: '2026-05-15T10:00:00Z' },
+  { id: '2', name: 'Anonymous', amount: 100000, createdAt: '2026-05-15T09:30:00Z' },
+  { id: '3', name: 'Anonymous', amount: 100000, createdAt: '2026-05-15T09:00:00Z' },
+  { id: '4', name: 'Anonymous', amount: 100000, createdAt: '2026-05-15T08:30:00Z' },
+  { id: '5', name: 'Anonymous', amount: 100000, createdAt: '2026-05-15T08:00:00Z' },
+  { id: '6', name: 'Anonymous', amount: 100000, createdAt: '2026-05-15T07:30:00Z' },
+  { id: '7', name: 'Anonymous', amount: 100000, createdAt: '2026-05-15T07:00:00Z' },
 ];
