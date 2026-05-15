@@ -21,7 +21,7 @@ export function CampaignList() {
       campaign.worshipPlace.religionType.toLowerCase() === rumahIbadah.toLowerCase() ||
       campaign.worshipPlace.name.toLowerCase().includes(rumahIbadah.toLowerCase());
     const matchesKota = !kota || campaign.worshipPlace.city.toLowerCase() === kota.toLowerCase();
-    const matchesStatus = !status || status === 'all' || status === 'Aktif'; // Mock: all are 'Aktif'
+    const matchesStatus = !status || status === 'all' || campaign.status.toLowerCase() === status.toLowerCase();
 
     return matchesSearch && matchesRumahIbadah && matchesKota && matchesStatus;
   });
@@ -48,7 +48,9 @@ export function CampaignList() {
   return (
     <section className="mt-12 flex flex-col gap-8 pb-20">
       <div className="flex flex-col gap-2">
-        <h2 className="font-outfit text-2xl font-bold text-brand-text">Kampanye Aktif</h2>
+        <h2 className="font-outfit text-2xl font-bold text-brand-text">
+          {status?.toLowerCase() === 'selesai' ? 'Kampanye Selesai' : 'Kampanye Aktif'}
+        </h2>
         <div className="h-px w-full bg-[#DDD]" />
       </div>
 

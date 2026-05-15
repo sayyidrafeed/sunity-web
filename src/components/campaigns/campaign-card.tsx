@@ -1,3 +1,4 @@
+import { Link } from 'react-router';
 import { MapPin, Target, Church, Moon, Sun, Flower2, HelpCircle } from 'lucide-react';
 
 interface CampaignCardProps {
@@ -13,6 +14,7 @@ interface CampaignCardProps {
     raisedIdr: number;
     deadline: string;
     progressPercent: number;
+    status?: string;
     coverImage?: {
       publicUrl: string;
     } | null;
@@ -64,7 +66,10 @@ export function CampaignCard({ campaign }: CampaignCardProps) {
   const daysLeft = calculateDaysLeft(campaign.deadline);
 
   return (
-    <div className="flex flex-col overflow-hidden rounded-[20px] bg-white shadow-[0px_4px_20px_0px_rgba(0,0,0,0.05)] transition-all hover:shadow-[0px_4px_25px_0px_rgba(0,0,0,0.1)]">
+    <Link
+      to={`/campaigns/${campaign.id}`}
+      className="flex flex-col overflow-hidden rounded-[20px] bg-white shadow-[0px_4px_20px_0px_rgba(0,0,0,0.05)] transition-all hover:shadow-[0px_4px_25px_0px_rgba(0,0,0,0.1)] hover:-translate-y-1"
+    >
       {/* Image Header */}
       <div className="relative h-[200px] w-full overflow-hidden p-3">
         <img
@@ -72,6 +77,24 @@ export function CampaignCard({ campaign }: CampaignCardProps) {
           alt={campaign.title}
           className="h-full w-full rounded-[15px] object-cover"
         />
+        {campaign.status?.toLowerCase() === 'selesai' && (
+          <div className="absolute right-6 top-6 flex items-center gap-1 rounded-full bg-brand-green px-3 py-1 text-[10px] font-bold text-white shadow-sm">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="10"
+              height="10"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+            <span>Selesai</span>
+          </div>
+        )}
       </div>
 
       {/* Content */}
@@ -116,6 +139,6 @@ export function CampaignCard({ campaign }: CampaignCardProps) {
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
