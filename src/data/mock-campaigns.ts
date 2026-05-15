@@ -174,7 +174,6 @@ export const MOCK_CAMPAIGNS = [
   },
 ];
 
-
 export const MOCK_CAMPAIGN_DETAIL = {
   id: '3',
   title: 'Pemasangan Panel Surya Masjid Al-Ikhlas',

@@ -102,7 +102,7 @@ export function CampaignTabs({ campaign }: CampaignTabsProps) {
                     <TableCell className="py-4 text-brand-gray">{expense.description}</TableCell>
                   </TableRow>
                 ))}
-                
+
                 {/* Summary section embedded in table rows for perfect alignment */}
                 <TableRow className="border-none hover:bg-transparent">
                   <TableCell className="border-b border-brand-light-gray/40 pb-3 pt-8 text-sm text-brand-gray">Dicairkan</TableCell>
@@ -113,9 +113,7 @@ export function CampaignTabs({ campaign }: CampaignTabsProps) {
                 </TableRow>
                 <TableRow className="border-none hover:bg-transparent">
                   <TableCell className="py-3 text-sm text-brand-gray">Belum Dicairkan</TableCell>
-                  <TableCell className="py-3 text-base font-bold text-brand-text">
-                    {formatCurrency(98000000)}
-                  </TableCell>
+                  <TableCell className="py-3 text-base font-bold text-brand-text">{formatCurrency(98000000)}</TableCell>
                   <TableCell className="py-3"></TableCell>
                 </TableRow>
               </TableBody>

@@ -7,7 +7,7 @@ import { DonorList } from '@/components/campaigns/donor-list';
 import { DonationActions } from '@/components/campaigns/donation-actions';
 
 export default function CampaignDetail() {
-  const { id, tab } = useParams();
+  const { id } = useParams();
   const navigate = useNavigate();
 
   // In real app, we would fetch data using the id

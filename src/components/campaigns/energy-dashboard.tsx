@@ -44,14 +44,7 @@ export function EnergyDashboard({ campaign }: EnergyDashboardProps) {
               {/* SVG Ring Progress */}
               <svg className="h-full w-full" viewBox="0 0 100 100">
                 {/* Background Circle */}
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="40"
-                  fill="transparent"
-                  stroke="#F3F4F6"
-                  strokeWidth="10"
-                />
+                <circle cx="50" cy="50" r="40" fill="transparent" stroke="#F3F4F6" strokeWidth="10" />
                 {/* Progress Circle (Orange) */}
                 <circle
                   cx="50"
@@ -96,7 +89,9 @@ export function EnergyDashboard({ campaign }: EnergyDashboardProps) {
             <p className="text-sm text-brand-gray/60">Berhasil Dikurangi</p>
           </div>
           <div className="flex items-center gap-2">
-            <div className={`flex items-center gap-1 rounded-full px-2 py-1 text-xs font-bold ${metrics.carbonReductionMomPercent >= 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+            <div
+              className={`flex items-center gap-1 rounded-full px-2 py-1 text-xs font-bold ${metrics.carbonReductionMomPercent >= 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
+            >
               {metrics.carbonReductionMomPercent >= 0 ? <LucideTrendingUp size={14} /> : <LucideTrendingDown size={14} />}
               {Math.abs(metrics.carbonReductionMomPercent)}%
             </div>
@@ -126,9 +121,7 @@ export function EnergyDashboard({ campaign }: EnergyDashboardProps) {
             <p className="text-lg font-bold text-brand-text">
               Setara Kebutuhan <span className="text-brand-green">{metrics.equivalentHousesPerYear} Rumah per Tahun</span>
             </p>
-            <p className="text-xs text-brand-gray/60">
-              Berdasarkan total energi yang dihasilkan dari sistem panel surya
-            </p>
+            <p className="text-xs text-brand-gray/60">Berdasarkan total energi yang dihasilkan dari sistem panel surya</p>
           </div>
         </Card>
       </div>
