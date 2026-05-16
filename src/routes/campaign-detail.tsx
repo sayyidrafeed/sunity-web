@@ -23,7 +23,7 @@ export default function CampaignDetail() {
 
   const handleTabChange = (value: string) => {
     const path = value === 'ringkasan' ? `/campaigns/${id}` : `/campaigns/${id}/${value}`;
-    navigate(path, { replace: true });
+    navigate(path, { replace: true, preventScrollReset: true });
   };
 
   return (
