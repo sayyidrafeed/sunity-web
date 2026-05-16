@@ -1,11 +1,5 @@
-import { LucideChevronRight, LucideSchool } from "lucide-react";
-
-interface Campaign {
-  description: string;
-  impact?: {
-    impactDescription?: string;
-  };
-}
+import { LucideChevronRight, LucideSchool } from 'lucide-react';
+import type { Campaign } from '@/types/campaign';
 
 interface CampaignDescriptionProps {
   campaign: Campaign;
@@ -20,9 +14,7 @@ export function CampaignDescription({ campaign }: CampaignDescriptionProps) {
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-green/10 text-brand-green">
             <LucideSchool className="h-6 w-6" />
           </div>
-          <span className="text-xl font-bold text-brand-text">
-            Rincian Rumah Ibadah
-          </span>
+          <span className="text-xl font-bold text-brand-text">Rincian Rumah Ibadah</span>
         </div>
         <LucideChevronRight className="h-6 w-6 text-brand-gray" />
       </div>
@@ -34,16 +26,11 @@ export function CampaignDescription({ campaign }: CampaignDescriptionProps) {
           <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-2">
               <h3 className="text-lg font-bold text-brand-text">About</h3>
-              <p className="text-brand-gray leading-relaxed">
-                {campaign.description}
-              </p>
+              <p className="text-brand-gray leading-relaxed">{campaign.description}</p>
             </div>
             <div className="flex flex-col gap-2">
               <h3 className="text-lg font-bold text-brand-text">Impact</h3>
-              <p className="text-brand-gray leading-relaxed">
-                {campaign.impact?.impactDescription ||
-                  "No impact information available"}
-              </p>
+              <p className="text-brand-gray leading-relaxed">{campaign.impact?.impactDescription || 'No impact information available'}</p>
             </div>
           </div>
         </div>

@@ -1,43 +1,28 @@
-import { LucideMapPin, LucideCircleCheck } from "lucide-react";
+import { LucideMapPin, LucideCircleCheck } from 'lucide-react';
+import type { Campaign } from '@/types/campaign';
 
-type CampaignStatus = "DRAFT" | "AKTIF" | "INSTALASI" | "SELESAI" | "ARCHIVED";
-
-interface Campaign {
-  title: string;
-  status: CampaignStatus;
-  worshipPlace: {
-    religionType: string;
-    city: string;
-  };
-  images?: {
-    cover?: {
-      publicUrl: string;
-    } | null;
-  };
-}
+// Status label mapping for localization
+const STATUS_LABELS: Record<string, string> = {
+  DRAFT: 'Draft',
+  AKTIF: 'Aktif',
+  INSTALASI: 'Instalasi',
+  SELESAI: 'Selesai',
+  ARCHIVED: 'Diarsipkan',
+  Aktif: 'Aktif',
+  Selesai: 'Selesai',
+};
 
 interface CampaignDetailHeroProps {
   campaign: Campaign;
 }
 
-// Status label mapping for localization
-const STATUS_LABELS: Record<CampaignStatus, string> = {
-  DRAFT: "Draft",
-  AKTIF: "Aktif",
-  INSTALASI: "Instalasi",
-  SELESAI: "Selesai",
-  ARCHIVED: "Diarsipkan",
-};
-
 export function CampaignDetailHero({ campaign }: CampaignDetailHeroProps) {
-  const statusLabel = STATUS_LABELS[campaign.status];
+  const statusLabel = STATUS_LABELS[campaign.status] || campaign.status;
 
   return (
     <div className="relative overflow-hidden rounded-[2.5rem] shadow-xl">
       <img
-        src={
-          campaign.images?.cover?.publicUrl || "/images/review-campaign-1.png"
-        }
+        src={campaign.images?.cover?.publicUrl || '/images/review-campaign-1.png'}
         alt={campaign.title}
         className="aspect-[21/9] w-full object-cover"
       />
@@ -45,9 +30,7 @@ export function CampaignDetailHero({ campaign }: CampaignDetailHeroProps) {
       {/* Floating Badges */}
       <div className="absolute top-6 left-6 flex gap-3">
         <div className="flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 text-sm font-semibold text-brand-text backdrop-blur-sm shadow-sm">
-          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand-text text-[10px] text-white">
-            🌙
-          </span>
+          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand-text text-[10px] text-white">🌙</span>
           {campaign.worshipPlace.religionType}
         </div>
         <div className="flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 text-sm font-semibold text-brand-text backdrop-blur-sm shadow-sm">
