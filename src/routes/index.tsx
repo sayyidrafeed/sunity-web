@@ -19,6 +19,10 @@ export const router = createBrowserRouter([
         element: <Campaigns />,
       },
       {
+        path: '/campaigns/:id/:tab?',
+        lazy: () => import('@/routes/campaign-detail').then((m) => ({ Component: m.default })),
+      },
+      {
         path: '/admin/login',
         lazy: () =>
           import('@/components/admin/login/login-page').then((m) => ({
