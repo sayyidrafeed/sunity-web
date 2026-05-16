@@ -35,7 +35,7 @@ export function CampaignMeta({ campaign }: CampaignMetaProps) {
         </div>
 
         <div className="relative flex items-center gap-4">
-          <Progress value={campaign.progressPercent} className="h-3 bg-[#E5E5E3]" />
+          <Progress value={campaign.progressPercent} className="h-3 bg-[#E5E5E3]" indicatorClassName="bg-brand-green" />
           <span className="text-lg font-bold text-brand-light-gray">{campaign.progressPercent}%</span>
         </div>
       </div>

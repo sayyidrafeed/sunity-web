@@ -14,8 +14,8 @@ export default function Campaigns() {
     <div className="flex w-full justify-center bg-brand-surface pb-20">
       <div className="w-full max-w-[1329px] px-8 xl:px-10">
         <CampaignHero />
-        {!hasActiveFilters && <FeaturedCampaign />}
         <CampaignFilter />
+        {!hasActiveFilters && <FeaturedCampaign />}
         <CampaignList />
         {!hasActiveFilters && <CompletedCampaigns />}
       </div>

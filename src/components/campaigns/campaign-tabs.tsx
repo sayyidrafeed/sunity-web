@@ -1,13 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { LucideLayoutList, LucideFileText, LucideZap } from 'lucide-react';
-import { useNavigate, useParams } from 'react-router';
 import { CampaignDescription } from './campaign-description';
 import { EnergyDashboard } from './energy-dashboard';
 
 // Proposed Interface for Expense/Transparency
-// TODO: Align with SDK types once available
 export interface CampaignExpense {
   date: string;
   amount: number;
@@ -33,47 +31,40 @@ interface CampaignTabsProps {
   campaign: any;
 }
 
-export function CampaignTabs({ campaign }: CampaignTabsProps) {
-  const navigate = useNavigate();
-  const { id, tab = 'ringkasan' } = useParams();
-
-  const handleTabChange = (value: string) => {
-    if (value === 'ringkasan') {
-      navigate(`/campaigns/${id}`);
-    } else {
-      navigate(`/campaigns/${id}/${value}`);
-    }
-  };
-
+export function CampaignTabsList({ campaign }: CampaignTabsProps) {
   return (
-    <Tabs value={tab} onValueChange={handleTabChange} className="w-full">
-      <TabsList className="mb-8 h-auto w-full justify-start rounded-none border-b border-brand-light-gray/20 bg-transparent p-0">
+    <TabsList className="mb-8 h-auto w-fit justify-start rounded-none border-b border-brand-light-gray/20 bg-transparent p-0">
+      <TabsTrigger
+        value="ringkasan"
+        className="flex items-center gap-2 rounded-none border-b-2 border-transparent px-4 py-3 text-brand-light-gray data-[state=active]:border-brand-green data-[state=active]:bg-transparent data-[state=active]:text-brand-green data-[state=active]:shadow-none"
+      >
+        <LucideLayoutList className="h-4 w-4" />
+        <span className="font-semibold">Ringkasan</span>
+      </TabsTrigger>
+      <TabsTrigger
+        value="transparansi"
+        className="flex items-center gap-2 rounded-none border-b-2 border-transparent px-4 py-3 text-brand-light-gray data-[state=active]:border-brand-green data-[state=active]:bg-transparent data-[state=active]:text-brand-green data-[state=active]:shadow-none"
+      >
+        <LucideFileText className="h-4 w-4" />
+        <span className="font-semibold">Laporan Transparansi</span>
+      </TabsTrigger>
+
+      {campaign.status === 'Selesai' && (
         <TabsTrigger
-          value="ringkasan"
+          value="energy"
           className="flex items-center gap-2 rounded-none border-b-2 border-transparent px-4 py-3 text-brand-light-gray data-[state=active]:border-brand-green data-[state=active]:bg-transparent data-[state=active]:text-brand-green data-[state=active]:shadow-none"
         >
-          <LucideLayoutList className="h-4 w-4" />
-          <span className="font-semibold">Ringkasan</span>
+          <LucideZap className="h-4 w-4" />
+          <span className="font-semibold">Dashboard Energi</span>
         </TabsTrigger>
-        <TabsTrigger
-          value="transparansi"
-          className="flex items-center gap-2 rounded-none border-b-2 border-transparent px-4 py-3 text-brand-light-gray data-[state=active]:border-brand-green data-[state=active]:bg-transparent data-[state=active]:text-brand-green data-[state=active]:shadow-none"
-        >
-          <LucideFileText className="h-4 w-4" />
-          <span className="font-semibold">Laporan Transparansi</span>
-        </TabsTrigger>
+      )}
+    </TabsList>
+  );
+}
 
-        {campaign.status === 'Selesai' && (
-          <TabsTrigger
-            value="energy"
-            className="flex items-center gap-2 rounded-none border-b-2 border-transparent px-4 py-3 text-brand-light-gray data-[state=active]:border-brand-green data-[state=active]:bg-transparent data-[state=active]:text-brand-green data-[state=active]:shadow-none"
-          >
-            <LucideZap className="h-4 w-4" />
-            <span className="font-semibold">Dashboard Energi</span>
-          </TabsTrigger>
-        )}
-      </TabsList>
-
+export function CampaignTabsContent({ campaign }: CampaignTabsProps) {
+  return (
+    <>
       <TabsContent value="ringkasan" className="mt-0">
         <CampaignDescription campaign={campaign} />
       </TabsContent>
@@ -125,6 +116,6 @@ export function CampaignTabs({ campaign }: CampaignTabsProps) {
       <TabsContent value="energy" className="mt-0">
         <EnergyDashboard campaign={campaign} />
       </TabsContent>
-    </Tabs>
+    </>
   );
 }
