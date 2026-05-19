@@ -1,42 +1,102 @@
-/**
- * MonitoringPage — /admin/monitoring
- *
- * Empty state shown when no energy monitoring data is available.
- * Data will be available after a campaign is complete and installation
- * is confirmed.
- */
-export function MonitoringPage() {
-  return (
-    <div className="flex items-center justify-center min-h-screen" style={{ backgroundColor: '#FAF9F6' }}>
-      <section
-        className="flex flex-col items-center gap-[8px]"
-        style={{ width: '398px' }}
-        aria-labelledby="monitoring-empty-title"
-        aria-describedby="monitoring-empty-desc"
-      >
-        {/* Illustration */}
-        <div className="flex items-center justify-center" style={{ width: '234px', height: '184px' }}>
-          <img src="/404-dashboard.avif" alt="Ilustrasi tidak ada data monitoring energi" className="w-full h-full object-contain" />
-        </div>
+import { useNavigate } from 'react-router';
+import { ArrowLeft } from 'lucide-react';
+import { useEnergyMonitoring } from '@/hooks/use-energy-monitoring';
+import { MonitoringKPICards } from './monitoring-kpi-cards';
+import { MonitoringChart } from './monitoring-chart';
+import { MonitoringTable } from './monitoring-table';
+import { Skeleton } from '@/components/ui/skeleton';
 
-        {/* Text block */}
-        <div className="flex flex-col items-center gap-[4px]" style={{ width: '398px' }}>
-          <h1
-            id="monitoring-empty-title"
-            className="font-outfit font-medium text-[24px] leading-[30px] text-center tracking-[-0.006em] w-full"
-            style={{ color: '#1F1F1D' }}
+export function MonitoringPage() {
+  const navigate = useNavigate();
+  const { data, isLoading, isError } = useEnergyMonitoring();
+
+  // Handle empty clicks since they are deferred
+  const handleEditClick = () => {};
+  const handleDeleteClick = () => {};
+
+  return (
+    <div className="flex flex-col p-12 gap-10 bg-[#FAF9F6] min-h-screen">
+      {/* Header and Breadcrumbs */}
+      <div className="flex flex-col gap-[8px]">
+        <div className="flex items-center gap-[12px]">
+          <button
+            onClick={() => navigate(-1)}
+            className="p-[4px] hover:bg-[#E5E5E3] rounded-full transition-colors cursor-pointer"
+            aria-label="Kembali"
           >
-            Tidak Ada Hasil
-          </h1>
-          <p
-            id="monitoring-empty-desc"
-            className="font-jakarta font-normal text-[18px] leading-[23px] text-center tracking-[-0.006em] w-full"
-            style={{ color: '#5A5A57' }}
-          >
-            Dashboard Energi tersedia setelah kampanye selesai dan instalasi terkonfirmasi.
-          </p>
+            <ArrowLeft className="w-[32px] h-[32px] text-black" />
+          </button>
+          <h1 className="font-outfit text-[32px] font-semibold text-[#1F1F1D] tracking-[-0.006em]">Monitoring Energi</h1>
         </div>
-      </section>
+        <nav className="font-jakarta text-[14px] text-[#A3A39E]" aria-label="Breadcrumb">
+          Kelola Kampanye &gt; Masjid Al - Ikhlas &gt; <span className="text-[#5A5A57] font-medium">Monitoring Energi</span>
+        </nav>
+      </div>
+
+      {/* Main Content Area */}
+      <div className="flex flex-col gap-8 w-full max-w-[1034px]">
+        {isLoading ? (
+          // Loading Skeletons
+          <div className="flex flex-col gap-8 w-full">
+            {/* KPI Cards Skeletons */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-[24px]">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="border border-[#E5E5E3] bg-white rounded-[24px] p-[24px] flex flex-col gap-[16px]">
+                  <div className="flex items-center gap-[12px]">
+                    <Skeleton className="w-[40px] h-[40px] rounded-full bg-[#E5E5E3]" />
+                    <Skeleton className="h-[20px] w-[120px] bg-[#E5E5E3]" />
+                  </div>
+                  <div className="flex flex-col gap-[6px]">
+                    <Skeleton className="h-[48px] w-[180px] bg-[#E5E5E3]" />
+                    <Skeleton className="h-[14px] w-[80px] bg-[#E5E5E3]" />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Chart Skeleton */}
+            <div className="border border-[#E5E5E3] bg-white rounded-[24px] p-[24px] flex flex-col gap-[24px]">
+              <div className="flex gap-[24px]">
+                <Skeleton className="h-[20px] w-[100px] bg-[#E5E5E3]" />
+                <Skeleton className="h-[20px] w-[130px] bg-[#E5E5E3]" />
+                <Skeleton className="h-[20px] w-[120px] bg-[#E5E5E3]" />
+              </div>
+              <Skeleton className="h-[320px] w-full rounded-[12px] bg-[#E5E5E3]" />
+            </div>
+
+            {/* Table Skeleton */}
+            <div className="flex flex-col gap-[24px]">
+              <div className="flex items-center justify-between">
+                <Skeleton className="h-[30px] w-[200px] bg-[#E5E5E3]" />
+                <Skeleton className="h-[44px] w-[140px] rounded-full bg-[#E5E5E3]" />
+              </div>
+              <div className="border border-[#E5E5E3] bg-white rounded-[24px] overflow-hidden">
+                <div className="p-[24px] flex flex-col gap-[16px]">
+                  <Skeleton className="h-[40px] w-full bg-[#E5E5E3]" />
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <Skeleton key={i} className="h-[52px] w-full bg-[#E5E5E3]" />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : isError || !data ? (
+          // Error State
+          <div className="flex flex-col items-center justify-center p-12 bg-white border border-[#E5E5E3] rounded-[24px]">
+            <p className="font-jakarta font-medium text-[16px] text-brand-danger">
+              Gagal memuat data monitoring energi. Silakan coba beberapa saat lagi.
+            </p>
+          </div>
+        ) : (
+          // Render Dashboard Sub-components
+          <>
+            <MonitoringKPICards kpi={data.kpi} />
+            <MonitoringChart data={data.chartData} />
+            <MonitoringTable data={data.tableData} onEditClick={handleEditClick} onDeleteClick={handleDeleteClick} />
+          </>
+        )}
+      </div>
     </div>
   );
 }
+export default MonitoringPage;
