@@ -1,9 +1,11 @@
+import { useNavigate } from 'react-router';
 import { Button } from '@/components/ui/button';
 import { LucideHandHelping, LucideShare2 } from 'lucide-react';
 import { WorshipPlaceDialog } from '@/components/campaigns/worship-place-dialog';
 
 interface DonationActionsProps {
   campaign?: {
+    id: string;
     worshipPlace?: {
       name: string;
       address?: string;
@@ -16,6 +18,7 @@ interface DonationActionsProps {
 }
 
 export function DonationActions({ campaign }: DonationActionsProps) {
+  const navigate = useNavigate();
   const worshipPlace = campaign?.worshipPlace ?? {
     name: 'Masjid Al - Ikhlas',
     address: 'Jl. Swasembada Timur XXII No. 11',
@@ -27,9 +30,18 @@ export function DonationActions({ campaign }: DonationActionsProps) {
       campaign?.admin?.description ?? 'Lorem Ipsum Dolor Sit Amet, consectetur adipiscing elit. Ut et massa mi. Aliquam in hendrerit urna.',
   };
 
+  const handleDonate = () => {
+    if (campaign?.id) {
+      navigate(`/campaigns/${campaign.id}/transaction`);
+    }
+  };
+
   return (
     <div className="fixed bottom-8 left-1/2 z-50 flex -translate-x-1/2 items-center gap-4">
-      <Button className="group h-14 rounded-full border-[1.5px] border-transparent bg-brand-green px-8 text-lg font-bold text-white shadow-[0_10px_16.5px_rgba(47,107,63,0.25)] transition-all hover:border-brand-green hover:bg-transparent hover:text-brand-green hover:shadow-none active:scale-95">
+      <Button
+        onClick={handleDonate}
+        className="group h-14 rounded-full border-[1.5px] border-transparent bg-brand-green px-8 text-lg font-bold text-white shadow-[0_10px_16.5px_rgba(47,107,63,0.25)] transition-all hover:border-brand-green hover:bg-transparent hover:text-brand-green hover:shadow-none active:scale-95"
+      >
         <span className="transition-colors">Donasi Sekarang</span>
         <LucideHandHelping className="ml-2 h-6 w-6 transition-colors" />
       </Button>

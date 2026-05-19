@@ -23,6 +23,10 @@ export const router = createBrowserRouter([
         lazy: () => import('@/routes/campaign-detail').then((m) => ({ Component: m.default })),
       },
       {
+        path: '/campaigns/:id/transaction',
+        lazy: () => import('@/routes/campaign-transaction').then((m) => ({ Component: m.default })),
+      },
+      {
         path: '/admin/login',
         lazy: () =>
           import('@/components/admin/login/login-page').then((m) => ({
