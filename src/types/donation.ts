@@ -4,19 +4,9 @@ import { z } from 'zod';
  * Zod schema for validating Donation Step 1: Pilih Nominal & Isi Data
  */
 export const donationStepOneSchema = z.object({
-  nominal: z.coerce
-    .number({
-      required_error: 'Nominal donasi harus diisi',
-      invalid_type_error: 'Nominal donasi harus berupa angka',
-    })
-    .min(10000, { message: 'Minimal nominal donasi adalah Rp10.000' }),
+  nominal: z.coerce.number<number>({ error: 'Nominal donasi harus berupa angka' }).min(10000, { message: 'Minimal nominal donasi adalah Rp10.000' }),
   name: z.string().max(100, { message: 'Nama maksimal 100 karakter' }).optional().or(z.literal('')),
-  email: z
-    .string({
-      required_error: 'Email harus diisi',
-    })
-    .min(1, { message: 'Email harus diisi' })
-    .email({ message: 'Format email tidak valid' }),
+  email: z.string().min(1, { message: 'Email harus diisi' }).email({ message: 'Format email tidak valid' }),
   hideName: z.boolean(),
 });
 

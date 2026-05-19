@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router';
 import { AdminSidebar } from '@/components/admin/layout/admin-sidebar';
+import { Toaster } from '@/components/ui/sonner';
 
 /**
  * AdminLayout
@@ -17,6 +18,7 @@ export function AdminLayout() {
       <main id="admin-main-content" className="flex-1 overflow-auto bg-brand-surface">
         <Outlet />
       </main>
+      <Toaster />
     </div>
   );
 }
