@@ -5,7 +5,8 @@ import { useEnergyMonitoring } from '@/hooks/use-energy-monitoring';
 import { MonitoringKPICards } from './monitoring-kpi-cards';
 import { MonitoringChart } from './monitoring-chart';
 import { MonitoringTable } from './monitoring-table';
-import { MonitoringDialog } from './monitoring-dialog';
+import { MonitoringEditDialog } from './monitoring-edit-dialog';
+import { MonitoringCreateDialog } from './monitoring-create-dialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { EnergyData } from '@/types/energy-monitoring';
 
@@ -116,7 +117,11 @@ export function MonitoringPage() {
               pendingDeleteId={pendingDeleteId}
               setPendingDeleteId={setPendingDeleteId}
             />
-            <MonitoringDialog isOpen={isDialogOpen} onClose={handleDialogClose} energyData={selectedEnergyData} />
+            {selectedEnergyData ? (
+              <MonitoringEditDialog isOpen={isDialogOpen} onClose={handleDialogClose} energyData={selectedEnergyData} />
+            ) : (
+              <MonitoringCreateDialog isOpen={isDialogOpen} onClose={handleDialogClose} />
+            )}
           </>
         )}
       </div>

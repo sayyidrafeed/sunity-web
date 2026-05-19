@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import type { EnergyData, EnergyKPI, EnergyChartData } from '@/types/energy-monitoring';
+import type { EnergyData, EnergyKPI, EnergyChartData, EnergyDataManualInputPayload } from '@/types/energy-monitoring';
 
 // Mock Data
 const MOCK_KPI: EnergyKPI = {
@@ -80,10 +80,10 @@ export function useUpdateEnergyData() {
   });
 }
 
-export function useCreateEnergyData() {
+export function useCreateEnergyDataManual() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (data: Omit<EnergyData, 'id'>) => {
+    mutationFn: async (data: EnergyDataManualInputPayload) => {
       // Simulate network delay
       await new Promise((resolve) => setTimeout(resolve, 500));
       // Add item locally
@@ -93,6 +93,27 @@ export function useCreateEnergyData() {
       };
       MOCK_DATA = [...MOCK_DATA, newItem];
       return newItem;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['energy-monitoring'] });
+    },
+  });
+}
+
+export function useCreateEnergyDataCsv() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: Omit<EnergyData, 'id' | 'year'>[]) => {
+      // Simulate network delay
+      await new Promise((resolve) => setTimeout(resolve, 800));
+      const year = new Date().getFullYear();
+      const newItems = data.map((item) => ({
+        ...item,
+        year,
+        id: Math.random().toString(36).substring(2, 9),
+      }));
+      MOCK_DATA = [...MOCK_DATA, ...newItems];
+      return newItems;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['energy-monitoring'] });

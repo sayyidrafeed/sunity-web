@@ -27,3 +27,18 @@ export interface EnergyFormValues {
   co2ReductionKg: number;
   savingAmount: number;
 }
+
+export interface EnergyDataManualInputPayload {
+  month: number;
+  year: number;
+  kwh: number;
+  price: number;
+  co2: number;
+}
+
+export interface EnergyDataCsvInputPayload {
+  month: number;
+  kwh_produced: number;
+  idr_saved: number;
+  kg_co2_reduced: number;
+}
