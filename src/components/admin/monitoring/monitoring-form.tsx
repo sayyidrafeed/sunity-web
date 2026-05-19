@@ -9,8 +9,7 @@ import type { EnergyFormValues } from '@/types/energy-monitoring';
 
 const MONTH_OPTIONS = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
-const numVal = (name: string) =>
-  z.number({ error: `${name} harus berupa angka` }).positive(`${name} harus lebih besar dari 0`);
+const numVal = (name: string) => z.number({ error: `${name} harus berupa angka` }).positive(`${name} harus lebih besar dari 0`);
 
 const formSchema = z.object({
   month: z.string().min(1, 'Bulan harus dipilih'),
