@@ -1,6 +1,6 @@
 {
   "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["scripts", "openapi-ts.config.ts"],
+  "exclude": ["scripts", "openapi-ts.config.ts", "src/lib/api/generated"],
   "compilerOptions": {
     "target": "ES2022",
     "jsx": "react-jsx",

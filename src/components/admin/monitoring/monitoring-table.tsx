@@ -3,18 +3,24 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Button } from '@/components/ui/button';
 import type { EnergyData } from '@/types/energy-monitoring';
 import { Pencil, Trash2, Plus, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useDeleteEnergyData } from '@/hooks/use-energy-monitoring';
+import { toast } from 'sonner';
 
 interface MonitoringTableProps {
   data: EnergyData[];
   onEditClick: (item: EnergyData) => void;
-  onDeleteClick: (item: EnergyData) => void;
+  onCreateClick: () => void;
+  pendingDeleteId: string | null;
+  setPendingDeleteId: (id: string | null) => void;
 }
 
 const INDO_MONTHS = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
-export function MonitoringTable({ data, onEditClick, onDeleteClick }: MonitoringTableProps) {
+export function MonitoringTable({ data, onEditClick, onCreateClick, pendingDeleteId, setPendingDeleteId }: MonitoringTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
+  const deleteMutation = useDeleteEnergyData();
+  const isDeleting = deleteMutation.isPending;
 
   // Pagination logic
   const totalItems = data.length;
@@ -32,14 +38,27 @@ export function MonitoringTable({ data, onEditClick, onDeleteClick }: Monitoring
       .replace(/\s/g, ''); // Rp120.000 instead of Rp 120.000
   };
 
+  const handleDelete = (id: string) => {
+    deleteMutation.mutate(id, {
+      onSuccess: () => {
+        toast.success('Data energi berhasil dihapus');
+        setPendingDeleteId(null);
+      },
+      onError: () => {
+        toast.error('Gagal menghapus data energi');
+      },
+    });
+  };
+
   return (
     <div className="flex flex-col gap-[24px]">
       {/* Table Header Section */}
       <div className="flex items-center justify-between">
         <h2 className="font-outfit font-semibold text-[24px] leading-[30px] text-[#1F1F1D]">Riwayat Data Energi</h2>
         <Button
-          disabled
-          className="bg-[#2F6B3F] hover:bg-[#245330] text-white disabled:opacity-50 disabled:cursor-not-allowed rounded-full px-[24px] py-[12px] font-jakarta font-semibold text-[14px] leading-[20px] flex items-center gap-[8px]"
+          onClick={onCreateClick}
+          disabled={isDeleting}
+          className="bg-[#2F6B3F] hover:bg-[#245330] text-white disabled:opacity-50 disabled:cursor-not-allowed rounded-full px-[24px] py-[12px] font-jakarta font-semibold text-[14px] leading-[20px] flex items-center gap-[8px] cursor-pointer"
         >
           <Plus className="w-[16px] h-[16px]" />
           Tambah Data
@@ -61,36 +80,68 @@ export function MonitoringTable({ data, onEditClick, onDeleteClick }: Monitoring
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paginatedData.map((item) => (
-              <TableRow key={item.id} className="border-b border-[#F1F1EF] hover:bg-neutral-50/50">
-                <TableCell className="font-jakarta font-medium text-[16px] text-[#1F1F1D] py-[16px] pl-[24px]">
-                  {INDO_MONTHS[item.month - 1]} {item.year}
-                </TableCell>
-                <TableCell className="font-jakarta text-[16px] text-[#5A5A57] py-[16px]">{item.kwh}</TableCell>
-                <TableCell className="font-jakarta text-[16px] text-[#5A5A57] py-[16px]">{formatIDR(item.price)}</TableCell>
-                <TableCell className="font-jakarta text-[16px] text-[#5A5A57] py-[16px]">{item.co2}</TableCell>
-                <TableCell className="py-[16px] pr-[24px] text-right">
-                  <div className="flex items-center justify-end gap-[8px]">
-                    <button
-                      onClick={() => onEditClick(item)}
-                      disabled
-                      className="p-[10px] rounded-full bg-[#F1F1EF] hover:bg-[#E5E5E3] text-[#5A5A57] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                      aria-label="Ubah data"
-                    >
-                      <Pencil className="w-[16px] h-[16px]" />
-                    </button>
-                    <button
-                      onClick={() => onDeleteClick(item)}
-                      disabled
-                      className="p-[10px] rounded-full bg-[#F1F1EF] hover:bg-[#E5E5E3] text-[#5A5A57] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                      aria-label="Hapus data"
-                    >
-                      <Trash2 className="w-[16px] h-[16px]" />
-                    </button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
+            {paginatedData.map((item) => {
+              const isPendingDelete = pendingDeleteId === item.id;
+
+              if (isPendingDelete) {
+                return (
+                  <TableRow key={item.id} className="bg-[#FCE8E8] hover:bg-[#FCE8E8] border-b border-[#F1F1EF]">
+                    <TableCell className="font-jakarta font-medium text-[14px] text-[#D32124] py-[16px] pl-[24px]">Hapus Data Ini?</TableCell>
+                    <TableCell className="py-[16px]">
+                      <button
+                        onClick={() => setPendingDeleteId(null)}
+                        disabled={isDeleting}
+                        className="font-jakarta font-medium text-[14px] text-[#D32124] underline hover:text-[#a81a1c] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        Batal
+                      </button>
+                    </TableCell>
+                    <TableCell className="py-[16px]">
+                      <button
+                        onClick={() => handleDelete(item.id)}
+                        disabled={isDeleting}
+                        className="font-jakarta font-medium text-[14px] text-[#D32124] underline hover:text-[#a81a1c] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        Ya, Hapus
+                      </button>
+                    </TableCell>
+                    <TableCell className="py-[16px]" />
+                    <TableCell className="py-[16px] pr-[24px]" />
+                  </TableRow>
+                );
+              }
+
+              return (
+                <TableRow key={item.id} className="border-b border-[#F1F1EF] hover:bg-neutral-50/50">
+                  <TableCell className="font-jakarta font-medium text-[16px] text-[#1F1F1D] py-[16px] pl-[24px]">
+                    {INDO_MONTHS[item.month - 1]} {item.year}
+                  </TableCell>
+                  <TableCell className="font-jakarta text-[16px] text-[#5A5A57] py-[16px]">{item.kwh}</TableCell>
+                  <TableCell className="font-jakarta text-[16px] text-[#5A5A57] py-[16px]">{formatIDR(item.price)}</TableCell>
+                  <TableCell className="font-jakarta text-[16px] text-[#5A5A57] py-[16px]">{item.co2}</TableCell>
+                  <TableCell className="py-[16px] pr-[24px] text-right">
+                    <div className="flex items-center justify-end gap-[8px]">
+                      <button
+                        onClick={() => onEditClick(item)}
+                        disabled={isDeleting}
+                        className="p-[10px] rounded-full bg-[#F1F1EF] hover:bg-[#E5E5E3] text-[#5A5A57] transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                        aria-label="Ubah data"
+                      >
+                        <Pencil className="w-[16px] h-[16px]" />
+                      </button>
+                      <button
+                        onClick={() => setPendingDeleteId(item.id)}
+                        disabled={isDeleting}
+                        className="p-[10px] rounded-full bg-[#F1F1EF] hover:bg-[#E5E5E3] text-[#5A5A57] transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                        aria-label="Hapus data"
+                      >
+                        <Trash2 className="w-[16px] h-[16px]" />
+                      </button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </div>

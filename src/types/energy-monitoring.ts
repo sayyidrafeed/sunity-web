@@ -19,3 +19,11 @@ export interface EnergyChartData {
   price: number;
   co2: number;
 }
+
+export interface EnergyFormValues {
+  month: string;
+  year: number;
+  productionKwh: number;
+  co2ReductionKg: number;
+  savingAmount: number;
+}

@@ -1,18 +1,35 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
 import { useEnergyMonitoring } from '@/hooks/use-energy-monitoring';
 import { MonitoringKPICards } from './monitoring-kpi-cards';
 import { MonitoringChart } from './monitoring-chart';
 import { MonitoringTable } from './monitoring-table';
+import { MonitoringDialog } from './monitoring-dialog';
 import { Skeleton } from '@/components/ui/skeleton';
+import type { EnergyData } from '@/types/energy-monitoring';
 
 export function MonitoringPage() {
   const navigate = useNavigate();
   const { data, isLoading, isError } = useEnergyMonitoring();
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedEnergyData, setSelectedEnergyData] = useState<EnergyData | null>(null);
 
-  // Handle empty clicks since they are deferred
-  const handleEditClick = () => {};
-  const handleDeleteClick = () => {};
+  const handleEditClick = (item: EnergyData) => {
+    setSelectedEnergyData(item);
+    setIsDialogOpen(true);
+  };
+
+  const handleCreateClick = () => {
+    setSelectedEnergyData(null);
+    setIsDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setSelectedEnergyData(null);
+    setIsDialogOpen(false);
+  };
 
   return (
     <div className="flex flex-col p-12 gap-10 bg-[#FAF9F6] min-h-screen">
@@ -92,7 +109,14 @@ export function MonitoringPage() {
           <>
             <MonitoringKPICards kpi={data.kpi} />
             <MonitoringChart data={data.chartData} />
-            <MonitoringTable data={data.tableData} onEditClick={handleEditClick} onDeleteClick={handleDeleteClick} />
+            <MonitoringTable
+              data={data.tableData}
+              onEditClick={handleEditClick}
+              onCreateClick={handleCreateClick}
+              pendingDeleteId={pendingDeleteId}
+              setPendingDeleteId={setPendingDeleteId}
+            />
+            <MonitoringDialog isOpen={isDialogOpen} onClose={handleDialogClose} energyData={selectedEnergyData} />
           </>
         )}
       </div>

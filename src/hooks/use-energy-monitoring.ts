@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import type { EnergyData, EnergyKPI, EnergyChartData } from '@/types/energy-monitoring';
 
 // Mock Data
@@ -8,7 +8,7 @@ const MOCK_KPI: EnergyKPI = {
   totalCo2Reduced: 9.2,
 };
 
-const MOCK_DATA: EnergyData[] = [
+let MOCK_DATA: EnergyData[] = [
   { id: '1', month: 1, year: 2026, kwh: 110, price: 110000, co2: 25 },
   { id: '2', month: 2, year: 2026, kwh: 115, price: 115000, co2: 27 },
   { id: '3', month: 3, year: 2026, kwh: 90, price: 90000, co2: 20 },
@@ -44,6 +44,58 @@ export function useEnergyMonitoring() {
         chartData,
         tableData: MOCK_DATA, // Using the same mock data for the table
       };
+    },
+  });
+}
+
+export function useDeleteEnergyData() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      // Simulate network delay
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      // Remove item locally
+      MOCK_DATA = MOCK_DATA.filter((d) => d.id !== id);
+      return id;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['energy-monitoring'] });
+    },
+  });
+}
+
+export function useUpdateEnergyData() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: EnergyData) => {
+      // Simulate network delay
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      // Update item locally
+      MOCK_DATA = MOCK_DATA.map((d) => (d.id === data.id ? data : d));
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['energy-monitoring'] });
+    },
+  });
+}
+
+export function useCreateEnergyData() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: Omit<EnergyData, 'id'>) => {
+      // Simulate network delay
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      // Add item locally
+      const newItem = {
+        ...data,
+        id: Math.random().toString(36).substring(2, 9),
+      };
+      MOCK_DATA = [...MOCK_DATA, newItem];
+      return newItem;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['energy-monitoring'] });
     },
   });
 }
