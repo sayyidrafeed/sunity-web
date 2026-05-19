@@ -1,3 +1,4 @@
+import { donationStepOneSchema } from '@/types/donation';
 import type { StepConfig } from './types';
 
 export const STEPS: StepConfig[] = [
@@ -22,6 +23,17 @@ export function formatIdr(val: number): string {
 export function formatNumberInput(val: number): string {
   if (!val) return '';
   return new Intl.NumberFormat('id-ID').format(val);
+}
+
+/** Valid email per donation step-one schema (required for step 2 completion). */
+export function isValidDonationEmail(email: string): boolean {
+  return donationStepOneSchema.shape.email.safeParse(email).success;
+}
+
+/** Name is optional; green only when non-empty and within schema limits. */
+export function isValidDonationName(name: string): boolean {
+  if (name.trim() === '') return false;
+  return donationStepOneSchema.shape.name.safeParse(name).success;
 }
 
 export function calculateRemainingDays(deadlineStr: string): number {

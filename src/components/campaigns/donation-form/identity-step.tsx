@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 import { type DonationStepOneInput } from '@/types/donation';
+import { isValidDonationEmail, isValidDonationName } from './utils';
 
 interface IdentityStepProps {
   isDisabled: boolean;
@@ -19,6 +20,14 @@ export const IdentityStep = memo(function IdentityStep({ isDisabled }: IdentityS
   } = useFormContext<DonationStepOneInput>();
 
   const watchHideName = watch('hideName');
+  const watchEmail = watch('email');
+  const watchName = watch('name');
+
+  const isEmailValid = isValidDonationEmail(watchEmail);
+  const isNameValid = isValidDonationName(watchName ?? '');
+
+  const inputBaseClass =
+    'h-12 rounded-xl border px-4 text-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-0';
 
   return (
     <div className={cn('flex flex-col gap-4 transition-all duration-300', isDisabled && 'opacity-60')}>
@@ -33,10 +42,14 @@ export const IdentityStep = memo(function IdentityStep({ isDisabled }: IdentityS
             placeholder="Nama (Opsional)"
             disabled={isDisabled || watchHideName}
             className={cn(
-              'h-12 rounded-xl border px-4 focus-visible:ring-brand-green/20 focus-visible:border-brand-green text-sm transition-all',
-              isDisabled
+              inputBaseClass,
+              isDisabled || watchHideName
                 ? 'bg-neutral-100 border-neutral-200 text-neutral-400 cursor-not-allowed'
-                : 'bg-neutral-50 border-neutral-300 text-brand-text'
+                : errors.name
+                  ? 'bg-neutral-50 border-brand-danger text-brand-text focus-visible:ring-brand-danger/20 focus-visible:border-brand-danger'
+                  : isNameValid
+                    ? 'bg-white border-brand-green text-brand-green focus-visible:ring-brand-green/20 focus-visible:border-brand-green'
+                    : 'bg-neutral-50 border-neutral-300 text-brand-text focus-visible:ring-brand-green/20 focus-visible:border-brand-green'
             )}
             {...register('name')}
           />
@@ -51,11 +64,14 @@ export const IdentityStep = memo(function IdentityStep({ isDisabled }: IdentityS
             placeholder="Email*"
             disabled={isDisabled}
             className={cn(
-              'h-12 rounded-xl border px-4 focus-visible:ring-brand-green/20 focus-visible:border-brand-green text-sm transition-all',
-              errors.email ? 'border-brand-danger' : 'border-neutral-300',
+              inputBaseClass,
               isDisabled
                 ? 'bg-neutral-100 border-neutral-200 text-neutral-400 cursor-not-allowed'
-                : 'bg-neutral-50 border-neutral-300 text-brand-text'
+                : errors.email
+                  ? 'bg-neutral-50 border-brand-danger text-brand-text focus-visible:ring-brand-danger/20 focus-visible:border-brand-danger'
+                  : isEmailValid
+                    ? 'bg-white border-brand-green text-brand-green focus-visible:ring-brand-green/20 focus-visible:border-brand-green'
+                    : 'bg-neutral-50 border-neutral-300 text-brand-text focus-visible:ring-brand-green/20 focus-visible:border-brand-green'
             )}
             {...register('email')}
           />

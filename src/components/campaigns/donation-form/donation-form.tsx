@@ -7,7 +7,7 @@ import { NominalStep } from './nominal-step';
 import { IdentityStep } from './identity-step';
 import { PaymentSummaryStep } from './payment-summary-step';
 import { StepIndicator, StepConnector } from './stepper';
-import { STEPS } from './utils';
+import { STEPS, isValidDonationEmail } from './utils';
 import { type StepState } from './types';
 
 interface Campaign {
@@ -50,9 +50,11 @@ export function DonationForm(_props: DonationFormProps) {
 
   const { trigger, watch, handleSubmit } = methods;
   const watchNominal = watch('nominal');
+  const watchEmail = watch('email');
 
   // Validation state
   const isNominalValid = watchNominal >= 10000;
+  const isIdentityValid = isValidDonationEmail(watchEmail);
 
   // ── Auto transition from Step 1 to Step 2 ──────────────────────────────────
   // When nominal is valid, auto-advance to step 2
@@ -72,7 +74,7 @@ export function DonationForm(_props: DonationFormProps) {
 
   // Derive stepper indicator states
   const step1State: StepState = isNominalValid ? 'done' : 'active';
-  const step2State: StepState = activeStep === 3 ? 'done' : isNominalValid ? 'active' : 'pending';
+  const step2State: StepState = isIdentityValid ? 'done' : isNominalValid ? 'active' : 'pending';
   const step3State: StepState = activeStep === 3 ? 'active' : 'pending';
 
   // ── Stepper Navigation ───────────────────────────────────────────────────────
@@ -131,7 +133,7 @@ export function DonationForm(_props: DonationFormProps) {
 
           <StepIndicator step={STEPS[1]} state={step2State} onClick={() => handleStepClick(2)} />
 
-          <StepConnector done={activeStep === 3} />
+          <StepConnector done={isIdentityValid} />
 
           <StepIndicator step={STEPS[2]} state={step3State} onClick={() => handleStepClick(3)} />
         </div>

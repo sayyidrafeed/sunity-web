@@ -1,4 +1,4 @@
-export type StepState = "done" | "active" | "pending";
+export type StepState = 'done' | 'active' | 'pending';
 
 export interface StepConfig {
   number: string;
