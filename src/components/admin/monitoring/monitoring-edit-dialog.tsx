@@ -1,10 +1,8 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { MonitoringForm } from './monitoring-form';
+import { MonitoringForm, MONTH_OPTIONS } from './monitoring-form';
 import { useUpdateEnergyData } from '@/hooks/use-energy-monitoring';
 import type { EnergyData, EnergyFormValues } from '@/types/energy-monitoring';
 import { toast } from 'sonner';
-
-const MONTH_OPTIONS = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
 interface MonitoringEditDialogProps {
   isOpen: boolean;

@@ -70,12 +70,34 @@ export function MonitoringCreateDialog({ isOpen, onClose }: MonitoringCreateDial
     reader.onload = (event) => {
       try {
         const text = event.target?.result as string;
-        const parsedRows = parseMonitoringCsv(text);
+        const result = parseMonitoringCsv(text);
+
+        // Show warnings if there are any errors
+        if (result.errors.length > 0) {
+          const errorSummary = result.errors
+            .slice(0, 5) // Show first 5 errors
+            .map((e) => `Baris ${e.line}: ${e.message}`)
+            .join('\n');
+
+          const moreErrors = result.errors.length > 5 ? `\n... dan ${result.errors.length - 5} error lainnya` : '';
+
+          toast.warning(`${result.data.length} data berhasil dimuat, ${result.errors.length} baris diabaikan:\n${errorSummary}${moreErrors}`);
+        }
+
+        // Allow import even with errors, but warn if no valid rows
+        if (result.data.length === 0) {
+          toast.error('Tidak ada data valid yang dapat diimpor dari CSV');
+          return;
+        }
+
         setCsvFile(file);
-        setCsvData(parsedRows);
+        setCsvData(result.data);
         setActiveMode('csv');
         form.reset(blankForm);
-        toast.success(`Berhasil memuat ${parsedRows.length} data dari CSV`);
+
+        if (result.errors.length === 0) {
+          toast.success(`Berhasil memuat ${result.data.length} data dari CSV`);
+        }
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : 'Gagal membaca file CSV';
         toast.error(message);
