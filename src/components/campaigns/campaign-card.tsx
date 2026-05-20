@@ -1,14 +1,5 @@
 import { Link } from 'react-router';
-import {
-  MapPin,
-  Target,
-  Church,
-  Moon,
-  Sun,
-  Flower2,
-  HelpCircle,
-  CircleCheck,
-} from 'lucide-react';
+import { MapPin, Target, Church, Moon, Sun, Flower2, HelpCircle, CircleCheck } from 'lucide-react';
 
 import type { CampaignStatus } from '@/types/campaign';
 
@@ -140,9 +131,7 @@ export function CampaignCard({ campaign }: CampaignCardProps) {
 
       <div className="flex flex-col gap-4 p-5 pt-2">
         <div className="flex items-start justify-between gap-2">
-          <h3 className="line-clamp-2 min-h-[48px] font-outfit text-lg font-bold leading-tight text-brand-text">
-            {campaign.title}
-          </h3>
+          <h3 className="line-clamp-2 min-h-[48px] font-outfit text-lg font-bold leading-tight text-brand-text">{campaign.title}</h3>
 
           <div className="flex shrink-0 items-center gap-1 rounded-full bg-slate-50 px-2 py-1 text-[10px] font-medium text-slate-500">
             {getReligionIcon(campaign.worshipPlace.religionType)}
@@ -158,9 +147,7 @@ export function CampaignCard({ campaign }: CampaignCardProps) {
         <div className="flex items-center justify-between">
           <div className="flex flex-col gap-1">
             <span className="text-[10px] text-slate-400">Dana terkumpul</span>
-            <span className="font-jakarta text-base font-bold text-brand-green">
-              {formatIDR(campaign.raisedIdr)}
-            </span>
+            <span className="font-jakarta text-base font-bold text-brand-green">{formatIDR(campaign.raisedIdr)}</span>
           </div>
 
           <div className="flex flex-col items-end gap-1">
@@ -171,16 +158,11 @@ export function CampaignCard({ campaign }: CampaignCardProps) {
 
         <div className="flex flex-col gap-2">
           <div className="h-2 w-full overflow-hidden rounded-full bg-[#E5E7EB]">
-            <div
-              className="h-full rounded-full bg-brand-green"
-              style={{ width: `${Math.min(campaign.progressPercent, 100)}%` }}
-            />
+            <div className="h-full rounded-full bg-brand-green" style={{ width: `${Math.min(campaign.progressPercent, 100)}%` }} />
           </div>
 
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-brand-yellow">
-              {campaign.progressPercent}%
-            </span>
+            <span className="text-xs font-bold text-brand-yellow">{campaign.progressPercent}%</span>
 
             <div className="flex items-center gap-1 text-brand-text">
               <Target className="h-3 w-3" />
