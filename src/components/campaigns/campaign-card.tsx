@@ -10,6 +10,8 @@ import {
   CircleCheck,
 } from 'lucide-react';
 
+import type { CampaignStatus } from '@/types/campaign';
+
 interface CampaignCardProps {
   campaign: {
     id: string;
@@ -23,12 +25,20 @@ interface CampaignCardProps {
     raisedIdr: number;
     deadline: string;
     progressPercent: number;
-    status?: string;
+    status?: CampaignStatus;
     coverImage?: {
       publicUrl: string;
     } | null;
   };
 }
+
+const STATUS_BADGE_LABELS = {
+  aktif: 'Aktif',
+  active: 'Aktif',
+  instalasi: 'Instalasi',
+  selesai: 'Selesai',
+  completed: 'Selesai',
+};
 
 const getReligionIcon = (type: string) => {
   switch (type.toLowerCase()) {
@@ -72,26 +82,34 @@ const calculateDaysLeft = (deadline: string) => {
   return days > 0 ? days : 0;
 };
 
-const getStatusBadge = (status?: string) => {
-  const normalizedStatus = status?.toLowerCase();
+const getStatusBadge = (status?: CampaignStatus) => {
+  const normalizedStatus = status?.toLowerCase() as keyof typeof STATUS_BADGE_LABELS | undefined;
+
+  if (!normalizedStatus || !(normalizedStatus in STATUS_BADGE_LABELS)) {
+    return null;
+  }
 
   if (normalizedStatus === 'aktif' || normalizedStatus === 'active') {
     return {
-      label: 'Aktif',
+      label: STATUS_BADGE_LABELS[normalizedStatus],
       className: 'bg-brand-info',
       icon: <CircleCheck className="h-3 w-3 fill-white text-brand-info" />,
     };
   }
 
-  if (normalizedStatus === 'selesai' || normalizedStatus === 'completed') {
+  if (normalizedStatus === 'instalasi') {
     return {
-      label: 'Selesai',
-      className: 'bg-brand-green',
-      icon: <CircleCheck className="h-3 w-3 fill-white text-brand-green" />,
+      label: STATUS_BADGE_LABELS[normalizedStatus],
+      className: 'bg-brand-warning',
+      icon: <CircleCheck className="h-3 w-3 fill-white text-brand-warning" />,
     };
   }
 
-  return null;
+  return {
+    label: STATUS_BADGE_LABELS[normalizedStatus],
+    className: 'bg-brand-green',
+    icon: <CircleCheck className="h-3 w-3 fill-white text-brand-green" />,
+  };
 };
 
 export function CampaignCard({ campaign }: CampaignCardProps) {
