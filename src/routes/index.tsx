@@ -72,6 +72,13 @@ export const router = createBrowserRouter([
             Component: m.CampaignsPage,
           })),
       },
+      {
+        path: 'campaigns/create',
+        lazy: () =>
+          import('@/components/admin/campaigns/create-campaign-page').then((m) => ({
+            Component: m.CreateCampaignPage,
+          })),
+      },
     ],
   },
 ]);
