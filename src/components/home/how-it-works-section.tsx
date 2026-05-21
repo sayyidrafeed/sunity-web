@@ -37,7 +37,6 @@ export function HowItWorksSection() {
 
                 <div>
                   <h3 className="font-outfit text-3xl font-bold text-white">{step.title}</h3>
-
                   <p className="mt-1 max-w-md font-jakarta text-base leading-relaxed text-white/90">{step.description}</p>
                 </div>
               </div>
@@ -46,12 +45,16 @@ export function HowItWorksSection() {
         </div>
 
         <div className="relative z-10 flex justify-center">
-          <div className="relative h-[520px] w-full max-w-[520px]">
-            <div className="absolute left-1/2 top-1/2 h-[360px] w-[360px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-yellow/50 blur-[80px]" />
+          <div className="relative h-[520px] w-full max-w-[560px]">
+            <div className="absolute left-1/2 top-1/2 z-0 h-[460px] w-[460px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-yellow/50 blur-[120px]" />
 
-            <div className="absolute right-4 top-24 h-[330px] w-[190px] rounded-[36px] border-[10px] border-brand-surface bg-brand-yellow" />
+            {/* Yellow background shape */}
+            <div className="absolute left-1/2 top-[88px] z-0 h-[360px] w-[360px] -translate-x-1/2 overflow-hidden rounded-[42px] bg-brand-surface p-[10px] shadow-[0_18px_55px_rgba(0,0,0,0.18)] [clip-path:polygon(16%_0,100%_0,100%_84%,84%_100%,0_100%,0_16%)]">
+              <div className="h-full w-full rounded-[34px] bg-brand-yellow [clip-path:polygon(16%_0,100%_0,100%_84%,84%_100%,0_100%,0_16%)]" />
+            </div>
 
-            <div className="absolute left-1/2 top-8 h-[440px] w-[260px] -translate-x-1/2 rounded-[34px] bg-[#173D2A] p-5 shadow-[0_20px_60px_rgba(0,0,0,0.25)]">
+            {/* Phone */}
+            <div className="absolute left-1/2 top-8 z-10 h-[440px] w-[260px] -translate-x-1/2 rounded-[34px] bg-[#173D2A] p-5 shadow-[0_20px_60px_rgba(0,0,0,0.25)]">
               <div className="mx-auto mb-5 flex items-center justify-center gap-2">
                 <span className="h-3 w-3 rounded-full bg-white" />
                 <span className="h-2 w-20 rounded-full bg-white" />
@@ -60,7 +63,7 @@ export function HowItWorksSection() {
               <div className="h-[350px] rounded-[26px] bg-brand-surface" />
             </div>
 
-            <div className="absolute left-6 top-28 flex items-center gap-2 rounded-lg bg-brand-surface/80 px-4 py-2 shadow-lg backdrop-blur-md">
+            <div className="absolute left-6 top-28 z-30 flex items-center gap-2 rounded-lg bg-brand-surface/80 px-4 py-2 shadow-lg backdrop-blur-md">
               <img src="/images/icon-sunity-badge.png" alt="Sunity" className="h-7 w-7 object-contain" />
               <div>
                 <p className="font-outfit text-sm font-bold leading-none text-brand-green">Sunity</p>
@@ -68,17 +71,17 @@ export function HowItWorksSection() {
               </div>
             </div>
 
-            <div className="absolute right-0 top-44 flex items-center gap-2 rounded-lg bg-brand-surface/80 px-4 py-2 shadow-lg backdrop-blur-md">
+            <div className="absolute right-0 top-44 z-30 flex items-center gap-2 rounded-lg bg-brand-surface/80 px-4 py-2 shadow-lg backdrop-blur-md">
               <img src="/images/icon-shield.png" alt="Aman" className="h-7 w-7 object-contain" />
               <p className="font-jakarta text-sm font-semibold text-brand-green">Aman dan Terpercaya</p>
             </div>
 
-            <div className="absolute left-10 top-72 flex items-center gap-2 rounded-lg bg-brand-surface/80 px-4 py-2 shadow-lg backdrop-blur-md">
+            <div className="absolute left-10 top-72 z-30 flex items-center gap-2 rounded-lg bg-brand-surface/80 px-4 py-2 shadow-lg backdrop-blur-md">
               <img src="/images/icon-target.png" alt="Dampak" className="h-7 w-7 object-contain" />
               <p className="font-jakarta text-sm font-semibold text-brand-green">Dampak Terpantau</p>
             </div>
 
-            <div className="absolute bottom-20 right-8 flex items-center gap-2 rounded-lg bg-brand-surface/80 px-4 py-2 shadow-lg backdrop-blur-md">
+            <div className="absolute bottom-20 right-8 z-30 flex items-center gap-2 rounded-lg bg-brand-surface/80 px-4 py-2 shadow-lg backdrop-blur-md">
               <img src="/images/icon-transparency.png" alt="Transparansi" className="h-7 w-7 object-contain" />
               <p className="font-jakarta text-sm font-semibold text-brand-green">Transparansi Penuh</p>
             </div>
