@@ -1,5 +1,7 @@
 import { Link } from 'react-router';
-import { MapPin, Target, Church, Moon, Sun, Flower2, HelpCircle } from 'lucide-react';
+import { MapPin, Target, Church, Moon, Sun, Flower2, HelpCircle, CircleCheck } from 'lucide-react';
+
+import type { CampaignStatus } from '@/types/campaign';
 
 interface CampaignCardProps {
   campaign: {
@@ -14,12 +16,20 @@ interface CampaignCardProps {
     raisedIdr: number;
     deadline: string;
     progressPercent: number;
-    status?: string;
+    status?: CampaignStatus;
     coverImage?: {
       publicUrl: string;
     } | null;
   };
 }
+
+const STATUS_BADGE_LABELS = {
+  aktif: 'Aktif',
+  active: 'Aktif',
+  instalasi: 'Instalasi',
+  selesai: 'Selesai',
+  completed: 'Selesai',
+};
 
 const getReligionIcon = (type: string) => {
   switch (type.toLowerCase()) {
@@ -59,49 +69,71 @@ const formatIDR = (amount: number) => {
 const calculateDaysLeft = (deadline: string) => {
   const diff = new Date(deadline).getTime() - new Date().getTime();
   const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+
   return days > 0 ? days : 0;
+};
+
+const getStatusBadge = (status?: CampaignStatus) => {
+  const normalizedStatus = status?.toLowerCase() as keyof typeof STATUS_BADGE_LABELS | undefined;
+
+  if (!normalizedStatus || !(normalizedStatus in STATUS_BADGE_LABELS)) {
+    return null;
+  }
+
+  if (normalizedStatus === 'aktif' || normalizedStatus === 'active') {
+    return {
+      label: STATUS_BADGE_LABELS[normalizedStatus],
+      className: 'bg-brand-info',
+      icon: <CircleCheck className="h-3 w-3 fill-white text-brand-info" />,
+    };
+  }
+
+  if (normalizedStatus === 'instalasi') {
+    return {
+      label: STATUS_BADGE_LABELS[normalizedStatus],
+      className: 'bg-brand-warning',
+      icon: <CircleCheck className="h-3 w-3 fill-white text-brand-warning" />,
+    };
+  }
+
+  return {
+    label: STATUS_BADGE_LABELS[normalizedStatus],
+    className: 'bg-brand-green',
+    icon: <CircleCheck className="h-3 w-3 fill-white text-brand-green" />,
+  };
 };
 
 export function CampaignCard({ campaign }: CampaignCardProps) {
   const daysLeft = calculateDaysLeft(campaign.deadline);
+  const statusBadge = getStatusBadge(campaign.status);
 
   return (
     <Link
       to={`/campaigns/${campaign.id}`}
-      className="flex flex-col overflow-hidden rounded-[20px] bg-white shadow-[0px_4px_20px_0px_rgba(0,0,0,0.05)] transition-all hover:shadow-[0px_4px_25px_0px_rgba(0,0,0,0.1)] hover:-translate-y-1"
+      className="flex flex-col overflow-hidden rounded-[20px] bg-white shadow-[0px_4px_20px_0px_rgba(0,0,0,0.05)] transition-all hover:-translate-y-1 hover:shadow-[0px_4px_25px_0px_rgba(0,0,0,0.1)]"
     >
-      {/* Image Header */}
       <div className="relative h-[200px] w-full overflow-hidden p-3">
         <img
           src={campaign.coverImage?.publicUrl || '/images/placeholder-campaign.png'}
           alt={campaign.title}
           className="h-full w-full rounded-[15px] object-cover"
         />
-        {campaign.status?.toLowerCase() === 'selesai' && (
-          <div className="absolute right-6 top-6 flex items-center gap-1 rounded-full bg-brand-green px-3 py-1 text-[10px] font-bold text-white shadow-sm">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="10"
-              height="10"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="4"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <polyline points="20 6 9 17 4 12" />
-            </svg>
-            <span>Selesai</span>
+
+        {statusBadge && (
+          <div
+            className={`absolute right-6 top-6 flex items-center gap-1 rounded-full px-3 py-1 text-[10px] font-bold text-white shadow-sm ${statusBadge.className}`}
+          >
+            {statusBadge.icon}
+            <span>{statusBadge.label}</span>
           </div>
         )}
       </div>
 
-      {/* Content */}
       <div className="flex flex-col gap-4 p-5 pt-2">
         <div className="flex items-start justify-between gap-2">
           <h3 className="line-clamp-2 min-h-[48px] font-outfit text-lg font-bold leading-tight text-brand-text">{campaign.title}</h3>
-          <div className="flex items-center gap-1 shrink-0 rounded-full bg-slate-50 px-2 py-1 text-[10px] font-medium text-slate-500">
+
+          <div className="flex shrink-0 items-center gap-1 rounded-full bg-slate-50 px-2 py-1 text-[10px] font-medium text-slate-500">
             {getReligionIcon(campaign.worshipPlace.religionType)}
             <span>{campaign.worshipPlace.religionType}</span>
           </div>
@@ -117,6 +149,7 @@ export function CampaignCard({ campaign }: CampaignCardProps) {
             <span className="text-[10px] text-slate-400">Dana terkumpul</span>
             <span className="font-jakarta text-base font-bold text-brand-green">{formatIDR(campaign.raisedIdr)}</span>
           </div>
+
           <div className="flex flex-col items-end gap-1">
             <span className="text-[10px] text-slate-400">Sisa Hari</span>
             <span className="font-jakarta text-base font-bold text-brand-green">{daysLeft}</span>
@@ -124,13 +157,13 @@ export function CampaignCard({ campaign }: CampaignCardProps) {
         </div>
 
         <div className="flex flex-col gap-2">
-          {/* Progress Bar */}
           <div className="h-2 w-full overflow-hidden rounded-full bg-[#E5E7EB]">
             <div className="h-full rounded-full bg-brand-green" style={{ width: `${Math.min(campaign.progressPercent, 100)}%` }} />
           </div>
 
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-brand-yellow">{campaign.progressPercent}%</span>
+
             <div className="flex items-center gap-1 text-brand-text">
               <Target className="h-3 w-3" />
               <span className="text-[10px] font-medium">Target:</span>
