@@ -1,9 +1,11 @@
 import { useSearchParams } from 'react-router';
+
 import { CampaignHero } from '@/components/campaigns/campaign-hero';
 import { CampaignFilter } from '@/components/campaigns/campaign-filter';
 import { FeaturedCampaign } from '@/components/campaigns/featured-campaign';
 import { CampaignList } from '@/components/campaigns/campaign-list';
 import { CompletedCampaigns } from '@/components/campaigns/completed-campaigns';
+import { featuredCampaigns } from '@/data/featured-campaigns';
 
 export default function Campaigns() {
   const [searchParams] = useSearchParams();
@@ -15,8 +17,11 @@ export default function Campaigns() {
       <div className="w-full max-w-[1329px] px-8 xl:px-10">
         <CampaignHero />
         <CampaignFilter />
-        {!hasActiveFilters && <FeaturedCampaign />}
+
+        {!hasActiveFilters && <FeaturedCampaign campaigns={featuredCampaigns} />}
+
         <CampaignList />
+
         {!hasActiveFilters && <CompletedCampaigns />}
       </div>
     </div>
