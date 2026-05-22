@@ -10,6 +10,9 @@ import type {
   ChangePasswordPostErrors,
   ChangePasswordPostResponses,
   DeleteAdminCampaignsByIdData,
+  DeleteAdminCampaignsByIdEnergyByMonthData,
+  DeleteAdminCampaignsByIdEnergyByMonthErrors,
+  DeleteAdminCampaignsByIdEnergyByMonthResponses,
   DeleteAdminCampaignsByIdErrors,
   DeleteAdminCampaignsByIdExpensesByExpenseIdData,
   DeleteAdminCampaignsByIdExpensesByExpenseIdErrors,
@@ -24,6 +27,9 @@ import type {
   GetAdminCampaignsByIdActivitiesData,
   GetAdminCampaignsByIdActivitiesErrors,
   GetAdminCampaignsByIdActivitiesResponses,
+  GetAdminCampaignsByIdEnergyData,
+  GetAdminCampaignsByIdEnergyErrors,
+  GetAdminCampaignsByIdEnergyResponses,
   GetAdminCampaignsByIdExpensesData,
   GetAdminCampaignsByIdExpensesErrors,
   GetAdminCampaignsByIdExpensesResponses,
@@ -38,8 +44,14 @@ import type {
   GetCallbackByIdData,
   GetCallbackByIdErrors,
   GetCampaignsByIdData,
+  GetCampaignsByIdDetailsData,
+  GetCampaignsByIdDetailsErrors,
+  GetCampaignsByIdDetailsResponses,
   GetCampaignsByIdErrors,
   GetCampaignsByIdResponses,
+  GetCampaignsByIdSummaryData,
+  GetCampaignsByIdSummaryErrors,
+  GetCampaignsByIdSummaryResponses,
   GetCampaignsData,
   GetCampaignsResponses,
   GetDeleteUserCallbackData,
@@ -69,6 +81,9 @@ import type {
   ListUserSessionsGetData,
   ListUserSessionsGetErrors,
   ListUserSessionsGetResponses,
+  PatchAdminCampaignsByIdEnergyByMonthData,
+  PatchAdminCampaignsByIdEnergyByMonthErrors,
+  PatchAdminCampaignsByIdEnergyByMonthResponses,
   PatchAdminCampaignsByIdExpensesByExpenseIdData,
   PatchAdminCampaignsByIdExpensesByExpenseIdErrors,
   PatchAdminCampaignsByIdExpensesByExpenseIdResponses,
@@ -87,9 +102,18 @@ import type {
   PostAdminCampaignsByIdAssetsData,
   PostAdminCampaignsByIdAssetsErrors,
   PostAdminCampaignsByIdAssetsResponses,
+  PostAdminCampaignsByIdEnergyData,
+  PostAdminCampaignsByIdEnergyErrors,
+  PostAdminCampaignsByIdEnergyResponses,
   PostAdminCampaignsByIdExpensesData,
   PostAdminCampaignsByIdExpensesErrors,
   PostAdminCampaignsByIdExpensesResponses,
+  PostAdminCampaignsData,
+  PostAdminCampaignsErrors,
+  PostAdminCampaignsResponses,
+  PostAdminUploadsPresignData,
+  PostAdminUploadsPresignErrors,
+  PostAdminUploadsPresignResponses,
   PostAdminWorshipPlacesData,
   PostAdminWorshipPlacesResponses,
   PostAssetsUploadData,
@@ -117,6 +141,9 @@ import type {
   PostUnlinkAccountData,
   PostUnlinkAccountErrors,
   PostUnlinkAccountResponses,
+  PutAdminCampaignsByIdEnergyData,
+  PutAdminCampaignsByIdEnergyErrors,
+  PutAdminCampaignsByIdEnergyResponses,
   RequestPasswordResetPostData,
   RequestPasswordResetPostErrors,
   RequestPasswordResetPostResponses,
@@ -209,6 +236,40 @@ export const postCampaigns = <ThrowOnError extends boolean = false>(options?: Op
   });
 
 /**
+ * Get campaign summary
+ */
+export const getCampaignsByIdSummary = <ThrowOnError extends boolean = false>(options: Options<GetCampaignsByIdSummaryData, ThrowOnError>) =>
+  (options.client ?? client).get<GetCampaignsByIdSummaryResponses, GetCampaignsByIdSummaryErrors, ThrowOnError>({
+    security: [
+      {
+        in: 'cookie',
+        name: 'apiKeyCookie',
+        type: 'apiKey',
+      },
+      { scheme: 'bearer', type: 'http' },
+    ],
+    url: '/campaigns/{id}/summary',
+    ...options,
+  });
+
+/**
+ * Get full campaign details for detail page view
+ */
+export const getCampaignsByIdDetails = <ThrowOnError extends boolean = false>(options: Options<GetCampaignsByIdDetailsData, ThrowOnError>) =>
+  (options.client ?? client).get<GetCampaignsByIdDetailsResponses, GetCampaignsByIdDetailsErrors, ThrowOnError>({
+    security: [
+      {
+        in: 'cookie',
+        name: 'apiKeyCookie',
+        type: 'apiKey',
+      },
+      { scheme: 'bearer', type: 'http' },
+    ],
+    url: '/campaigns/{id}/details',
+    ...options,
+  });
+
+/**
  * Get campaign details with all assets
  */
 export const getCampaignsById = <ThrowOnError extends boolean = false>(options: Options<GetCampaignsByIdData, ThrowOnError>) =>
@@ -254,6 +315,20 @@ export const getAdminCampaigns = <ThrowOnError extends boolean = false>(options?
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/admin/campaigns',
     ...options,
+  });
+
+/**
+ * Create a new campaign (admin)
+ */
+export const postAdminCampaigns = <ThrowOnError extends boolean = false>(options?: Options<PostAdminCampaignsData, ThrowOnError>) =>
+  (options?.client ?? client).post<PostAdminCampaignsResponses, PostAdminCampaignsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/admin/campaigns',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    },
   });
 
 /**
@@ -457,6 +532,88 @@ export const getAdminCampaignsByIdActivities = <ThrowOnError extends boolean = f
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/admin/campaigns/{id}/activities',
     ...options,
+  });
+
+/**
+ * Create presigned upload session (admin)
+ */
+export const postAdminUploadsPresign = <ThrowOnError extends boolean = false>(options?: Options<PostAdminUploadsPresignData, ThrowOnError>) =>
+  (options?.client ?? client).post<PostAdminUploadsPresignResponses, PostAdminUploadsPresignErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/admin/uploads/presign',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    },
+  });
+
+/**
+ * List campaign energy data
+ */
+export const getAdminCampaignsByIdEnergy = <ThrowOnError extends boolean = false>(options: Options<GetAdminCampaignsByIdEnergyData, ThrowOnError>) =>
+  (options.client ?? client).get<GetAdminCampaignsByIdEnergyResponses, GetAdminCampaignsByIdEnergyErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/admin/campaigns/{id}/energy',
+    ...options,
+  });
+
+/**
+ * Create campaign energy record
+ */
+export const postAdminCampaignsByIdEnergy = <ThrowOnError extends boolean = false>(
+  options: Options<PostAdminCampaignsByIdEnergyData, ThrowOnError>
+) =>
+  (options.client ?? client).post<PostAdminCampaignsByIdEnergyResponses, PostAdminCampaignsByIdEnergyErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/admin/campaigns/{id}/energy',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+
+/**
+ * Overwrite campaign energy record
+ */
+export const putAdminCampaignsByIdEnergy = <ThrowOnError extends boolean = false>(options: Options<PutAdminCampaignsByIdEnergyData, ThrowOnError>) =>
+  (options.client ?? client).put<PutAdminCampaignsByIdEnergyResponses, PutAdminCampaignsByIdEnergyErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/admin/campaigns/{id}/energy',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+
+/**
+ * Delete energy record
+ */
+export const deleteAdminCampaignsByIdEnergyByMonth = <ThrowOnError extends boolean = false>(
+  options: Options<DeleteAdminCampaignsByIdEnergyByMonthData, ThrowOnError>
+) =>
+  (options.client ?? client).delete<DeleteAdminCampaignsByIdEnergyByMonthResponses, DeleteAdminCampaignsByIdEnergyByMonthErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/admin/campaigns/{id}/energy/{month}',
+    ...options,
+  });
+
+/**
+ * Update energy record
+ */
+export const patchAdminCampaignsByIdEnergyByMonth = <ThrowOnError extends boolean = false>(
+  options: Options<PatchAdminCampaignsByIdEnergyByMonthData, ThrowOnError>
+) =>
+  (options.client ?? client).patch<PatchAdminCampaignsByIdEnergyByMonthResponses, PatchAdminCampaignsByIdEnergyByMonthErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/admin/campaigns/{id}/energy/{month}',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
   });
 
 /**

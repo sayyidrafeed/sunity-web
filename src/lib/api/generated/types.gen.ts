@@ -11,6 +11,31 @@ export type Error = {
   };
 };
 
+export type CampaignDb = {
+  id: string;
+  title: string;
+  description: string;
+  targetIdr: number;
+  panelCapacityKwp: string;
+  raisedIdr: number;
+  donorCount: number;
+  estimatedKwhAnnual: string | null;
+  estimatedIdrSavings: number | null;
+  fundUsage: string | null;
+  energyProducedKwhMonthly: string | null;
+  beneficiaries: number | null;
+  carbonReductionKgMonthly: string | null;
+  electricitySavingsIdrMonthly: number | null;
+  impactDescription: string | null;
+  coverImageUrl: string | null;
+  status: string;
+  isPublished: boolean;
+  deadline: string;
+  worshipPlaceId: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type WorshipPlace = {
   id: string;
   name: string;
@@ -56,6 +81,17 @@ export type ActivityLog = {
       }
     | Array<unknown>;
   createdAt: string;
+};
+
+export type Energy = {
+  id: string;
+  campaignId: string;
+  month: string;
+  kwhProduced: number;
+  idrSaved: number;
+  kgCo2Reduced: number;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type User = {
@@ -122,7 +158,7 @@ export type GetCampaignsData = {
     search?: string;
     city?: string;
     type?: 'Masjid' | 'Mushalla' | 'Gereja' | 'Pura' | 'Vihara' | 'Klenteng';
-    status?: 'DRAFT' | 'AKTIF' | 'INSTALASI' | 'SELESAI' | 'ARCHIVED';
+    status?: 'DRAFT' | 'AKTIF' | 'INSTALASI' | 'SELESAI' | 'ARCHIVED' | 'Completed';
     sortBy?: 'createdAt' | 'deadline' | 'raisedProgress' | 'targetIdr';
     order?: 'asc' | 'desc';
   };
@@ -141,6 +177,7 @@ export type GetCampaignsResponses = {
         name: string;
         city: string;
         religionType: string;
+        address?: string;
       };
       status: string;
       targetIdr: number;
@@ -203,27 +240,62 @@ export type PostCampaignsResponses = {
 
 export type PostCampaignsResponse = PostCampaignsResponses[keyof PostCampaignsResponses];
 
-export type GetCampaignsByIdData = {
+export type GetCampaignsByIdSummaryData = {
   body?: never;
   path: {
     id: string;
   };
   query?: never;
-  url: '/campaigns/{id}';
+  url: '/campaigns/{id}/summary';
 };
 
-export type GetCampaignsByIdErrors = {
+export type GetCampaignsByIdSummaryErrors = {
   /**
    * Campaign not found
    */
   404: Error;
 };
 
-export type GetCampaignsByIdError = GetCampaignsByIdErrors[keyof GetCampaignsByIdErrors];
+export type GetCampaignsByIdSummaryError = GetCampaignsByIdSummaryErrors[keyof GetCampaignsByIdSummaryErrors];
 
-export type GetCampaignsByIdResponses = {
+export type GetCampaignsByIdSummaryResponses = {
   /**
-   * Campaign details with images
+   * Campaign summary
+   */
+  200: {
+    data: {
+      id: string;
+      title: string;
+      targetIdr: number;
+      raisedIdr: number;
+      donorCount: number;
+    };
+  };
+};
+
+export type GetCampaignsByIdSummaryResponse = GetCampaignsByIdSummaryResponses[keyof GetCampaignsByIdSummaryResponses];
+
+export type GetCampaignsByIdDetailsData = {
+  body?: never;
+  path: {
+    id: string;
+  };
+  query?: never;
+  url: '/campaigns/{id}/details';
+};
+
+export type GetCampaignsByIdDetailsErrors = {
+  /**
+   * Campaign not found
+   */
+  404: Error;
+};
+
+export type GetCampaignsByIdDetailsError = GetCampaignsByIdDetailsErrors[keyof GetCampaignsByIdDetailsErrors];
+
+export type GetCampaignsByIdDetailsResponses = {
+  /**
+   * Full campaign details layout architecture
    */
   200: {
     id: string;
@@ -239,6 +311,7 @@ export type GetCampaignsByIdResponses = {
       name: string;
       city: string;
       religionType: string;
+      address?: string;
     };
     energyImpact: {
       panelCapacityKwp: string;
@@ -279,6 +352,108 @@ export type GetCampaignsByIdResponses = {
       }>;
     };
     published: boolean;
+    energyDashboard?: {
+      totalEnergyKwh: string;
+      averageEnergyPerDayKwh: string;
+      sinceDate: string;
+      progressPercent: number;
+      carbonReductionTon: string;
+      carbonReductionMomPercent: number;
+      costSavingsIdrMonthly: string;
+      equivalentHousesPerYear: number;
+    };
+  };
+};
+
+export type GetCampaignsByIdDetailsResponse = GetCampaignsByIdDetailsResponses[keyof GetCampaignsByIdDetailsResponses];
+
+export type GetCampaignsByIdData = {
+  body?: never;
+  path: {
+    id: string;
+  };
+  query?: never;
+  url: '/campaigns/{id}';
+};
+
+export type GetCampaignsByIdErrors = {
+  /**
+   * Campaign not found
+   */
+  404: Error;
+};
+
+export type GetCampaignsByIdError = GetCampaignsByIdErrors[keyof GetCampaignsByIdErrors];
+
+export type GetCampaignsByIdResponses = {
+  /**
+   * Campaign details with images
+   */
+  200: {
+    id: string;
+    title: string;
+    description: string;
+    status: string;
+    targetIdr: number;
+    raisedIdr: number;
+    donorCount: number;
+    deadline: string;
+    progressPercent: number;
+    worshipPlace: {
+      name: string;
+      city: string;
+      religionType: string;
+      address?: string;
+    };
+    energyImpact: {
+      panelCapacityKwp: string;
+      estimatedKwhAnnual?: string;
+      estimatedIdrSavings?: number;
+    };
+    impact: {
+      fundUsage?: string;
+      energyProducedKwhMonthly?: string;
+      beneficiaries?: number;
+      carbonReductionKgMonthly?: string;
+      electricitySavingsIdrMonthly?: number;
+      impactDescription?: string;
+    };
+    images?: {
+      cover?: {
+        assetId: string;
+        publicUrl: string;
+        storageKey: string;
+      } | null;
+      gallery?: Array<{
+        assetId: string;
+        publicUrl: string;
+        storageKey: string;
+        caption?: string;
+      }>;
+      transparency?: Array<{
+        assetId: string;
+        publicUrl: string;
+        storageKey: string;
+        caption?: string;
+      }>;
+      installation?: Array<{
+        assetId: string;
+        publicUrl: string;
+        storageKey: string;
+        caption?: string;
+      }>;
+    };
+    published: boolean;
+    energyDashboard?: {
+      totalEnergyKwh: string;
+      averageEnergyPerDayKwh: string;
+      sinceDate: string;
+      progressPercent: number;
+      carbonReductionTon: string;
+      carbonReductionMomPercent: number;
+      costSavingsIdrMonthly: string;
+      equivalentHousesPerYear: number;
+    };
   };
 };
 
@@ -338,7 +513,7 @@ export type GetAdminCampaignsData = {
     search?: string;
     city?: string;
     type?: 'Masjid' | 'Mushalla' | 'Gereja' | 'Pura' | 'Vihara' | 'Klenteng';
-    status?: 'DRAFT' | 'AKTIF' | 'INSTALASI' | 'SELESAI' | 'ARCHIVED';
+    status?: 'DRAFT' | 'AKTIF' | 'INSTALASI' | 'SELESAI' | 'ARCHIVED' | 'Completed';
     sortBy?: 'createdAt' | 'deadline' | 'raisedProgress' | 'targetIdr';
     order?: 'asc' | 'desc';
     includeUnpublished?: boolean | null;
@@ -367,6 +542,7 @@ export type GetAdminCampaignsResponses = {
         name: string;
         city: string;
         religionType: string;
+        address?: string;
       };
       status: string;
       targetIdr: number;
@@ -394,6 +570,49 @@ export type GetAdminCampaignsResponses = {
 };
 
 export type GetAdminCampaignsResponse = GetAdminCampaignsResponses[keyof GetAdminCampaignsResponses];
+
+export type PostAdminCampaignsData = {
+  body?: {
+    title: string;
+    description: string;
+    targetIdr: number;
+    panelCapacityKwp: string;
+    estimatedKwhAnnual?: string;
+    estimatedIdrSavings?: number;
+    coverImageUrl?: string;
+    deadline: string;
+    worshipPlaceId: string;
+    fundUsage?: string;
+    energyProducedKwhMonthly?: string;
+    beneficiaries?: number;
+    carbonReductionKgMonthly?: string;
+    electricitySavingsIdrMonthly?: number;
+    impactDescription?: string;
+  };
+  path?: never;
+  query?: never;
+  url: '/admin/campaigns';
+};
+
+export type PostAdminCampaignsErrors = {
+  /**
+   * Unauthorized
+   */
+  401: Error;
+};
+
+export type PostAdminCampaignsError = PostAdminCampaignsErrors[keyof PostAdminCampaignsErrors];
+
+export type PostAdminCampaignsResponses = {
+  /**
+   * Campaign created
+   */
+  201: {
+    data: CampaignDb;
+  };
+};
+
+export type PostAdminCampaignsResponse = PostAdminCampaignsResponses[keyof PostAdminCampaignsResponses];
 
 export type PatchAdminCampaignsByIdStatusData = {
   body?: {
@@ -858,6 +1077,229 @@ export type GetAdminCampaignsByIdActivitiesResponses = {
 
 export type GetAdminCampaignsByIdActivitiesResponse = GetAdminCampaignsByIdActivitiesResponses[keyof GetAdminCampaignsByIdActivitiesResponses];
 
+export type PostAdminUploadsPresignData = {
+  body?: {
+    purpose: 'campaign';
+    kind: 'cover' | 'gallery' | 'transparency' | 'installation' | 'report';
+    mimeType: string;
+    sizeBytes: number;
+    originalFileName: string;
+  };
+  path?: never;
+  query?: never;
+  url: '/admin/uploads/presign';
+};
+
+export type PostAdminUploadsPresignErrors = {
+  /**
+   * Invalid asset input
+   */
+  400: Error;
+};
+
+export type PostAdminUploadsPresignError = PostAdminUploadsPresignErrors[keyof PostAdminUploadsPresignErrors];
+
+export type PostAdminUploadsPresignResponses = {
+  /**
+   * Upload session created
+   */
+  201: {
+    assetId: string;
+    storageKey: string;
+    publicUrl: string;
+    upload: {
+      method: string;
+      url: string;
+      headers: {
+        [key: string]: string;
+      };
+      expiresAt: string;
+    };
+  };
+};
+
+export type PostAdminUploadsPresignResponse = PostAdminUploadsPresignResponses[keyof PostAdminUploadsPresignResponses];
+
+export type GetAdminCampaignsByIdEnergyData = {
+  body?: never;
+  path: {
+    id: string;
+  };
+  query?: {
+    page?: number;
+    limit?: number;
+  };
+  url: '/admin/campaigns/{id}/energy';
+};
+
+export type GetAdminCampaignsByIdEnergyErrors = {
+  /**
+   * Dashboard not available
+   */
+  403: Error;
+  /**
+   * Campaign not found
+   */
+  404: Error;
+};
+
+export type GetAdminCampaignsByIdEnergyError = GetAdminCampaignsByIdEnergyErrors[keyof GetAdminCampaignsByIdEnergyErrors];
+
+export type GetAdminCampaignsByIdEnergyResponses = {
+  /**
+   * List of energy records
+   */
+  200: {
+    summary: {
+      totalKwhProduced: number;
+      totalIdrSaved: number;
+      totalKgCo2Reduced: number;
+    };
+    data: Array<Energy>;
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+    };
+  };
+};
+
+export type GetAdminCampaignsByIdEnergyResponse = GetAdminCampaignsByIdEnergyResponses[keyof GetAdminCampaignsByIdEnergyResponses];
+
+export type PostAdminCampaignsByIdEnergyData = {
+  body?: {
+    month: string;
+    kwhProduced: number;
+    idrSaved: number;
+    kgCo2Reduced: number;
+  };
+  path: {
+    id: string;
+  };
+  query?: never;
+  url: '/admin/campaigns/{id}/energy';
+};
+
+export type PostAdminCampaignsByIdEnergyErrors = {
+  /**
+   * Campaign not found
+   */
+  404: Error;
+  /**
+   * Record already exists for this month
+   */
+  409: Error;
+};
+
+export type PostAdminCampaignsByIdEnergyError = PostAdminCampaignsByIdEnergyErrors[keyof PostAdminCampaignsByIdEnergyErrors];
+
+export type PostAdminCampaignsByIdEnergyResponses = {
+  /**
+   * Energy record created
+   */
+  201: Energy;
+};
+
+export type PostAdminCampaignsByIdEnergyResponse = PostAdminCampaignsByIdEnergyResponses[keyof PostAdminCampaignsByIdEnergyResponses];
+
+export type PutAdminCampaignsByIdEnergyData = {
+  body?: {
+    month: string;
+    kwhProduced: number;
+    idrSaved: number;
+    kgCo2Reduced: number;
+  };
+  path: {
+    id: string;
+  };
+  query?: never;
+  url: '/admin/campaigns/{id}/energy';
+};
+
+export type PutAdminCampaignsByIdEnergyErrors = {
+  /**
+   * Campaign not found
+   */
+  404: Error;
+};
+
+export type PutAdminCampaignsByIdEnergyError = PutAdminCampaignsByIdEnergyErrors[keyof PutAdminCampaignsByIdEnergyErrors];
+
+export type PutAdminCampaignsByIdEnergyResponses = {
+  /**
+   * Energy record overwritten
+   */
+  200: Energy;
+};
+
+export type PutAdminCampaignsByIdEnergyResponse = PutAdminCampaignsByIdEnergyResponses[keyof PutAdminCampaignsByIdEnergyResponses];
+
+export type DeleteAdminCampaignsByIdEnergyByMonthData = {
+  body?: never;
+  path: {
+    id: string;
+    month: string;
+  };
+  query?: never;
+  url: '/admin/campaigns/{id}/energy/{month}';
+};
+
+export type DeleteAdminCampaignsByIdEnergyByMonthErrors = {
+  /**
+   * Record not found
+   */
+  404: Error;
+};
+
+export type DeleteAdminCampaignsByIdEnergyByMonthError =
+  DeleteAdminCampaignsByIdEnergyByMonthErrors[keyof DeleteAdminCampaignsByIdEnergyByMonthErrors];
+
+export type DeleteAdminCampaignsByIdEnergyByMonthResponses = {
+  /**
+   * Energy record deleted
+   */
+  200: {
+    success: true;
+  };
+};
+
+export type DeleteAdminCampaignsByIdEnergyByMonthResponse =
+  DeleteAdminCampaignsByIdEnergyByMonthResponses[keyof DeleteAdminCampaignsByIdEnergyByMonthResponses];
+
+export type PatchAdminCampaignsByIdEnergyByMonthData = {
+  body?: {
+    month?: string;
+    kwhProduced?: number;
+    idrSaved?: number;
+    kgCo2Reduced?: number;
+  };
+  path: {
+    id: string;
+    month: string;
+  };
+  query?: never;
+  url: '/admin/campaigns/{id}/energy/{month}';
+};
+
+export type PatchAdminCampaignsByIdEnergyByMonthErrors = {
+  /**
+   * Record not found
+   */
+  404: Error;
+};
+
+export type PatchAdminCampaignsByIdEnergyByMonthError = PatchAdminCampaignsByIdEnergyByMonthErrors[keyof PatchAdminCampaignsByIdEnergyByMonthErrors];
+
+export type PatchAdminCampaignsByIdEnergyByMonthResponses = {
+  /**
+   * Energy record updated
+   */
+  200: Energy;
+};
+
+export type PatchAdminCampaignsByIdEnergyByMonthResponse =
+  PatchAdminCampaignsByIdEnergyByMonthResponses[keyof PatchAdminCampaignsByIdEnergyByMonthResponses];
+
 export type SocialSignInPostData = {
   body: {
     /**
@@ -937,13 +1379,13 @@ export type SocialSignInPostError = SocialSignInPostErrors[keyof SocialSignInPos
 
 export type SocialSignInPostResponses = {
   /**
-   * Session response when idToken is provided
+   * Returns session details when idToken is provided, or an authorize URL otherwise
    */
   200: {
-    token: string;
-    user: User;
+    token?: string;
+    user?: User;
     url?: string;
-    redirect: false;
+    redirect: boolean;
   };
 };
 
