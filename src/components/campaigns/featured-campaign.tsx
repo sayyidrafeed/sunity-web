@@ -6,9 +6,15 @@ import { featuredCampaigns, type FeaturedCampaignItem } from '@/data/featured-ca
 
 interface FeaturedCampaignProps {
   campaigns?: FeaturedCampaignItem[];
+  donateButtonLabel?: string;
+  sectionTitle?: string;
 }
 
-export function FeaturedCampaign({ campaigns = featuredCampaigns }: FeaturedCampaignProps) {
+export function FeaturedCampaign({
+  campaigns = featuredCampaigns,
+  donateButtonLabel = 'Donasi Sekarang',
+  sectionTitle = 'Butuh Dukungan',
+}: FeaturedCampaignProps) {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
 
@@ -38,7 +44,7 @@ export function FeaturedCampaign({ campaigns = featuredCampaigns }: FeaturedCamp
     <section className="mt-4">
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-2">
-          <h2 className="font-outfit text-2xl font-bold text-brand-text">Butuh Dukungan</h2>
+          <h2 className="font-outfit text-2xl font-bold text-brand-text">{sectionTitle}</h2>
 
           <div className="h-px w-full bg-border" />
         </div>
@@ -55,8 +61,8 @@ export function FeaturedCampaign({ campaigns = featuredCampaigns }: FeaturedCamp
               <div className="relative z-10 flex flex-col gap-8">
                 <h3 className="max-w-[380px] font-outfit text-[40px] font-bold leading-[1.15] tracking-[-0.02em]">{activeCampaign.title}</h3>
 
-                <a href="#" className="w-fit text-sm font-medium underline underline-offset-4 opacity-90 hover:opacity-100">
-                  Donasi Sekarang
+                <a href={activeCampaign.url} className="w-fit text-sm font-medium underline underline-offset-4 opacity-90 hover:opacity-100">
+                  {donateButtonLabel}
                 </a>
               </div>
 
