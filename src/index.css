@@ -7,6 +7,8 @@
   --radius: 0.625rem;
   --brand-yellow: #f7c85c;
   --brand-green: #2f6b3f;
+  --brand-green-light: #4fa865;
+  --brand-green-glow: #7be495;
   --brand-surface: #faf9f6;
   --brand-text: #1f1f1d;
   --brand-heading: #2f6b3f;
@@ -47,6 +49,8 @@
   --brand-text: #e5e5e3;
   --brand-heading: #6dbf8a;
   --brand-green: #6dbf8a;
+  --brand-green-light: #8dd4a3;
+  --brand-green-glow: #a8e6bd;
   --brand-yellow: #f7c85c;
   --brand-gray: #5a5a57;
   --brand-light-gray: #a3a39e;
@@ -84,6 +88,8 @@
   --font-jakarta: 'Plus Jakarta Sans', sans-serif;
   --color-brand-yellow: var(--brand-yellow);
   --color-brand-green: var(--brand-green);
+  --color-brand-green-light: var(--brand-green-light);
+  --color-brand-green-glow: var(--brand-green-glow);
   --color-brand-surface: var(--brand-surface);
   --color-brand-text: var(--brand-text);
   --color-brand-heading: var(--brand-heading);
