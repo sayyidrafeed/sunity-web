@@ -1,39 +1,60 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router';
+import { useQuery } from '@tanstack/react-query';
+import { useNavigate, useLocation } from 'react-router';
+import { authClient, sessionQueryOptions } from '@/lib/auth/client';
 import { APP_NAME, LOGIN_PAGE, IMAGES } from '@/lib/constants';
+import { LoaderCircle } from 'lucide-react';
 
 export function LoginPage() {
-  const navigate = useNavigate();
   const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  // Handle simulated login flow with proper cleanup
+  const { data: session, isLoading: isSessionLoading } = useQuery(sessionQueryOptions());
+
   useEffect(() => {
-    if (status !== 'loading') {
-      return;
+    if (!isSessionLoading && session) {
+      const from = (location.state as { from?: { pathname: string } })?.from?.pathname || '/admin/dashboard';
+      void navigate(from, { replace: true });
     }
+  }, [session, isSessionLoading, navigate, location]);
 
-    const timeoutId = setTimeout(() => {
-      // Toggle between success and error for testing purposes based on a random or sequential logic
-      // We will make it error on first try, success on second try to demonstrate both states
-      const attempts = Number(sessionStorage.getItem('login_attempts') || '0');
-
-      if (attempts === 0) {
-        sessionStorage.setItem('login_attempts', '1');
-        setStatus('error');
-      } else {
-        sessionStorage.removeItem('login_attempts');
-        // Simulated success redirect
-        navigate('/admin/dashboard');
-      }
-    }, 1500);
-
-    // Cleanup: clear timeout if component unmounts or status changes
-    return () => clearTimeout(timeoutId);
-  }, [status, navigate]);
-
-  const handleLogin = () => {
+  const handleLogin = async () => {
     setStatus('loading');
+    try {
+      const { error } = await authClient.signIn.social({
+        provider: 'google',
+        callbackURL: '/admin/dashboard',
+      });
+
+      if (error) {
+        setStatus('error');
+        // eslint-disable-next-line no-console
+        console.error('Google Sign In failed:', error);
+      }
+    } catch (err) {
+      setStatus('error');
+      // eslint-disable-next-line no-console
+      console.error('Google Sign In error:', err);
+    }
   };
+
+  if (isSessionLoading) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-brand-surface gap-4">
+        <div className="flex flex-row items-center gap-[13px] animate-pulse">
+          <img src="/sunity-admin-logo.avif" alt="Sunity logo mark" className="w-[38px] h-[52px] object-contain flex-shrink-0" />
+          <span className="font-outfit font-bold text-[48px] leading-[60px] tracking-[-0.006em]" style={{ color: '#2F6B3F' }}>
+            Sunity
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <LoaderCircle className="h-4 w-4 animate-spin text-brand-green" />
+          <p className="font-jakarta text-sm text-[#A3A39E]">Memeriksa sesi...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative flex min-h-[calc(100vh-6rem)] w-full overflow-hidden bg-brand-surface">
