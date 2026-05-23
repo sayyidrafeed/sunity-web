@@ -14,6 +14,7 @@ export const LOGIN_PAGE = {
   BUTTON_IDLE: 'Masuk dengan Google',
   BUTTON_LOADING: 'Memproses..',
   ERROR_MESSAGE: 'Gagal masuk dengan Google. Silakan coba lagi.',
+  CHECKING_SESSION: 'Memeriksa sesi...',
 } as const;
 
 export const IMAGES = {
