@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useLocation } from 'react-router';
 import { authClient, sessionQueryOptions } from '@/lib/auth/client';
+import { env } from '@/config';
 import { APP_NAME, LOGIN_PAGE, IMAGES } from '@/lib/constants';
 import { LoaderCircle } from 'lucide-react';
 
@@ -24,7 +25,7 @@ export function LoginPage() {
     try {
       const { error } = await authClient.signIn.social({
         provider: 'google',
-        callbackURL: '/admin/dashboard',
+        callbackURL: env.VITE_APP_URL ? new URL('/admin/dashboard', env.VITE_APP_URL).toString() : '/admin/dashboard',
       });
 
       if (error) {
