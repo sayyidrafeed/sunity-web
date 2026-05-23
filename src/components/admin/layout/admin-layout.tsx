@@ -22,9 +22,7 @@ export function AdminLayout() {
       <div className="flex min-h-screen flex-col items-center justify-center bg-brand-surface gap-4">
         <div className="flex flex-row items-center gap-[13px] animate-pulse">
           <img src="/sunity-admin-logo.avif" alt="Sunity logo mark" className="w-[38px] h-[52px] object-contain flex-shrink-0" />
-          <span className="font-outfit font-bold text-[48px] leading-[60px] tracking-[-0.006em]" style={{ color: '#2F6B3F' }}>
-            Sunity
-          </span>
+          <span className="font-outfit font-bold text-[48px] leading-[60px] tracking-[-0.006em] text-brand-green">Sunity</span>
         </div>
         <div className="flex items-center gap-2">
           <LoaderCircle className="h-4 w-4 animate-spin text-brand-green" />
