@@ -1,12 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import type { EnergyData, EnergyKPI, EnergyChartData, EnergyDataManualInputPayload } from '@/types/energy-monitoring';
+import type { GetAdminCampaignsByIdEnergyResponse } from '@/lib/api/generated/types.gen';
 import {
   postAdminCampaignsByIdEnergy,
   putAdminCampaignsByIdEnergy,
   deleteAdminCampaignsByIdEnergyByMonth,
   postAdminCampaignsByIdEnergyBulk,
 } from '@/lib/api/generated/sdk.gen';
-import { getAdminCampaignsOptions, getAdminCampaignsByIdEnergyOptions } from '@/lib/api/generated/@tanstack/react-query.gen';
+import { getAdminCampaignsOptions, getAdminCampaignsByIdEnergyOptions, getAdminCampaignsByIdEnergyQueryKey } from '@/lib/api/generated/@tanstack/react-query.gen';
 
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
 
@@ -84,10 +85,11 @@ export function useDeleteEnergyData() {
   return useMutation({
     mutationFn: async (id: string) => {
       if (!campaignId) throw new Error('Campaign ID is required');
-      const cached = queryClient.getQueryData<{ tableData: EnergyData[] }>(['energy-monitoring']);
-      const item = cached?.tableData.find((d) => d.id === id);
+      const queryKey = getAdminCampaignsByIdEnergyQueryKey({ path: { id: campaignId } });
+      const cached = queryClient.getQueryData<GetAdminCampaignsByIdEnergyResponse>(queryKey);
+      const item = cached?.data?.find((d) => d.id === id);
       if (!item) throw new Error('Item not found in cache');
-      const monthStr = `${item.year}-${String(item.month).padStart(2, '0')}`;
+      const monthStr = item.month;
 
       await deleteAdminCampaignsByIdEnergyByMonth({
         path: { id: campaignId, month: monthStr },
@@ -96,7 +98,9 @@ export function useDeleteEnergyData() {
       return id;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['energy-monitoring'] });
+      if (campaignId) {
+        queryClient.invalidateQueries({ queryKey: getAdminCampaignsByIdEnergyQueryKey({ path: { id: campaignId } }) });
+      }
     },
   });
 }
@@ -123,7 +127,9 @@ export function useUpdateEnergyData() {
       return payload;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['energy-monitoring'] });
+      if (campaignId) {
+        queryClient.invalidateQueries({ queryKey: getAdminCampaignsByIdEnergyQueryKey({ path: { id: campaignId } }) });
+      }
     },
   });
 }
@@ -150,7 +156,9 @@ export function useCreateEnergyDataManual() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['energy-monitoring'] });
+      if (campaignId) {
+        queryClient.invalidateQueries({ queryKey: getAdminCampaignsByIdEnergyQueryKey({ path: { id: campaignId } }) });
+      }
     },
   });
 }
@@ -160,9 +168,9 @@ export function useCreateEnergyDataCsv() {
   const { data: campaignId } = useAdminCampaignId();
 
   return useMutation({
-    mutationFn: async (data: Omit<EnergyData, 'id' | 'year'>[]) => {
+    mutationFn: async (params: { data: Omit<EnergyData, 'id' | 'year'>[]; year: number }) => {
       if (!campaignId) throw new Error('Campaign ID is required');
-      const year = new Date().getFullYear();
+      const { data, year } = params;
       const records = data.map((item) => {
         const monthStr = `${year}-${String(item.month).padStart(2, '0')}`;
         return {
@@ -181,7 +189,9 @@ export function useCreateEnergyDataCsv() {
       return responseData;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['energy-monitoring'] });
+      if (campaignId) {
+        queryClient.invalidateQueries({ queryKey: getAdminCampaignsByIdEnergyQueryKey({ path: { id: campaignId } }) });
+      }
     },
   });
 }
