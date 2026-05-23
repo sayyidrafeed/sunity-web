@@ -15,6 +15,7 @@ import {
   getAdminCampaignsByIdActivities,
   getAdminCampaignsByIdEnergy,
   getAdminCampaignsByIdExpenses,
+  getAdminDashboard,
   getAdminWorshipPlaces,
   getAdminWorshipPlacesById,
   getCallbackById,
@@ -41,6 +42,7 @@ import {
   postAdminCampaigns,
   postAdminCampaignsByIdAssets,
   postAdminCampaignsByIdEnergy,
+  postAdminCampaignsByIdEnergyBulk,
   postAdminCampaignsByIdExpenses,
   postAdminUploadsPresign,
   postAdminWorshipPlaces,
@@ -100,6 +102,9 @@ import type {
   GetAdminCampaignsData,
   GetAdminCampaignsError,
   GetAdminCampaignsResponse,
+  GetAdminDashboardData,
+  GetAdminDashboardError,
+  GetAdminDashboardResponse,
   GetAdminWorshipPlacesByIdData,
   GetAdminWorshipPlacesByIdError,
   GetAdminWorshipPlacesByIdResponse,
@@ -164,6 +169,9 @@ import type {
   PostAdminCampaignsByIdAssetsData,
   PostAdminCampaignsByIdAssetsError,
   PostAdminCampaignsByIdAssetsResponse,
+  PostAdminCampaignsByIdEnergyBulkData,
+  PostAdminCampaignsByIdEnergyBulkError,
+  PostAdminCampaignsByIdEnergyBulkResponse,
   PostAdminCampaignsByIdEnergyData,
   PostAdminCampaignsByIdEnergyError,
   PostAdminCampaignsByIdEnergyResponse,
@@ -1175,6 +1183,54 @@ export const patchAdminCampaignsByIdEnergyByMonthMutation = (
   };
   return mutationOptions;
 };
+
+/**
+ * Bulk upload energy records
+ */
+export const postAdminCampaignsByIdEnergyBulkMutation = (
+  options?: Partial<Options<PostAdminCampaignsByIdEnergyBulkData>>
+): UseMutationOptions<
+  PostAdminCampaignsByIdEnergyBulkResponse,
+  PostAdminCampaignsByIdEnergyBulkError,
+  Options<PostAdminCampaignsByIdEnergyBulkData>
+> => {
+  const mutationOptions: UseMutationOptions<
+    PostAdminCampaignsByIdEnergyBulkResponse,
+    PostAdminCampaignsByIdEnergyBulkError,
+    Options<PostAdminCampaignsByIdEnergyBulkData>
+  > = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await postAdminCampaignsByIdEnergyBulk({
+        ...options,
+        ...fnOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};
+
+export const getAdminDashboardQueryKey = (options: Options<GetAdminDashboardData>) => createQueryKey('getAdminDashboard', options);
+
+/**
+ * Get admin dashboard summary
+ *
+ * Returns aggregated metrics and recent data for a specific campaign
+ */
+export const getAdminDashboardOptions = (options: Options<GetAdminDashboardData>) =>
+  queryOptions<GetAdminDashboardResponse, GetAdminDashboardError, GetAdminDashboardResponse, ReturnType<typeof getAdminDashboardQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+      const { data } = await getAdminDashboard({
+        ...options,
+        ...queryKey[0],
+        signal,
+        throwOnError: true,
+      });
+      return data;
+    },
+    queryKey: getAdminDashboardQueryKey(options),
+  });
 
 /**
  * Sign in with a social provider

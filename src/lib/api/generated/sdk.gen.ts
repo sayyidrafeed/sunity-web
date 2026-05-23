@@ -36,6 +36,9 @@ import type {
   GetAdminCampaignsData,
   GetAdminCampaignsErrors,
   GetAdminCampaignsResponses,
+  GetAdminDashboardData,
+  GetAdminDashboardErrors,
+  GetAdminDashboardResponses,
   GetAdminWorshipPlacesByIdData,
   GetAdminWorshipPlacesByIdErrors,
   GetAdminWorshipPlacesByIdResponses,
@@ -102,6 +105,9 @@ import type {
   PostAdminCampaignsByIdAssetsData,
   PostAdminCampaignsByIdAssetsErrors,
   PostAdminCampaignsByIdAssetsResponses,
+  PostAdminCampaignsByIdEnergyBulkData,
+  PostAdminCampaignsByIdEnergyBulkErrors,
+  PostAdminCampaignsByIdEnergyBulkResponses,
   PostAdminCampaignsByIdEnergyData,
   PostAdminCampaignsByIdEnergyErrors,
   PostAdminCampaignsByIdEnergyResponses,
@@ -614,6 +620,34 @@ export const patchAdminCampaignsByIdEnergyByMonth = <ThrowOnError extends boolea
       'Content-Type': 'application/json',
       ...options.headers,
     },
+  });
+
+/**
+ * Bulk upload energy records
+ */
+export const postAdminCampaignsByIdEnergyBulk = <ThrowOnError extends boolean = false>(
+  options: Options<PostAdminCampaignsByIdEnergyBulkData, ThrowOnError>
+) =>
+  (options.client ?? client).post<PostAdminCampaignsByIdEnergyBulkResponses, PostAdminCampaignsByIdEnergyBulkErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/admin/campaigns/{id}/energy/bulk',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+
+/**
+ * Get admin dashboard summary
+ *
+ * Returns aggregated metrics and recent data for a specific campaign
+ */
+export const getAdminDashboard = <ThrowOnError extends boolean = false>(options: Options<GetAdminDashboardData, ThrowOnError>) =>
+  (options.client ?? client).get<GetAdminDashboardResponses, GetAdminDashboardErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/admin/dashboard',
+    ...options,
   });
 
 /**
