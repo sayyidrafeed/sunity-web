@@ -1,5 +1,7 @@
 import { useParams, useNavigate } from 'react-router';
-import { MOCK_CAMPAIGN_DETAIL, MOCK_DONORS, MOCK_CAMPAIGNS } from '@/data/mock-campaigns';
+import { useQuery } from '@tanstack/react-query';
+import { getCampaignsByIdOptions } from '@/lib/api/generated/@tanstack/react-query.gen';
+import { MOCK_DONORS } from '@/data/mock-campaigns';
 import { CampaignDetailHero } from '@/components/campaigns/campaign-detail-hero';
 import { CampaignMeta } from '@/components/campaigns/campaign-meta';
 import { CampaignTabsList, CampaignTabsContent } from '@/components/campaigns/campaign-tabs';
@@ -7,24 +9,46 @@ import { DonorList } from '@/components/campaigns/donor-list';
 import { DonationActions } from '@/components/campaigns/donation-actions';
 import { Tabs } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, LoaderCircle } from 'lucide-react';
 
 export default function CampaignDetail() {
   const { id, tab = 'ringkasan' } = useParams();
   const navigate = useNavigate();
 
-  // In real app, we would fetch data using the id
-  const campaignListMatch = MOCK_CAMPAIGNS.find((c) => c.id === id);
-  const campaign = {
-    ...MOCK_CAMPAIGN_DETAIL,
-    ...campaignListMatch,
-  };
+  const {
+    data: campaign,
+    isLoading,
+    error,
+  } = useQuery({
+    ...getCampaignsByIdOptions({
+      path: { id: id || '' },
+    }),
+    enabled: !!id,
+  });
+
   const donors = MOCK_DONORS;
 
   const handleTabChange = (value: string) => {
     const path = value === 'ringkasan' ? `/campaigns/${id}` : `/campaigns/${id}/${value}`;
     navigate(path, { replace: true, preventScrollReset: true });
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex h-[80vh] w-full items-center justify-center bg-brand-surface">
+        <LoaderCircle className="h-10 w-10 animate-spin text-brand-green" />
+      </div>
+    );
+  }
+
+  if (error || !campaign) {
+    return (
+      <div className="flex h-[80vh] w-full flex-col items-center justify-center bg-brand-surface gap-4">
+        <p className="text-xl font-semibold text-brand-text">Kampanye tidak ditemukan atau terjadi kesalahan.</p>
+        <Button onClick={() => navigate('/campaigns')}>Kembali ke Daftar Kampanye</Button>
+      </div>
+    );
+  }
 
   return (
     <div className="flex w-full justify-center bg-brand-surface pb-32">

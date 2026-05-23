@@ -50,7 +50,7 @@ export function LoginPage() {
         </div>
         <div className="flex items-center gap-2">
           <LoaderCircle className="h-4 w-4 animate-spin text-brand-green" />
-          <p className="font-jakarta text-sm text-[#A3A39E]">Memeriksa sesi...</p>
+          <p className="font-jakarta text-sm text-[#A3A39E]">{LOGIN_PAGE.CHECKING_SESSION}</p>
         </div>
       </div>
     );

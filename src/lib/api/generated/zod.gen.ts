@@ -84,6 +84,64 @@ export const zEnergy = z.object({
   updatedAt: z.iso.datetime(),
 });
 
+export const zBulkUploadEnergyResponse = z.object({
+  data: z.array(zEnergy),
+  created: z.number(),
+  updated: z.number(),
+});
+
+export const zBulkUploadEnergyBody = z.object({
+  records: z
+    .array(
+      z.object({
+        month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/),
+        kwhProduced: z.number().gte(0),
+        idrSaved: z.int().gte(0),
+        kgCo2Reduced: z.number().gte(0),
+      })
+    )
+    .min(1)
+    .max(100),
+});
+
+export const zAdminDashboardResponse = z.object({
+  campaign: z.object({
+    id: z.uuid(),
+    title: z.string(),
+    status: z.string(),
+    deadline: z.iso.datetime(),
+  }),
+  stats: z.object({
+    donorCount: z.int().gte(0),
+    donorCountToday: z.int().gte(0),
+    daysRemaining: z.int().gte(0),
+    campaignStatus: z.string(),
+  }),
+  donation: z.object({
+    raisedIdr: z.int().gte(0),
+    targetIdr: z.int().gte(0),
+    progressPercent: z.int().gte(0).lte(100),
+  }),
+  energyImpact: z
+    .object({
+      totalEnergyKwh: z.string(),
+      averageEnergyPerDayKwh: z.string(),
+      carbonReductionTon: z.string(),
+      costSavingsIdrMonthly: z.string(),
+      carbonReductionMomPercent: z.int(),
+    })
+    .optional(),
+  recentDonations: z.array(
+    z.object({
+      id: z.uuid(),
+      donorName: z.string(),
+      amount: z.int().gt(0),
+      date: z.iso.datetime(),
+      method: z.string(),
+    })
+  ),
+});
+
 export const zUser = z.object({
   id: z.string().optional(),
   name: z.string(),
@@ -862,7 +920,7 @@ export const zPutAdminCampaignsByIdEnergyResponse = zEnergy;
 
 export const zDeleteAdminCampaignsByIdEnergyByMonthPath = z.object({
   id: z.uuid(),
-  month: z.string().length(7),
+  month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/),
 });
 
 /**
@@ -884,13 +942,33 @@ export const zPatchAdminCampaignsByIdEnergyByMonthBody = z.object({
 
 export const zPatchAdminCampaignsByIdEnergyByMonthPath = z.object({
   id: z.uuid(),
-  month: z.string().length(7),
+  month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/),
 });
 
 /**
  * Energy record updated
  */
 export const zPatchAdminCampaignsByIdEnergyByMonthResponse = zEnergy;
+
+export const zPostAdminCampaignsByIdEnergyBulkBody = zBulkUploadEnergyBody;
+
+export const zPostAdminCampaignsByIdEnergyBulkPath = z.object({
+  id: z.uuid(),
+});
+
+/**
+ * Energy records uploaded successfully
+ */
+export const zPostAdminCampaignsByIdEnergyBulkResponse = zBulkUploadEnergyResponse;
+
+export const zGetAdminDashboardQuery = z.object({
+  campaignId: z.uuid(),
+});
+
+/**
+ * Dashboard data
+ */
+export const zGetAdminDashboardResponse = zAdminDashboardResponse;
 
 export const zSocialSignInPostBody = z.object({
   callbackURL: z.unknown().optional(),

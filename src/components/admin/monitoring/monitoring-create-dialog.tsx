@@ -135,13 +135,17 @@ export function MonitoringCreateDialog({ isOpen, onClose }: MonitoringCreateDial
 
   const handleCsvSubmit = () => {
     if (!csvData) return;
-    createCsvMutation.mutate(csvData, {
-      onSuccess: () => {
-        toast.success('Semua data dari CSV berhasil ditambahkan');
-        handleClose();
-      },
-      onError: () => toast.error('Gagal menambahkan data dari CSV'),
-    });
+    const year = form.getValues('year');
+    createCsvMutation.mutate(
+      { data: csvData, year },
+      {
+        onSuccess: () => {
+          toast.success('Semua data dari CSV berhasil ditambahkan');
+          handleClose();
+        },
+        onError: () => toast.error('Gagal menambahkan data dari CSV'),
+      }
+    );
   };
 
   const handleClose = () => {

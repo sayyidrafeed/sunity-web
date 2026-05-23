@@ -3,7 +3,6 @@ import { useSearchParams } from 'react-router';
 import { Search, ChevronDown, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useDebounce } from '@/hooks/use-debounce';
-import { INDONESIA_CITIES } from '@/data/cities';
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
@@ -11,11 +10,24 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
-const RUMAH_IBADAH_OPTIONS = ['Masjid', 'Mushalla', 'Gereja Katolik', 'Gereja Kristen', 'Pura', 'Vihara', 'Klenteng'];
+interface CampaignFilterProps {
+  availableFilters?: {
+    cities?: string[];
+    types?: string[];
+    statuses?: string[];
+  };
+}
 
-const STATUS_OPTIONS = ['Aktif', 'Berhasil'];
+const STATUS_DISPLAY_MAP: Record<string, string> = {
+  AKTIF: 'Aktif',
+  SELESAI: 'Berhasil',
+  INSTALASI: 'Instalasi',
+  DRAFT: 'Draft',
+  ARCHIVED: 'Arsip',
+  COMPLETED: 'Selesai',
+};
 
-export function CampaignFilter() {
+export function CampaignFilter({ availableFilters }: CampaignFilterProps) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Local state for debounced inputs
@@ -59,6 +71,11 @@ export function CampaignFilter() {
     setIsCityPopoverOpen(false);
   };
 
+  // Dynamic filter options with fallbacks
+  const cityOptions = availableFilters?.cities || [];
+  const typeOptions = availableFilters?.types || [];
+  const statusOptions = availableFilters?.statuses || [];
+
   return (
     <div className="flex w-full items-center gap-[11px] py-4">
       <span className="font-jakarta text-lg font-medium text-brand-gray shrink-0">Browse By</span>
@@ -70,7 +87,7 @@ export function CampaignFilter() {
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">Semua Rumah Ibadah</SelectItem>
-          {RUMAH_IBADAH_OPTIONS.map((opt) => (
+          {typeOptions.map((opt) => (
             <SelectItem key={opt} value={opt}>
               {opt}
             </SelectItem>
@@ -101,7 +118,7 @@ export function CampaignFilter() {
                   <Check className={cn('mr-2 h-4 w-4', !searchParams.get('kota') ? 'opacity-100' : 'opacity-0')} />
                   Semua Kota
                 </CommandItem>
-                {INDONESIA_CITIES.map((city) => (
+                {cityOptions.map((city) => (
                   <CommandItem key={city} value={city} onSelect={() => handleCitySelect(city)}>
                     <Check className={cn('mr-2 h-4 w-4', searchParams.get('kota') === city ? 'opacity-100' : 'opacity-0')} />
                     {city}
@@ -120,9 +137,9 @@ export function CampaignFilter() {
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">Semua Status</SelectItem>
-          {STATUS_OPTIONS.map((opt) => (
+          {statusOptions.map((opt) => (
             <SelectItem key={opt} value={opt}>
-              {opt}
+              {STATUS_DISPLAY_MAP[opt.toUpperCase()] || opt}
             </SelectItem>
           ))}
         </SelectContent>

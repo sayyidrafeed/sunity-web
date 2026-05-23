@@ -94,6 +94,55 @@ export type Energy = {
   updatedAt: string;
 };
 
+export type BulkUploadEnergyResponse = {
+  data: Array<Energy>;
+  created: number;
+  updated: number;
+};
+
+export type BulkUploadEnergyBody = {
+  records: Array<{
+    month: string;
+    kwhProduced: number;
+    idrSaved: number;
+    kgCo2Reduced: number;
+  }>;
+};
+
+export type AdminDashboardResponse = {
+  campaign: {
+    id: string;
+    title: string;
+    status: string;
+    deadline: string;
+  };
+  stats: {
+    donorCount: number;
+    donorCountToday: number;
+    daysRemaining: number;
+    campaignStatus: string;
+  };
+  donation: {
+    raisedIdr: number;
+    targetIdr: number;
+    progressPercent: number;
+  };
+  energyImpact?: {
+    totalEnergyKwh: string;
+    averageEnergyPerDayKwh: string;
+    carbonReductionTon: string;
+    costSavingsIdrMonthly: string;
+    carbonReductionMomPercent: number;
+  };
+  recentDonations: Array<{
+    id: string;
+    donorName: string;
+    amount: number;
+    date: string;
+    method: string;
+  }>;
+};
+
 export type User = {
   id?: string;
   name: string;
@@ -1299,6 +1348,76 @@ export type PatchAdminCampaignsByIdEnergyByMonthResponses = {
 
 export type PatchAdminCampaignsByIdEnergyByMonthResponse =
   PatchAdminCampaignsByIdEnergyByMonthResponses[keyof PatchAdminCampaignsByIdEnergyByMonthResponses];
+
+export type PostAdminCampaignsByIdEnergyBulkData = {
+  body?: BulkUploadEnergyBody;
+  path: {
+    id: string;
+  };
+  query?: never;
+  url: '/admin/campaigns/{id}/energy/bulk';
+};
+
+export type PostAdminCampaignsByIdEnergyBulkErrors = {
+  /**
+   * Invalid request body
+   */
+  400: Error;
+  /**
+   * Campaign not found
+   */
+  404: Error;
+};
+
+export type PostAdminCampaignsByIdEnergyBulkError = PostAdminCampaignsByIdEnergyBulkErrors[keyof PostAdminCampaignsByIdEnergyBulkErrors];
+
+export type PostAdminCampaignsByIdEnergyBulkResponses = {
+  /**
+   * Energy records uploaded successfully
+   */
+  201: BulkUploadEnergyResponse;
+};
+
+export type PostAdminCampaignsByIdEnergyBulkResponse = PostAdminCampaignsByIdEnergyBulkResponses[keyof PostAdminCampaignsByIdEnergyBulkResponses];
+
+export type GetAdminDashboardData = {
+  body?: never;
+  path?: never;
+  query: {
+    campaignId: string;
+  };
+  url: '/admin/dashboard';
+};
+
+export type GetAdminDashboardErrors = {
+  /**
+   * Bad Request
+   */
+  400: Error;
+  /**
+   * Unauthorized
+   */
+  401: Error;
+  /**
+   * Forbidden
+   */
+  403: Error;
+  /**
+   * Campaign not found
+   */
+  404: Error;
+};
+
+export type GetAdminDashboardError = GetAdminDashboardErrors[keyof GetAdminDashboardErrors];
+
+export type GetAdminDashboardResponses = {
+  /**
+   * Dashboard data
+   */
+  200: AdminDashboardResponse;
+};
+
+export type GetAdminDashboardResponse = GetAdminDashboardResponses[keyof GetAdminDashboardResponses];
 
 export type SocialSignInPostData = {
   body: {
