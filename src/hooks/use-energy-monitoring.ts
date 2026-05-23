@@ -7,7 +7,11 @@ import {
   deleteAdminCampaignsByIdEnergyByMonth,
   postAdminCampaignsByIdEnergyBulk,
 } from '@/lib/api/generated/sdk.gen';
-import { getAdminCampaignsOptions, getAdminCampaignsByIdEnergyOptions, getAdminCampaignsByIdEnergyQueryKey } from '@/lib/api/generated/@tanstack/react-query.gen';
+import {
+  getAdminCampaignsOptions,
+  getAdminCampaignsByIdEnergyOptions,
+  getAdminCampaignsByIdEnergyQueryKey,
+} from '@/lib/api/generated/@tanstack/react-query.gen';
 
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
 

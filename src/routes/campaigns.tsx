@@ -26,7 +26,14 @@ export default function Campaigns() {
 
   const rawStatus = searchParams.get('status');
   let status: 'DRAFT' | 'AKTIF' | 'INSTALASI' | 'SELESAI' | 'ARCHIVED' | 'Completed' | undefined = undefined;
-  if (rawStatus === 'AKTIF' || rawStatus === 'DRAFT' || rawStatus === 'INSTALASI' || rawStatus === 'SELESAI' || rawStatus === 'ARCHIVED' || rawStatus === 'Completed') {
+  if (
+    rawStatus === 'AKTIF' ||
+    rawStatus === 'DRAFT' ||
+    rawStatus === 'INSTALASI' ||
+    rawStatus === 'SELESAI' ||
+    rawStatus === 'ARCHIVED' ||
+    rawStatus === 'Completed'
+  ) {
     status = rawStatus;
   }
 
