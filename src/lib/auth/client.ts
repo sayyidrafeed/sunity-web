@@ -3,7 +3,7 @@ import { queryOptions } from '@tanstack/react-query';
 import { env } from '@/config';
 
 export const authClient = createAuthClient({
-  baseURL: env.VITE_API_URL,
+  baseURL: env.VITE_AUTH_BASE_URL,
 });
 
 export const sessionQueryOptions = () =>

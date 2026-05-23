@@ -1,4 +1,6 @@
 import { NavLink, useNavigate } from 'react-router';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { authClient, sessionQueryOptions } from '@/lib/auth/client';
 
 interface NavItem {
   label: string;
@@ -34,10 +36,19 @@ const ICON_FILTER_WHITE = 'brightness(0) invert(1)';
 
 export function AdminSidebar() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { data: session } = useQuery(sessionQueryOptions());
+  const user = session?.user;
 
-  const handleLogout = () => {
-    // TODO: clear auth state when backend is integrated
-    void navigate('/');
+  const handleLogout = async () => {
+    try {
+      await authClient.signOut();
+      queryClient.setQueryData(['auth', 'session'], null);
+      void navigate('/', { replace: true });
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('Logout error:', err);
+    }
   };
 
   return (
@@ -114,12 +125,26 @@ export function AdminSidebar() {
           role="complementary"
           aria-label="Profil admin"
         >
-          {/* Avatar placeholder */}
-          <div className="w-[38px] h-[38px] rounded-full flex-shrink-0" style={{ backgroundColor: '#D9D9D9' }} aria-hidden="true" />
+          {/* Avatar / User Image */}
+          {user?.image ? (
+            <img src={user.image} alt={user.name || 'Profil admin'} className="w-[38px] h-[38px] rounded-full object-cover flex-shrink-0" />
+          ) : (
+            <div
+              className="w-[38px] h-[38px] rounded-full flex-shrink-0 flex items-center justify-center font-jakarta font-bold text-sm bg-brand-green/10 text-brand-green"
+              aria-hidden="true"
+            >
+              {user?.name?.charAt(0).toUpperCase() || 'A'}
+            </div>
+          )}
 
           {/* Info */}
-          <div className="flex flex-col gap-[4px]">
-            <span className="font-jakarta font-semibold text-[16px] leading-[20px] tracking-[-0.006em] text-[#1F1F1D]">Habatusauda</span>
+          <div className="flex flex-col gap-[4px] overflow-hidden">
+            <span
+              className="font-jakarta font-semibold text-[16px] leading-[20px] tracking-[-0.006em] text-[#1F1F1D] truncate max-w-[130px]"
+              title={user?.name}
+            >
+              {user?.name || 'Habatusauda'}
+            </span>
             <span className="font-jakarta font-normal text-[14px] leading-[18px] tracking-[-0.006em] text-[#A3A39E]">Administrator</span>
           </div>
         </div>
