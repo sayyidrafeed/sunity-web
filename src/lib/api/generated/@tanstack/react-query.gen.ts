@@ -7,17 +7,22 @@ import {
   changeEmailPost,
   changePasswordPost,
   deleteAdminCampaignsById,
+  deleteAdminCampaignsByIdEnergyByMonth,
   deleteAdminCampaignsByIdExpensesByExpenseId,
   deleteUserPost,
   getAccountInfo,
   getAdminCampaigns,
   getAdminCampaignsByIdActivities,
+  getAdminCampaignsByIdEnergy,
   getAdminCampaignsByIdExpenses,
+  getAdminDashboard,
   getAdminWorshipPlaces,
   getAdminWorshipPlacesById,
   getCallbackById,
   getCampaigns,
   getCampaignsById,
+  getCampaignsByIdDetails,
+  getCampaignsByIdSummary,
   getDeleteUserCallback,
   getError,
   getOk,
@@ -28,13 +33,18 @@ import {
   listUserAccountsGet,
   listUserSessionsGet,
   type Options,
+  patchAdminCampaignsByIdEnergyByMonth,
   patchAdminCampaignsByIdExpensesByExpenseId,
   patchAdminCampaignsByIdPublish,
   patchAdminCampaignsByIdStatus,
   patchAdminWorshipPlacesById,
   patchCampaignsById,
+  postAdminCampaigns,
   postAdminCampaignsByIdAssets,
+  postAdminCampaignsByIdEnergy,
+  postAdminCampaignsByIdEnergyBulk,
   postAdminCampaignsByIdExpenses,
+  postAdminUploadsPresign,
   postAdminWorshipPlaces,
   postAssetsUpload,
   postCallbackById,
@@ -45,6 +55,7 @@ import {
   postRevokeSession,
   postRevokeSessions,
   postUnlinkAccount,
+  putAdminCampaignsByIdEnergy,
   requestPasswordResetPost,
   resetPasswordCallbackGet,
   resetPasswordPost,
@@ -65,6 +76,9 @@ import type {
   ChangePasswordPostError,
   ChangePasswordPostResponse,
   DeleteAdminCampaignsByIdData,
+  DeleteAdminCampaignsByIdEnergyByMonthData,
+  DeleteAdminCampaignsByIdEnergyByMonthError,
+  DeleteAdminCampaignsByIdEnergyByMonthResponse,
   DeleteAdminCampaignsByIdError,
   DeleteAdminCampaignsByIdExpensesByExpenseIdData,
   DeleteAdminCampaignsByIdExpensesByExpenseIdError,
@@ -79,12 +93,18 @@ import type {
   GetAdminCampaignsByIdActivitiesData,
   GetAdminCampaignsByIdActivitiesError,
   GetAdminCampaignsByIdActivitiesResponse,
+  GetAdminCampaignsByIdEnergyData,
+  GetAdminCampaignsByIdEnergyError,
+  GetAdminCampaignsByIdEnergyResponse,
   GetAdminCampaignsByIdExpensesData,
   GetAdminCampaignsByIdExpensesError,
   GetAdminCampaignsByIdExpensesResponse,
   GetAdminCampaignsData,
   GetAdminCampaignsError,
   GetAdminCampaignsResponse,
+  GetAdminDashboardData,
+  GetAdminDashboardError,
+  GetAdminDashboardResponse,
   GetAdminWorshipPlacesByIdData,
   GetAdminWorshipPlacesByIdError,
   GetAdminWorshipPlacesByIdResponse,
@@ -93,8 +113,14 @@ import type {
   GetCallbackByIdData,
   GetCallbackByIdError,
   GetCampaignsByIdData,
+  GetCampaignsByIdDetailsData,
+  GetCampaignsByIdDetailsError,
+  GetCampaignsByIdDetailsResponse,
   GetCampaignsByIdError,
   GetCampaignsByIdResponse,
+  GetCampaignsByIdSummaryData,
+  GetCampaignsByIdSummaryError,
+  GetCampaignsByIdSummaryResponse,
   GetCampaignsData,
   GetCampaignsResponse,
   GetDeleteUserCallbackData,
@@ -122,6 +148,9 @@ import type {
   ListUserSessionsGetData,
   ListUserSessionsGetError,
   ListUserSessionsGetResponse,
+  PatchAdminCampaignsByIdEnergyByMonthData,
+  PatchAdminCampaignsByIdEnergyByMonthError,
+  PatchAdminCampaignsByIdEnergyByMonthResponse,
   PatchAdminCampaignsByIdExpensesByExpenseIdData,
   PatchAdminCampaignsByIdExpensesByExpenseIdError,
   PatchAdminCampaignsByIdExpensesByExpenseIdResponse,
@@ -140,9 +169,21 @@ import type {
   PostAdminCampaignsByIdAssetsData,
   PostAdminCampaignsByIdAssetsError,
   PostAdminCampaignsByIdAssetsResponse,
+  PostAdminCampaignsByIdEnergyBulkData,
+  PostAdminCampaignsByIdEnergyBulkError,
+  PostAdminCampaignsByIdEnergyBulkResponse,
+  PostAdminCampaignsByIdEnergyData,
+  PostAdminCampaignsByIdEnergyError,
+  PostAdminCampaignsByIdEnergyResponse,
   PostAdminCampaignsByIdExpensesData,
   PostAdminCampaignsByIdExpensesError,
   PostAdminCampaignsByIdExpensesResponse,
+  PostAdminCampaignsData,
+  PostAdminCampaignsError,
+  PostAdminCampaignsResponse,
+  PostAdminUploadsPresignData,
+  PostAdminUploadsPresignError,
+  PostAdminUploadsPresignResponse,
   PostAdminWorshipPlacesData,
   PostAdminWorshipPlacesResponse,
   PostAssetsUploadData,
@@ -170,6 +211,9 @@ import type {
   PostUnlinkAccountData,
   PostUnlinkAccountError,
   PostUnlinkAccountResponse,
+  PutAdminCampaignsByIdEnergyData,
+  PutAdminCampaignsByIdEnergyError,
+  PutAdminCampaignsByIdEnergyResponse,
   RequestPasswordResetPostData,
   RequestPasswordResetPostError,
   RequestPasswordResetPostResponse,
@@ -350,6 +394,54 @@ export const postCampaignsMutation = (
   return mutationOptions;
 };
 
+export const getCampaignsByIdSummaryQueryKey = (options: Options<GetCampaignsByIdSummaryData>) => createQueryKey('getCampaignsByIdSummary', options);
+
+/**
+ * Get campaign summary
+ */
+export const getCampaignsByIdSummaryOptions = (options: Options<GetCampaignsByIdSummaryData>) =>
+  queryOptions<
+    GetCampaignsByIdSummaryResponse,
+    GetCampaignsByIdSummaryError,
+    GetCampaignsByIdSummaryResponse,
+    ReturnType<typeof getCampaignsByIdSummaryQueryKey>
+  >({
+    queryFn: async ({ queryKey, signal }) => {
+      const { data } = await getCampaignsByIdSummary({
+        ...options,
+        ...queryKey[0],
+        signal,
+        throwOnError: true,
+      });
+      return data;
+    },
+    queryKey: getCampaignsByIdSummaryQueryKey(options),
+  });
+
+export const getCampaignsByIdDetailsQueryKey = (options: Options<GetCampaignsByIdDetailsData>) => createQueryKey('getCampaignsByIdDetails', options);
+
+/**
+ * Get full campaign details for detail page view
+ */
+export const getCampaignsByIdDetailsOptions = (options: Options<GetCampaignsByIdDetailsData>) =>
+  queryOptions<
+    GetCampaignsByIdDetailsResponse,
+    GetCampaignsByIdDetailsError,
+    GetCampaignsByIdDetailsResponse,
+    ReturnType<typeof getCampaignsByIdDetailsQueryKey>
+  >({
+    queryFn: async ({ queryKey, signal }) => {
+      const { data } = await getCampaignsByIdDetails({
+        ...options,
+        ...queryKey[0],
+        signal,
+        throwOnError: true,
+      });
+      return data;
+    },
+    queryKey: getCampaignsByIdDetailsQueryKey(options),
+  });
+
 export const getCampaignsByIdQueryKey = (options: Options<GetCampaignsByIdData>) => createQueryKey('getCampaignsById', options);
 
 /**
@@ -445,6 +537,25 @@ export const getAdminCampaignsInfiniteOptions = (options?: Options<GetAdminCampa
       queryKey: getAdminCampaignsInfiniteQueryKey(options),
     }
   );
+
+/**
+ * Create a new campaign (admin)
+ */
+export const postAdminCampaignsMutation = (
+  options?: Partial<Options<PostAdminCampaignsData>>
+): UseMutationOptions<PostAdminCampaignsResponse, PostAdminCampaignsError, Options<PostAdminCampaignsData>> => {
+  const mutationOptions: UseMutationOptions<PostAdminCampaignsResponse, PostAdminCampaignsError, Options<PostAdminCampaignsData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await postAdminCampaigns({
+        ...options,
+        ...fnOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};
 
 /**
  * Update campaign status (admin only)
@@ -888,6 +999,238 @@ export const getAdminCampaignsByIdActivitiesInfiniteOptions = (options: Options<
       queryKey: getAdminCampaignsByIdActivitiesInfiniteQueryKey(options),
     }
   );
+
+/**
+ * Create presigned upload session (admin)
+ */
+export const postAdminUploadsPresignMutation = (
+  options?: Partial<Options<PostAdminUploadsPresignData>>
+): UseMutationOptions<PostAdminUploadsPresignResponse, PostAdminUploadsPresignError, Options<PostAdminUploadsPresignData>> => {
+  const mutationOptions: UseMutationOptions<PostAdminUploadsPresignResponse, PostAdminUploadsPresignError, Options<PostAdminUploadsPresignData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await postAdminUploadsPresign({
+        ...options,
+        ...fnOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};
+
+export const getAdminCampaignsByIdEnergyQueryKey = (options: Options<GetAdminCampaignsByIdEnergyData>) =>
+  createQueryKey('getAdminCampaignsByIdEnergy', options);
+
+/**
+ * List campaign energy data
+ */
+export const getAdminCampaignsByIdEnergyOptions = (options: Options<GetAdminCampaignsByIdEnergyData>) =>
+  queryOptions<
+    GetAdminCampaignsByIdEnergyResponse,
+    GetAdminCampaignsByIdEnergyError,
+    GetAdminCampaignsByIdEnergyResponse,
+    ReturnType<typeof getAdminCampaignsByIdEnergyQueryKey>
+  >({
+    queryFn: async ({ queryKey, signal }) => {
+      const { data } = await getAdminCampaignsByIdEnergy({
+        ...options,
+        ...queryKey[0],
+        signal,
+        throwOnError: true,
+      });
+      return data;
+    },
+    queryKey: getAdminCampaignsByIdEnergyQueryKey(options),
+  });
+
+export const getAdminCampaignsByIdEnergyInfiniteQueryKey = (
+  options: Options<GetAdminCampaignsByIdEnergyData>
+): QueryKey<Options<GetAdminCampaignsByIdEnergyData>> => createQueryKey('getAdminCampaignsByIdEnergy', options, true);
+
+/**
+ * List campaign energy data
+ */
+export const getAdminCampaignsByIdEnergyInfiniteOptions = (options: Options<GetAdminCampaignsByIdEnergyData>) =>
+  infiniteQueryOptions<
+    GetAdminCampaignsByIdEnergyResponse,
+    GetAdminCampaignsByIdEnergyError,
+    InfiniteData<GetAdminCampaignsByIdEnergyResponse>,
+    QueryKey<Options<GetAdminCampaignsByIdEnergyData>>,
+    number | Pick<QueryKey<Options<GetAdminCampaignsByIdEnergyData>>[0], 'body' | 'headers' | 'path' | 'query'>
+  >(
+    // @ts-ignore
+    {
+      queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<GetAdminCampaignsByIdEnergyData>>[0], 'body' | 'headers' | 'path' | 'query'> =
+          typeof pageParam === 'object'
+            ? pageParam
+            : {
+                query: {
+                  page: pageParam,
+                },
+              };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await getAdminCampaignsByIdEnergy({
+          ...options,
+          ...params,
+          signal,
+          throwOnError: true,
+        });
+        return data;
+      },
+      queryKey: getAdminCampaignsByIdEnergyInfiniteQueryKey(options),
+    }
+  );
+
+/**
+ * Create campaign energy record
+ */
+export const postAdminCampaignsByIdEnergyMutation = (
+  options?: Partial<Options<PostAdminCampaignsByIdEnergyData>>
+): UseMutationOptions<PostAdminCampaignsByIdEnergyResponse, PostAdminCampaignsByIdEnergyError, Options<PostAdminCampaignsByIdEnergyData>> => {
+  const mutationOptions: UseMutationOptions<
+    PostAdminCampaignsByIdEnergyResponse,
+    PostAdminCampaignsByIdEnergyError,
+    Options<PostAdminCampaignsByIdEnergyData>
+  > = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await postAdminCampaignsByIdEnergy({
+        ...options,
+        ...fnOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};
+
+/**
+ * Overwrite campaign energy record
+ */
+export const putAdminCampaignsByIdEnergyMutation = (
+  options?: Partial<Options<PutAdminCampaignsByIdEnergyData>>
+): UseMutationOptions<PutAdminCampaignsByIdEnergyResponse, PutAdminCampaignsByIdEnergyError, Options<PutAdminCampaignsByIdEnergyData>> => {
+  const mutationOptions: UseMutationOptions<
+    PutAdminCampaignsByIdEnergyResponse,
+    PutAdminCampaignsByIdEnergyError,
+    Options<PutAdminCampaignsByIdEnergyData>
+  > = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await putAdminCampaignsByIdEnergy({
+        ...options,
+        ...fnOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};
+
+/**
+ * Delete energy record
+ */
+export const deleteAdminCampaignsByIdEnergyByMonthMutation = (
+  options?: Partial<Options<DeleteAdminCampaignsByIdEnergyByMonthData>>
+): UseMutationOptions<
+  DeleteAdminCampaignsByIdEnergyByMonthResponse,
+  DeleteAdminCampaignsByIdEnergyByMonthError,
+  Options<DeleteAdminCampaignsByIdEnergyByMonthData>
+> => {
+  const mutationOptions: UseMutationOptions<
+    DeleteAdminCampaignsByIdEnergyByMonthResponse,
+    DeleteAdminCampaignsByIdEnergyByMonthError,
+    Options<DeleteAdminCampaignsByIdEnergyByMonthData>
+  > = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await deleteAdminCampaignsByIdEnergyByMonth({
+        ...options,
+        ...fnOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};
+
+/**
+ * Update energy record
+ */
+export const patchAdminCampaignsByIdEnergyByMonthMutation = (
+  options?: Partial<Options<PatchAdminCampaignsByIdEnergyByMonthData>>
+): UseMutationOptions<
+  PatchAdminCampaignsByIdEnergyByMonthResponse,
+  PatchAdminCampaignsByIdEnergyByMonthError,
+  Options<PatchAdminCampaignsByIdEnergyByMonthData>
+> => {
+  const mutationOptions: UseMutationOptions<
+    PatchAdminCampaignsByIdEnergyByMonthResponse,
+    PatchAdminCampaignsByIdEnergyByMonthError,
+    Options<PatchAdminCampaignsByIdEnergyByMonthData>
+  > = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await patchAdminCampaignsByIdEnergyByMonth({
+        ...options,
+        ...fnOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};
+
+/**
+ * Bulk upload energy records
+ */
+export const postAdminCampaignsByIdEnergyBulkMutation = (
+  options?: Partial<Options<PostAdminCampaignsByIdEnergyBulkData>>
+): UseMutationOptions<
+  PostAdminCampaignsByIdEnergyBulkResponse,
+  PostAdminCampaignsByIdEnergyBulkError,
+  Options<PostAdminCampaignsByIdEnergyBulkData>
+> => {
+  const mutationOptions: UseMutationOptions<
+    PostAdminCampaignsByIdEnergyBulkResponse,
+    PostAdminCampaignsByIdEnergyBulkError,
+    Options<PostAdminCampaignsByIdEnergyBulkData>
+  > = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await postAdminCampaignsByIdEnergyBulk({
+        ...options,
+        ...fnOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};
+
+export const getAdminDashboardQueryKey = (options: Options<GetAdminDashboardData>) => createQueryKey('getAdminDashboard', options);
+
+/**
+ * Get admin dashboard summary
+ *
+ * Returns aggregated metrics and recent data for a specific campaign
+ */
+export const getAdminDashboardOptions = (options: Options<GetAdminDashboardData>) =>
+  queryOptions<GetAdminDashboardResponse, GetAdminDashboardError, GetAdminDashboardResponse, ReturnType<typeof getAdminDashboardQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+      const { data } = await getAdminDashboard({
+        ...options,
+        ...queryKey[0],
+        signal,
+        throwOnError: true,
+      });
+      return data;
+    },
+    queryKey: getAdminDashboardQueryKey(options),
+  });
 
 /**
  * Sign in with a social provider
