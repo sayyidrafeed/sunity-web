@@ -1,28 +1,30 @@
 import * as React from 'react';
+import { Link } from 'react-router';
+import { useQuery } from '@tanstack/react-query';
+import { getCampaignsOptions } from '@/lib/api/generated/@tanstack/react-query.gen';
 import { cn } from '@/lib/utils';
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from '@/components/ui/carousel';
-
-const FEATURED_CAMPAIGNS = [
-  {
-    id: 1,
-    title: 'Hadirkan Cahaya Surya, Terangi Kesucian Pura Besaikh',
-    image: '/images/campaigns/featured/campaign-besakih.png',
-  },
-  {
-    id: 2,
-    title: 'Dukung Panel Surya untuk Kelenteng di Jawa Tengah',
-    image: '/images/campaigns/featured/campaign-klenteng.png',
-  },
-  {
-    id: 3,
-    title: 'Energi Terbarukan untuk Vihara Borobudur',
-    image: '/images/campaigns/featured/campaign-vihara.png',
-  },
-];
 
 export function FeaturedCampaign() {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
+
+  const { data, isLoading } = useQuery(
+    getCampaignsOptions({
+      query: {
+        page: 1,
+        limit: 3,
+        status: 'AKTIF',
+      },
+    })
+  );
+
+  const campaigns = data?.data ?? [];
+  const featuredCampaigns = campaigns.map((c) => ({
+    id: c.id,
+    title: c.title,
+    image: c.coverImage?.publicUrl || '/images/placeholder-campaign.png',
+  }));
 
   React.useEffect(() => {
     if (!api) return;
@@ -33,6 +35,18 @@ export function FeaturedCampaign() {
       setCurrent(api.selectedScrollSnap());
     });
   }, [api]);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-green border-t-transparent" />
+      </div>
+    );
+  }
+
+  if (featuredCampaigns.length === 0) {
+    return null;
+  }
 
   return (
     <section className="mt-4">
@@ -47,10 +61,13 @@ export function FeaturedCampaign() {
             {/* Left Section - Static Text */}
             <div className="relative z-10 flex flex-1 flex-col justify-between bg-[radial-gradient(67.62%_141.94%_at_155.34%_50.08%,_#5CD17B_0%,_#2F6B3F_100%)] p-12 text-white shadow-[10px_0_15px_-5px_rgba(0,0,0,0.3)]">
               <div className="flex flex-col gap-8">
-                <h3 className="font-outfit text-[44px] font-bold leading-tight">{FEATURED_CAMPAIGNS[current].title}</h3>
-                <a href="#" className="w-fit text-sm font-medium underline underline-offset-4 opacity-90 hover:opacity-100">
+                <h3 className="font-outfit text-[44px] font-bold leading-tight">{featuredCampaigns[current]?.title}</h3>
+                <Link
+                  to={`/campaigns/${featuredCampaigns[current]?.id}`}
+                  className="w-fit text-sm font-medium underline underline-offset-4 opacity-90 hover:opacity-100"
+                >
                   Donasi Sekarang
-                </a>
+                </Link>
               </div>
 
               <div className="font-jakarta text-[32px] font-bold">#SunityEcoFaith</div>
@@ -60,7 +77,7 @@ export function FeaturedCampaign() {
             <div className="w-[60%] max-w-[826px]">
               <Carousel setApi={setApi} className="w-full">
                 <CarouselContent>
-                  {FEATURED_CAMPAIGNS.map((campaign) => (
+                  {featuredCampaigns.map((campaign) => (
                     <CarouselItem key={campaign.id}>
                       <div className="h-[615px] w-full">
                         <img src={campaign.image} alt={campaign.title} className="h-full w-full object-cover" />
@@ -74,7 +91,7 @@ export function FeaturedCampaign() {
 
           {/* Pagination Dots - Centered to entire web */}
           <div className="mt-6 flex items-center justify-center gap-[7px]">
-            {FEATURED_CAMPAIGNS.map((_, index) => (
+            {featuredCampaigns.map((_, index) => (
               <button
                 key={index}
                 onClick={() => api?.scrollTo(index)}

@@ -1,5 +1,7 @@
 import { useParams, useNavigate } from 'react-router';
-import { MOCK_CAMPAIGN_DETAIL, MOCK_DONORS, MOCK_CAMPAIGNS } from '@/data/mock-campaigns';
+import { useQuery } from '@tanstack/react-query';
+import { getCampaignsByIdOptions } from '@/lib/api/generated/@tanstack/react-query.gen';
+import { MOCK_DONORS } from '@/data/mock-campaigns';
 import { CampaignDetailHero } from '@/components/campaigns/campaign-detail-hero';
 import { CampaignMeta } from '@/components/campaigns/campaign-meta';
 import { CampaignTabsList, CampaignTabsContent } from '@/components/campaigns/campaign-tabs';
@@ -13,18 +15,41 @@ export default function CampaignDetail() {
   const { id, tab = 'ringkasan' } = useParams();
   const navigate = useNavigate();
 
-  // In real app, we would fetch data using the id
-  const campaignListMatch = MOCK_CAMPAIGNS.find((c) => c.id === id);
-  const campaign = {
-    ...MOCK_CAMPAIGN_DETAIL,
-    ...campaignListMatch,
-  };
+  const {
+    data: campaign,
+    isLoading,
+    isError,
+  } = useQuery(
+    getCampaignsByIdOptions({
+      path: { id: id! },
+    })
+  );
+
   const donors = MOCK_DONORS;
 
   const handleTabChange = (value: string) => {
     const path = value === 'ringkasan' ? `/campaigns/${id}` : `/campaigns/${id}/${value}`;
     navigate(path, { replace: true, preventScrollReset: true });
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-brand-surface">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-green border-t-transparent" />
+      </div>
+    );
+  }
+
+  if (isError || !campaign) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-brand-surface gap-4">
+        <h2 className="font-outfit text-2xl font-bold text-brand-text">Kampanye Tidak Ditemukan</h2>
+        <Button onClick={() => navigate('/campaigns')} className="bg-brand-green text-white rounded-full px-6">
+          Kembali ke Daftar Kampanye
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="flex w-full justify-center bg-brand-surface pb-32">
@@ -37,7 +62,7 @@ export default function CampaignDetail() {
             </Button>
             <div className="flex flex-col">
               <h1 className="text-4xl font-bold tracking-tight text-brand-text leading-tight">{campaign.title}</h1>
-              <p className="text-base text-brand-gray mt-1">Kampanye &gt; {campaign.worshipPlace.name}</p>
+              <p className="text-base text-brand-gray mt-1">Kampanye &gt; {campaign.worshipPlace?.name}</p>
             </div>
           </div>
 

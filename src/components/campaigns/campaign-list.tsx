@@ -1,37 +1,58 @@
 import { useSearchParams } from 'react-router';
+import { useQuery } from '@tanstack/react-query';
+import { getCampaignsOptions } from '@/lib/api/generated/@tanstack/react-query.gen';
 import { CampaignCard } from './campaign-card';
 import { Pagination } from '@/components/ui/pagination';
 import { Button } from '@/components/ui/button';
-import { MOCK_CAMPAIGNS } from '@/data/mock-campaigns';
 
 export function CampaignList() {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = parseInt(searchParams.get('page') ?? '1', 10);
 
   // Filter Logic
-  const q = searchParams.get('q')?.toLowerCase() ?? '';
+  const q = searchParams.get('q') ?? '';
   const rumahIbadah = searchParams.get('rumah_ibadah');
   const kota = searchParams.get('kota');
   const status = searchParams.get('status');
 
-  const filteredCampaigns = MOCK_CAMPAIGNS.filter((campaign) => {
-    const matchesSearch = campaign.title.toLowerCase().includes(q) || campaign.worshipPlace.name.toLowerCase().includes(q);
-    const matchesRumahIbadah =
-      !rumahIbadah ||
-      campaign.worshipPlace.religionType.toLowerCase() === rumahIbadah.toLowerCase() ||
-      campaign.worshipPlace.name.toLowerCase().includes(rumahIbadah.toLowerCase());
-    const matchesKota = !kota || campaign.worshipPlace.city.toLowerCase() === kota.toLowerCase();
-    const matchesStatus = !status || status === 'all' || campaign.status.toLowerCase() === status.toLowerCase();
+  // Map filters to API params
+  let typeParam: 'Masjid' | 'Mushalla' | 'Gereja' | 'Pura' | 'Vihara' | 'Klenteng' | undefined;
+  if (rumahIbadah && rumahIbadah !== 'all') {
+    if (rumahIbadah.startsWith('Gereja')) {
+      typeParam = 'Gereja';
+    } else {
+      typeParam = rumahIbadah as 'Masjid' | 'Mushalla' | 'Gereja' | 'Pura' | 'Vihara' | 'Klenteng';
+    }
+  }
 
-    return matchesSearch && matchesRumahIbadah && matchesKota && matchesStatus;
-  });
+  let statusParam: 'DRAFT' | 'AKTIF' | 'INSTALASI' | 'SELESAI' | 'ARCHIVED' | 'Completed' | undefined;
+  if (status && status !== 'all') {
+    if (status.toLowerCase() === 'aktif') {
+      statusParam = 'AKTIF';
+    } else if (status.toLowerCase() === 'berhasil') {
+      statusParam = 'SELESAI';
+    }
+  }
 
-  const totalCampaigns = filteredCampaigns.length;
-  const itemsPerPage = 12;
-  const totalPages = Math.ceil(totalCampaigns / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = Math.min(startIndex + itemsPerPage, totalCampaigns);
-  const paginatedCampaigns = filteredCampaigns.slice(startIndex, endIndex);
+  const { data, isLoading } = useQuery(
+    getCampaignsOptions({
+      query: {
+        page: currentPage,
+        limit: 12,
+        search: q || undefined,
+        city: kota || undefined,
+        type: typeParam,
+        status: statusParam,
+      },
+    })
+  );
+
+  const campaigns = data?.data ?? [];
+  const pagination = data?.pagination;
+  const totalCampaigns = pagination?.total ?? 0;
+  const totalPages = Math.ceil(totalCampaigns / 12);
+  const startIndex = (currentPage - 1) * 12;
+  const endIndex = Math.min(startIndex + campaigns.length, totalCampaigns);
 
   const handlePageChange = (page: number) => {
     setSearchParams((prev) => {
@@ -45,6 +66,14 @@ export function CampaignList() {
     setSearchParams(new URLSearchParams());
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-green border-t-transparent" />
+      </div>
+    );
+  }
+
   return (
     <section className="mt-12 flex flex-col gap-8 pb-20">
       <div className="flex flex-col gap-2">
@@ -54,11 +83,11 @@ export function CampaignList() {
         <div className="h-px w-full bg-[#DDD]" />
       </div>
 
-      {filteredCampaigns.length > 0 ? (
+      {campaigns.length > 0 ? (
         <>
           {/* Grid Layout */}
           <div className="grid grid-cols-1 gap-x-6 gap-y-10 md:grid-cols-2 lg:grid-cols-3">
-            {paginatedCampaigns.map((campaign) => (
+            {campaigns.map((campaign) => (
               <CampaignCard key={campaign.id} campaign={campaign} />
             ))}
           </div>
