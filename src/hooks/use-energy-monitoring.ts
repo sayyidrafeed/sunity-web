@@ -1,48 +1,81 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import type { EnergyData, EnergyKPI, EnergyChartData, EnergyDataManualInputPayload } from '@/types/energy-monitoring';
-
-// Mock Data
-const MOCK_KPI: EnergyKPI = {
-  totalPriceSaved: 750000,
-  totalKwhProduced: 120,
-  totalCo2Reduced: 9.2,
-};
-
-let MOCK_DATA: EnergyData[] = [
-  { id: '1', month: 1, year: 2026, kwh: 110, price: 110000, co2: 25 },
-  { id: '2', month: 2, year: 2026, kwh: 115, price: 115000, co2: 27 },
-  { id: '3', month: 3, year: 2026, kwh: 90, price: 90000, co2: 20 },
-  { id: '4', month: 4, year: 2026, kwh: 130, price: 130000, co2: 32 },
-  { id: '5', month: 5, year: 2026, kwh: 125, price: 125000, co2: 30 },
-  { id: '6', month: 6, year: 2026, kwh: 80, price: 80000, co2: 18 },
-  { id: '7', month: 7, year: 2026, kwh: 140, price: 140000, co2: 35 },
-  { id: '8', month: 8, year: 2026, kwh: 140, price: 140000, co2: 35 },
-  { id: '9', month: 9, year: 2026, kwh: 140, price: 140000, co2: 35 },
-  { id: '10', month: 10, year: 2026, kwh: 140, price: 140000, co2: 35 },
-  { id: '11', month: 11, year: 2026, kwh: 110, price: 110000, co2: 25 },
-  { id: '12', month: 12, year: 2026, kwh: 120, price: 120000, co2: 30 },
-];
+import { useSearchParams } from 'react-router';
+import {
+  getAdminCampaignsByIdEnergyOptions,
+  postAdminCampaignsByIdEnergyMutation,
+  patchAdminCampaignsByIdEnergyByMonthMutation,
+  deleteAdminCampaignsByIdEnergyByMonthMutation,
+  postAdminCampaignsByIdEnergyBulkMutation,
+} from '@/lib/api/generated/@tanstack/react-query.gen';
+import type { EnergyData, EnergyChartData, EnergyDataManualInputPayload } from '@/types/energy-monitoring';
+import type { GetAdminCampaignsByIdEnergyResponse } from '@/lib/api/generated/types.gen';
 
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
 
-export function useEnergyMonitoring() {
-  return useQuery({
-    queryKey: ['energy-monitoring'],
-    queryFn: async () => {
-      // Simulate network delay
-      await new Promise((resolve) => setTimeout(resolve, 500));
+type MutateOptions = {
+  onSuccess?: (...args: unknown[]) => void;
+  onError?: (err: unknown) => void;
+};
 
-      const chartData: EnergyChartData[] = MOCK_DATA.map((d) => ({
-        name: MONTH_NAMES[d.month - 1],
-        kwh: d.kwh,
-        price: d.price,
-        co2: d.co2,
-      }));
+function parseMonthYear(monthStr: string) {
+  if (monthStr.includes('-')) {
+    const parts = monthStr.split('-');
+    return {
+      year: parseInt(parts[0], 10),
+      month: parseInt(parts[1], 10),
+    };
+  }
+  if (monthStr.includes('/')) {
+    const parts = monthStr.split('/');
+    return {
+      year: parseInt(parts[0], 10),
+      month: parseInt(parts[1], 10),
+    };
+  }
+  return {
+    year: new Date().getFullYear(),
+    month: parseInt(monthStr, 10) || 1,
+  };
+}
+
+export function useEnergyMonitoring() {
+  const [searchParams] = useSearchParams();
+  const campaignId = searchParams.get('campaignId') || '';
+
+  return useQuery({
+    ...getAdminCampaignsByIdEnergyOptions({ path: { id: campaignId } }),
+    enabled: !!campaignId,
+    select: (data) => {
+      const chartData: EnergyChartData[] = data.data.map((d) => {
+        const { month } = parseMonthYear(d.month);
+        return {
+          name: MONTH_NAMES[month - 1] || month.toString(),
+          kwh: d.kwhProduced,
+          price: d.idrSaved,
+          co2: d.kgCo2Reduced,
+        };
+      });
+
+      const tableData: EnergyData[] = data.data.map((d) => {
+        const { month, year } = parseMonthYear(d.month);
+        return {
+          id: d.id,
+          month,
+          year,
+          kwh: d.kwhProduced,
+          price: d.idrSaved,
+          co2: d.kgCo2Reduced,
+        };
+      });
 
       return {
-        kpi: MOCK_KPI,
+        kpi: {
+          totalPriceSaved: data.summary.totalIdrSaved,
+          totalKwhProduced: data.summary.totalKwhProduced,
+          totalCo2Reduced: data.summary.totalKgCo2Reduced,
+        },
         chartData,
-        tableData: MOCK_DATA, // Using the same mock data for the table
+        tableData,
       };
     },
   });
@@ -50,73 +83,164 @@ export function useEnergyMonitoring() {
 
 export function useDeleteEnergyData() {
   const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: async (id: string) => {
-      // Simulate network delay
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      // Remove item locally
-      MOCK_DATA = MOCK_DATA.filter((d) => d.id !== id);
-      return id;
+  const [searchParams] = useSearchParams();
+  const campaignId = searchParams.get('campaignId') || '';
+
+  const deleteMutation = useMutation(deleteAdminCampaignsByIdEnergyByMonthMutation());
+
+  return {
+    ...deleteMutation,
+    mutate: (id: string, options?: MutateOptions) => {
+      const queryKey = ['getAdminCampaignsByIdEnergy', { path: { id: campaignId } }];
+      const cachedData = queryClient.getQueryData<GetAdminCampaignsByIdEnergyResponse>(queryKey);
+      const record = cachedData?.data?.find((d) => d.id === id);
+
+      if (!record) {
+        options?.onError?.(new Error('Record not found'));
+        return;
+      }
+
+      deleteMutation.mutate(
+        {
+          path: {
+            id: campaignId,
+            month: record.month,
+          },
+        },
+        {
+          ...options,
+          onSuccess: (...args: unknown[]) => {
+            queryClient.invalidateQueries({ queryKey });
+            options?.onSuccess?.(...args);
+          },
+        }
+      );
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['energy-monitoring'] });
-    },
-  });
+  };
 }
 
 export function useUpdateEnergyData() {
   const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: async (data: EnergyData) => {
-      // Simulate network delay
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      // Update item locally
-      MOCK_DATA = MOCK_DATA.map((d) => (d.id === data.id ? data : d));
-      return data;
+  const [searchParams] = useSearchParams();
+  const campaignId = searchParams.get('campaignId') || '';
+
+  const updateMutation = useMutation(patchAdminCampaignsByIdEnergyByMonthMutation());
+
+  return {
+    ...updateMutation,
+    mutate: (data: EnergyData, options?: MutateOptions) => {
+      const queryKey = ['getAdminCampaignsByIdEnergy', { path: { id: campaignId } }];
+      const cachedData = queryClient.getQueryData<GetAdminCampaignsByIdEnergyResponse>(queryKey);
+      const originalRecord = cachedData?.data?.find((d) => d.id === data.id);
+
+      if (!originalRecord) {
+        options?.onError?.(new Error('Record not found'));
+        return;
+      }
+
+      const newMonthStr = `${data.year}-${data.month.toString().padStart(2, '0')}`;
+
+      updateMutation.mutate(
+        {
+          path: {
+            id: campaignId,
+            month: originalRecord.month,
+          },
+          body: {
+            month: newMonthStr,
+            kwhProduced: data.kwh,
+            idrSaved: data.price,
+            kgCo2Reduced: data.co2,
+          },
+        },
+        {
+          ...options,
+          onSuccess: (...args: unknown[]) => {
+            queryClient.invalidateQueries({ queryKey });
+            options?.onSuccess?.(...args);
+          },
+        }
+      );
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['energy-monitoring'] });
-    },
-  });
+  };
 }
 
 export function useCreateEnergyDataManual() {
   const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: async (data: EnergyDataManualInputPayload) => {
-      // Simulate network delay
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      // Add item locally
-      const newItem = {
-        ...data,
-        id: Math.random().toString(36).substring(2, 9),
-      };
-      MOCK_DATA = [...MOCK_DATA, newItem];
-      return newItem;
+  const [searchParams] = useSearchParams();
+  const campaignId = searchParams.get('campaignId') || '';
+
+  const createMutation = useMutation(postAdminCampaignsByIdEnergyMutation());
+
+  return {
+    ...createMutation,
+    mutate: (data: EnergyDataManualInputPayload, options?: MutateOptions) => {
+      const queryKey = ['getAdminCampaignsByIdEnergy', { path: { id: campaignId } }];
+      const monthStr = `${data.year}-${data.month.toString().padStart(2, '0')}`;
+
+      createMutation.mutate(
+        {
+          path: {
+            id: campaignId,
+          },
+          body: {
+            month: monthStr,
+            kwhProduced: data.kwh,
+            idrSaved: data.price,
+            kgCo2Reduced: data.co2,
+          },
+        },
+        {
+          ...options,
+          onSuccess: (...args: unknown[]) => {
+            queryClient.invalidateQueries({ queryKey });
+            options?.onSuccess?.(...args);
+          },
+        }
+      );
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['energy-monitoring'] });
-    },
-  });
+  };
 }
 
 export function useCreateEnergyDataCsv() {
   const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: async (data: Omit<EnergyData, 'id' | 'year'>[]) => {
-      // Simulate network delay
-      await new Promise((resolve) => setTimeout(resolve, 800));
+  const [searchParams] = useSearchParams();
+  const campaignId = searchParams.get('campaignId') || '';
+
+  const bulkMutation = useMutation(postAdminCampaignsByIdEnergyBulkMutation());
+
+  return {
+    ...bulkMutation,
+    mutate: (data: Omit<EnergyData, 'id' | 'year'>[], options?: MutateOptions) => {
+      const queryKey = ['getAdminCampaignsByIdEnergy', { path: { id: campaignId } }];
       const year = new Date().getFullYear();
-      const newItems = data.map((item) => ({
-        ...item,
-        year,
-        id: Math.random().toString(36).substring(2, 9),
-      }));
-      MOCK_DATA = [...MOCK_DATA, ...newItems];
-      return newItems;
+      const records = data.map((d) => {
+        const monthStr = `${year}-${d.month.toString().padStart(2, '0')}`;
+        return {
+          month: monthStr,
+          kwhProduced: d.kwh,
+          idrSaved: d.price,
+          kgCo2Reduced: d.co2,
+        };
+      });
+
+      bulkMutation.mutate(
+        {
+          path: {
+            id: campaignId,
+          },
+          body: {
+            records,
+          },
+        },
+        {
+          ...options,
+          onSuccess: (...args: unknown[]) => {
+            queryClient.invalidateQueries({ queryKey });
+            options?.onSuccess?.(...args);
+          },
+        }
+      );
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['energy-monitoring'] });
-    },
-  });
+  };
 }
