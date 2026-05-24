@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import type { FormValues } from '@/lib/validation/campaign';
 import { postAdminWorshipPlaces, postAdminCampaigns, postAdminCampaignsByIdAssets } from '@/lib/api/generated/sdk.gen';
 import { useCampaignImageUpload } from './useCampaignImageUpload';
@@ -96,7 +97,9 @@ export function useCampaignMutation() {
         });
 
         if (!attachResponse || !attachResponse.data || !attachResponse.data.success) {
-          // Note: non-fatal, campaign is created, but cover image attach failed
+          // eslint-disable-next-line no-console
+          console.error('Failed to attach cover image asset to campaign:', campaignId);
+          toast.warning('Kampanye berhasil dibuat, tetapi gagal memasang gambar sampul.');
         }
       }
 

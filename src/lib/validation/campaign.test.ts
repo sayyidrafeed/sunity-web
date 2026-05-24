@@ -51,6 +51,7 @@ describe('Campaign Validation', () => {
   });
 
   describe('validateStep2', () => {
+    const currentYear = new Date().getFullYear().toString();
     const validValues: FormValues = {
       ...INITIAL_FORM_VALUES,
       judulKampanye: 'Kampanye Keren',
@@ -58,7 +59,7 @@ describe('Campaign Validation', () => {
       panelCapacityKwp: '5.5',
       batasWaktuDD: '25',
       batasWaktuMM: '12',
-      batasWaktuYYYY: '2026',
+      batasWaktuYYYY: currentYear,
       deskripsiKampanye: 'Deskripsi panjang...',
       tujuanPenggunaanDana: 'Untuk membeli panel surya',
     };

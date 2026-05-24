@@ -159,12 +159,14 @@ export function validateStep2(values: FormValues): Record<string, string> {
   const mm = parseInt(values.batasWaktuMM);
   const yyyy = parseInt(values.batasWaktuYYYY);
 
+  const currentYear = new Date().getFullYear();
+
   if (!values.batasWaktuDD || isNaN(dd) || dd < 1 || dd > 31) {
     errors.batasWaktu = 'Hari (DD) harus antara 01 - 31';
   } else if (!values.batasWaktuMM || isNaN(mm) || mm < 1 || mm > 12) {
     errors.batasWaktu = 'Bulan (MM) harus antara 01 - 12';
-  } else if (!values.batasWaktuYYYY || isNaN(yyyy) || yyyy < 2026 || yyyy > 2100) {
-    errors.batasWaktu = 'Tahun (YYYY) harus antara 2026 - 2100';
+  } else if (!values.batasWaktuYYYY || isNaN(yyyy) || yyyy < currentYear || yyyy > 2100) {
+    errors.batasWaktu = `Tahun (YYYY) harus antara ${currentYear} - 2100`;
   } else {
     // Check if valid date
     const date = new Date(yyyy, mm - 1, dd);
