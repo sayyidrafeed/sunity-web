@@ -28,7 +28,7 @@ interface Campaign {
   status: string;
   coverImage: string | null | undefined;
   deadline: string;
-  dateCreated: string;
+  createdAt: string;
 }
 
 const PREDEFINED_IMAGES = [
@@ -42,7 +42,7 @@ export function CampaignsPage() {
   const navigate = useNavigate();
 
   // Queries and Mutations
-  const { data: apiResponse, isLoading, error, isError } = useAdminCampaignsQuery();
+  const { data: apiResponse, isLoading, error, isError, refetch } = useAdminCampaignsQuery();
   const updateStatusMutation = useUpdateCampaignStatusMutation();
   const deleteMutation = useDeleteCampaignMutation();
 
@@ -58,7 +58,7 @@ export function CampaignsPage() {
       status: item.status,
       coverImage: item.coverImage?.publicUrl || null,
       deadline: item.deadline,
-      dateCreated: '', // API doesn't provide this, fallback to empty
+      createdAt: item.createdAt,
     }));
   }, [apiResponse]);
 
@@ -131,8 +131,8 @@ export function CampaignsPage() {
       let valB = 0;
 
       if (sortBy === 'terbaru') {
-        valA = new Date(a.dateCreated || 0).getTime();
-        valB = new Date(b.dateCreated || 0).getTime();
+        valA = new Date(a.createdAt || 0).getTime();
+        valB = new Date(b.createdAt || 0).getTime();
       } else if (sortBy === 'batas-waktu') {
         valA = new Date(a.deadline).getTime();
         valB = new Date(b.deadline).getTime();
@@ -235,7 +235,7 @@ export function CampaignsPage() {
             <span className="font-jakarta text-[14px] text-[#5A5A57]">{error instanceof Error ? error.message : 'Terjadi kesalahan'}</span>
           </div>
           <button
-            onClick={() => window.location.reload()}
+            onClick={() => refetch()}
             className="bg-[#2F6B3F] hover:bg-[#245330] text-white font-jakarta font-semibold text-[14px] px-[20px] py-[10px] rounded-full transition-colors cursor-pointer h-[40px] active:scale-[0.98] mt-2"
           >
             Coba Lagi
@@ -447,7 +447,7 @@ export function CampaignsPage() {
                     <div className="flex justify-end gap-[12px] mt-auto">
                       <button
                         type="button"
-                        onClick={() => navigate('/admin/monitoring')}
+                        onClick={() => navigate('/admin/monitoring?campaignId=' + campaign.id)}
                         className="bg-[#2F6B3F] hover:bg-[#245330] text-white font-jakarta font-semibold text-[14px] px-[20px] py-[10px] rounded-full flex items-center gap-[6px] transition-colors cursor-pointer h-[40px] active:scale-[0.98]"
                       >
                         Lihat Detail

@@ -235,6 +235,7 @@ export const zGetCampaignsResponse = z.object({
           storageKey: z.string(),
         })
         .nullish(),
+      createdAt: z.iso.datetime(),
     })
   ),
   pagination: z.object({
@@ -551,6 +552,7 @@ export const zGetAdminCampaignsResponse = z.object({
           storageKey: z.string(),
         })
         .nullish(),
+      createdAt: z.iso.datetime(),
     })
   ),
   pagination: z.object({

@@ -239,6 +239,7 @@ export type GetCampaignsResponses = {
         publicUrl: string;
         storageKey: string;
       } | null;
+      createdAt: string;
     }>;
     pagination: {
       page: number;
@@ -604,6 +605,7 @@ export type GetAdminCampaignsResponses = {
         publicUrl: string;
         storageKey: string;
       } | null;
+      createdAt: string;
     }>;
     pagination: {
       page: number;
