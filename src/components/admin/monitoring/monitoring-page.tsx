@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
 import { useEnergyMonitoring } from '@/hooks/use-energy-monitoring';
+import { useQuery } from '@tanstack/react-query';
+import { getCampaignsByIdOptions } from '@/lib/api/generated/@tanstack/react-query.gen';
 import { MonitoringKPICards } from './monitoring-kpi-cards';
 import { MonitoringChart } from './monitoring-chart';
 import { MonitoringTable } from './monitoring-table';
@@ -12,7 +14,15 @@ import type { EnergyData } from '@/types/energy-monitoring';
 
 export function MonitoringPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const campaignId = searchParams.get('campaignId') || '';
+
   const { data, isLoading, isError } = useEnergyMonitoring();
+  const { data: campaign } = useQuery({
+    ...getCampaignsByIdOptions({ path: { id: campaignId } }),
+    enabled: !!campaignId,
+  });
+
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedEnergyData, setSelectedEnergyData] = useState<EnergyData | null>(null);
@@ -47,7 +57,7 @@ export function MonitoringPage() {
           <h1 className="font-outfit text-[32px] font-semibold text-[#1F1F1D] tracking-[-0.006em]">Monitoring Energi</h1>
         </div>
         <nav className="font-jakarta text-[14px] text-[#A3A39E]" aria-label="Breadcrumb">
-          Kelola Kampanye &gt; Masjid Al - Ikhlas &gt; <span className="text-[#5A5A57] font-medium">Monitoring Energi</span>
+          Kelola Kampanye &gt; {campaign?.title || '...'} &gt; <span className="text-[#5A5A57] font-medium">Monitoring Energi</span>
         </nav>
       </div>
 

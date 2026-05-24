@@ -1,20 +1,52 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
 
-const MOCK_DONATIONS = [
-  { id: 1, name: 'Johkowee', amount: 'Rp100.000', date: 'DD/MM/YYYY', time: '14.02' },
-  { id: 2, name: 'Johkowee', amount: 'Rp100.000', date: 'DD/MM/YYYY', time: '14.02' },
-  { id: 3, name: 'Johkowee', amount: 'Rp100.000', date: 'DD/MM/YYYY', time: '14.02' },
-  { id: 4, name: 'Johkowee', amount: 'Rp100.000', date: 'DD/MM/YYYY', time: '14.02' },
-  { id: 5, name: 'Johkowee', amount: 'Rp100.000', date: 'DD/MM/YYYY', time: '14.02' },
-  { id: 6, name: 'Johkowee', amount: 'Rp100.000', date: 'DD/MM/YYYY', time: '14.02' },
-  { id: 7, name: 'Johkowee', amount: 'Rp100.000', date: 'DD/MM/YYYY', time: '14.02' },
-  { id: 8, name: 'Johkowee', amount: 'Rp100.000', date: 'DD/MM/YYYY', time: '14.02' },
-  { id: 9, name: 'Johkowee', amount: 'Rp100.000', date: 'DD/MM/YYYY', time: '14.02' },
-  { id: 10, name: 'Johkowee', amount: 'Rp100.000', date: 'DD/MM/YYYY', time: '14.02' },
-];
+interface DonationTableProps {
+  className?: string;
+  donations?: Array<{
+    id: string;
+    donorName: string;
+    amount: number;
+    date: string;
+    method: string;
+  }>;
+}
 
-export function DonationTable({ className }: { className?: string }) {
+const formatIDR = (value: number) => {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(value);
+};
+
+const formatDate = (dateString: string) => {
+  try {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('id-ID', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+  } catch {
+    return dateString;
+  }
+};
+
+const formatTime = (dateString: string) => {
+  try {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('id-ID', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  } catch {
+    return '';
+  }
+};
+
+export function DonationTable({ className, donations = [] }: DonationTableProps) {
   return (
     <div className={cn('flex flex-col gap-4', className)}>
       <h2 className="font-outfit text-2xl font-medium tracking-[-0.006em] text-[#1F1F1D]">Donasi Terbaru</h2>
@@ -30,17 +62,25 @@ export function DonationTable({ className }: { className?: string }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {MOCK_DONATIONS.map((donation, index) => (
-              <TableRow
-                key={donation.id}
-                className={cn('border-b-[#DDDDDD] transition-colors hover:bg-muted/50', index === MOCK_DONATIONS.length - 1 && 'border-0')}
-              >
-                <TableCell className="font-jakarta text-base font-medium text-[#1F1F1D] py-4 px-8 capitalize">{donation.name}</TableCell>
-                <TableCell className="font-jakarta text-base font-normal text-[#5A5A57] py-4 px-2.5">{donation.amount}</TableCell>
-                <TableCell className="font-jakarta text-base font-normal text-[#5A5A57] py-4 px-2.5">{donation.date}</TableCell>
-                <TableCell className="font-jakarta text-base font-normal text-[#5A5A57] py-4 px-2.5">{donation.time}</TableCell>
+            {donations.length > 0 ? (
+              donations.map((donation, index) => (
+                <TableRow
+                  key={donation.id}
+                  className={cn('border-b-[#DDDDDD] transition-colors hover:bg-muted/50', index === donations.length - 1 && 'border-0')}
+                >
+                  <TableCell className="font-jakarta text-base font-medium text-[#1F1F1D] py-4 px-8 capitalize">{donation.donorName}</TableCell>
+                  <TableCell className="font-jakarta text-base font-normal text-[#5A5A57] py-4 px-2.5">{formatIDR(donation.amount)}</TableCell>
+                  <TableCell className="font-jakarta text-base font-normal text-[#5A5A57] py-4 px-2.5">{formatDate(donation.date)}</TableCell>
+                  <TableCell className="font-jakarta text-base font-normal text-[#5A5A57] py-4 px-2.5">{formatTime(donation.date)}</TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={4} className="h-24 text-center font-jakarta text-base text-[#A3A39E]">
+                  Belum ada donasi masuk
+                </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </div>
