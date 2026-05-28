@@ -12,6 +12,7 @@ import {
   deleteUserPost,
   getAccountInfo,
   getAdminCampaigns,
+  getAdminCampaignsById,
   getAdminCampaignsByIdActivities,
   getAdminCampaignsByIdEnergy,
   getAdminCampaignsByIdExpenses,
@@ -93,12 +94,15 @@ import type {
   GetAdminCampaignsByIdActivitiesData,
   GetAdminCampaignsByIdActivitiesError,
   GetAdminCampaignsByIdActivitiesResponse,
+  GetAdminCampaignsByIdData,
   GetAdminCampaignsByIdEnergyData,
   GetAdminCampaignsByIdEnergyError,
   GetAdminCampaignsByIdEnergyResponse,
+  GetAdminCampaignsByIdError,
   GetAdminCampaignsByIdExpensesData,
   GetAdminCampaignsByIdExpensesError,
   GetAdminCampaignsByIdExpensesResponse,
+  GetAdminCampaignsByIdResponse,
   GetAdminCampaignsData,
   GetAdminCampaignsError,
   GetAdminCampaignsResponse,
@@ -558,6 +562,53 @@ export const postAdminCampaignsMutation = (
 };
 
 /**
+ * Delete campaign (admin only)
+ */
+export const deleteAdminCampaignsByIdMutation = (
+  options?: Partial<Options<DeleteAdminCampaignsByIdData>>
+): UseMutationOptions<DeleteAdminCampaignsByIdResponse, DeleteAdminCampaignsByIdError, Options<DeleteAdminCampaignsByIdData>> => {
+  const mutationOptions: UseMutationOptions<
+    DeleteAdminCampaignsByIdResponse,
+    DeleteAdminCampaignsByIdError,
+    Options<DeleteAdminCampaignsByIdData>
+  > = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await deleteAdminCampaignsById({
+        ...options,
+        ...fnOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};
+
+export const getAdminCampaignsByIdQueryKey = (options: Options<GetAdminCampaignsByIdData>) => createQueryKey('getAdminCampaignsById', options);
+
+/**
+ * Get campaign details (admin only)
+ */
+export const getAdminCampaignsByIdOptions = (options: Options<GetAdminCampaignsByIdData>) =>
+  queryOptions<
+    GetAdminCampaignsByIdResponse,
+    GetAdminCampaignsByIdError,
+    GetAdminCampaignsByIdResponse,
+    ReturnType<typeof getAdminCampaignsByIdQueryKey>
+  >({
+    queryFn: async ({ queryKey, signal }) => {
+      const { data } = await getAdminCampaignsById({
+        ...options,
+        ...queryKey[0],
+        signal,
+        throwOnError: true,
+      });
+      return data;
+    },
+    queryKey: getAdminCampaignsByIdQueryKey(options),
+  });
+
+/**
  * Update campaign status (admin only)
  */
 export const patchAdminCampaignsByIdStatusMutation = (
@@ -593,29 +644,6 @@ export const patchAdminCampaignsByIdPublishMutation = (
   > = {
     mutationFn: async (fnOptions) => {
       const { data } = await patchAdminCampaignsByIdPublish({
-        ...options,
-        ...fnOptions,
-        throwOnError: true,
-      });
-      return data;
-    },
-  };
-  return mutationOptions;
-};
-
-/**
- * Delete campaign (admin only)
- */
-export const deleteAdminCampaignsByIdMutation = (
-  options?: Partial<Options<DeleteAdminCampaignsByIdData>>
-): UseMutationOptions<DeleteAdminCampaignsByIdResponse, DeleteAdminCampaignsByIdError, Options<DeleteAdminCampaignsByIdData>> => {
-  const mutationOptions: UseMutationOptions<
-    DeleteAdminCampaignsByIdResponse,
-    DeleteAdminCampaignsByIdError,
-    Options<DeleteAdminCampaignsByIdData>
-  > = {
-    mutationFn: async (fnOptions) => {
-      const { data } = await deleteAdminCampaignsById({
         ...options,
         ...fnOptions,
         throwOnError: true,

@@ -8,7 +8,10 @@ export default defineConfig({
   plugins: [
     '@hey-api/typescript',
     '@hey-api/sdk',
-    '@hey-api/client-fetch',
+    {
+      name: '@hey-api/client-fetch',
+      runtimeConfigPath: '../hey-api.ts',
+    },
     'zod',
     {
       name: '@tanstack/react-query',

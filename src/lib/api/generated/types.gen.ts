@@ -261,7 +261,7 @@ export type PostCampaignsData = {
     title: string;
     description: string;
     targetIdr: number;
-    panelCapacityKwp: string;
+    panelCapacityKwp?: string;
     estimatedKwhAnnual?: string;
     estimatedIdrSavings?: number;
     coverImageUrl?: string;
@@ -627,7 +627,7 @@ export type PostAdminCampaignsData = {
     title: string;
     description: string;
     targetIdr: number;
-    panelCapacityKwp: string;
+    panelCapacityKwp?: string;
     estimatedKwhAnnual?: string;
     estimatedIdrSavings?: number;
     coverImageUrl?: string;
@@ -664,6 +664,127 @@ export type PostAdminCampaignsResponses = {
 };
 
 export type PostAdminCampaignsResponse = PostAdminCampaignsResponses[keyof PostAdminCampaignsResponses];
+
+export type DeleteAdminCampaignsByIdData = {
+  body?: never;
+  path: {
+    id: string;
+  };
+  query?: never;
+  url: '/admin/campaigns/{id}';
+};
+
+export type DeleteAdminCampaignsByIdErrors = {
+  /**
+   * Campaign not found
+   */
+  404: Error;
+};
+
+export type DeleteAdminCampaignsByIdError = DeleteAdminCampaignsByIdErrors[keyof DeleteAdminCampaignsByIdErrors];
+
+export type DeleteAdminCampaignsByIdResponses = {
+  /**
+   * Campaign deleted
+   */
+  200: {
+    success: true;
+  };
+};
+
+export type DeleteAdminCampaignsByIdResponse = DeleteAdminCampaignsByIdResponses[keyof DeleteAdminCampaignsByIdResponses];
+
+export type GetAdminCampaignsByIdData = {
+  body?: never;
+  path: {
+    id: string;
+  };
+  query?: never;
+  url: '/admin/campaigns/{id}';
+};
+
+export type GetAdminCampaignsByIdErrors = {
+  /**
+   * Campaign not found
+   */
+  404: Error;
+};
+
+export type GetAdminCampaignsByIdError = GetAdminCampaignsByIdErrors[keyof GetAdminCampaignsByIdErrors];
+
+export type GetAdminCampaignsByIdResponses = {
+  /**
+   * Campaign details
+   */
+  200: {
+    id: string;
+    title: string;
+    description: string;
+    status: string;
+    targetIdr: number;
+    raisedIdr: number;
+    donorCount: number;
+    deadline: string;
+    progressPercent: number;
+    worshipPlace: {
+      name: string;
+      city: string;
+      religionType: string;
+      address?: string;
+    };
+    energyImpact: {
+      panelCapacityKwp: string;
+      estimatedKwhAnnual?: string;
+      estimatedIdrSavings?: number;
+    };
+    impact: {
+      fundUsage?: string;
+      energyProducedKwhMonthly?: string;
+      beneficiaries?: number;
+      carbonReductionKgMonthly?: string;
+      electricitySavingsIdrMonthly?: number;
+      impactDescription?: string;
+    };
+    images?: {
+      cover?: {
+        assetId: string;
+        publicUrl: string;
+        storageKey: string;
+      } | null;
+      gallery?: Array<{
+        assetId: string;
+        publicUrl: string;
+        storageKey: string;
+        caption?: string;
+      }>;
+      transparency?: Array<{
+        assetId: string;
+        publicUrl: string;
+        storageKey: string;
+        caption?: string;
+      }>;
+      installation?: Array<{
+        assetId: string;
+        publicUrl: string;
+        storageKey: string;
+        caption?: string;
+      }>;
+    };
+    published: boolean;
+    energyDashboard?: {
+      totalEnergyKwh: string;
+      averageEnergyPerDayKwh: string;
+      sinceDate: string;
+      progressPercent: number;
+      carbonReductionTon: string;
+      carbonReductionMomPercent: number;
+      costSavingsIdrMonthly: string;
+      equivalentHousesPerYear: number;
+    };
+  };
+};
+
+export type GetAdminCampaignsByIdResponse = GetAdminCampaignsByIdResponses[keyof GetAdminCampaignsByIdResponses];
 
 export type PatchAdminCampaignsByIdStatusData = {
   body?: {
@@ -727,39 +848,10 @@ export type PatchAdminCampaignsByIdPublishResponses = {
 
 export type PatchAdminCampaignsByIdPublishResponse = PatchAdminCampaignsByIdPublishResponses[keyof PatchAdminCampaignsByIdPublishResponses];
 
-export type DeleteAdminCampaignsByIdData = {
-  body?: never;
-  path: {
-    id: string;
-  };
-  query?: never;
-  url: '/admin/campaigns/{id}';
-};
-
-export type DeleteAdminCampaignsByIdErrors = {
-  /**
-   * Campaign not found
-   */
-  404: Error;
-};
-
-export type DeleteAdminCampaignsByIdError = DeleteAdminCampaignsByIdErrors[keyof DeleteAdminCampaignsByIdErrors];
-
-export type DeleteAdminCampaignsByIdResponses = {
-  /**
-   * Campaign deleted
-   */
-  200: {
-    success: true;
-  };
-};
-
-export type DeleteAdminCampaignsByIdResponse = DeleteAdminCampaignsByIdResponses[keyof DeleteAdminCampaignsByIdResponses];
-
 export type PostAdminCampaignsByIdAssetsData = {
   body?: {
     assetId: string;
-    kind: 'cover' | 'gallery' | 'transparency' | 'installation' | 'report';
+    kind: 'cover' | 'gallery' | 'transparency' | 'installation' | 'report' | 'other';
     sortOrder: number;
     caption?: string;
   };

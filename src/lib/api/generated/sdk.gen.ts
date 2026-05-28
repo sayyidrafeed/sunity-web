@@ -27,12 +27,15 @@ import type {
   GetAdminCampaignsByIdActivitiesData,
   GetAdminCampaignsByIdActivitiesErrors,
   GetAdminCampaignsByIdActivitiesResponses,
+  GetAdminCampaignsByIdData,
   GetAdminCampaignsByIdEnergyData,
   GetAdminCampaignsByIdEnergyErrors,
   GetAdminCampaignsByIdEnergyResponses,
+  GetAdminCampaignsByIdErrors,
   GetAdminCampaignsByIdExpensesData,
   GetAdminCampaignsByIdExpensesErrors,
   GetAdminCampaignsByIdExpensesResponses,
+  GetAdminCampaignsByIdResponses,
   GetAdminCampaignsData,
   GetAdminCampaignsErrors,
   GetAdminCampaignsResponses,
@@ -338,6 +341,26 @@ export const postAdminCampaigns = <ThrowOnError extends boolean = false>(options
   });
 
 /**
+ * Delete campaign (admin only)
+ */
+export const deleteAdminCampaignsById = <ThrowOnError extends boolean = false>(options: Options<DeleteAdminCampaignsByIdData, ThrowOnError>) =>
+  (options.client ?? client).delete<DeleteAdminCampaignsByIdResponses, DeleteAdminCampaignsByIdErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/admin/campaigns/{id}',
+    ...options,
+  });
+
+/**
+ * Get campaign details (admin only)
+ */
+export const getAdminCampaignsById = <ThrowOnError extends boolean = false>(options: Options<GetAdminCampaignsByIdData, ThrowOnError>) =>
+  (options.client ?? client).get<GetAdminCampaignsByIdResponses, GetAdminCampaignsByIdErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/admin/campaigns/{id}',
+    ...options,
+  });
+
+/**
  * Update campaign status (admin only)
  */
 export const patchAdminCampaignsByIdStatus = <ThrowOnError extends boolean = false>(
@@ -367,16 +390,6 @@ export const patchAdminCampaignsByIdPublish = <ThrowOnError extends boolean = fa
       'Content-Type': 'application/json',
       ...options.headers,
     },
-  });
-
-/**
- * Delete campaign (admin only)
- */
-export const deleteAdminCampaignsById = <ThrowOnError extends boolean = false>(options: Options<DeleteAdminCampaignsByIdData, ThrowOnError>) =>
-  (options.client ?? client).delete<DeleteAdminCampaignsByIdResponses, DeleteAdminCampaignsByIdErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/admin/campaigns/{id}',
-    ...options,
   });
 
 /**

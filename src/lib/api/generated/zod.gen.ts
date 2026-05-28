@@ -256,7 +256,7 @@ export const zPostCampaignsBody = z.object({
   title: z.string().min(1).max(200),
   description: z.string().min(1).max(5000),
   targetIdr: z.int().gt(100000).lte(100000000000),
-  panelCapacityKwp: z.string(),
+  panelCapacityKwp: z.string().optional(),
   estimatedKwhAnnual: z.string().optional(),
   estimatedIdrSavings: z.int().gt(0).optional(),
   coverImageUrl: z.url().optional(),
@@ -573,7 +573,7 @@ export const zPostAdminCampaignsBody = z.object({
   title: z.string().min(1).max(200),
   description: z.string().min(1).max(5000),
   targetIdr: z.int().gt(100000).lte(100000000000),
-  panelCapacityKwp: z.string(),
+  panelCapacityKwp: z.string().optional(),
   estimatedKwhAnnual: z.string().optional(),
   estimatedIdrSavings: z.int().gt(0).optional(),
   coverImageUrl: z.url().optional(),
@@ -592,6 +592,112 @@ export const zPostAdminCampaignsBody = z.object({
  */
 export const zPostAdminCampaignsResponse = z.object({
   data: zCampaignDb,
+});
+
+export const zDeleteAdminCampaignsByIdPath = z.object({
+  id: z.uuid(),
+});
+
+/**
+ * Campaign deleted
+ */
+export const zDeleteAdminCampaignsByIdResponse = z.object({
+  success: z.literal(true),
+});
+
+export const zGetAdminCampaignsByIdPath = z.object({
+  id: z.uuid(),
+});
+
+/**
+ * Campaign details
+ */
+export const zGetAdminCampaignsByIdResponse = z.object({
+  id: z.uuid(),
+  title: z.string(),
+  description: z.string(),
+  status: z.string(),
+  targetIdr: z.number(),
+  raisedIdr: z.number(),
+  donorCount: z.number(),
+  deadline: z.iso.datetime(),
+  progressPercent: z.number(),
+  worshipPlace: z.object({
+    name: z.string(),
+    city: z.string(),
+    religionType: z.string(),
+    address: z.string().optional(),
+  }),
+  energyImpact: z.object({
+    panelCapacityKwp: z.string(),
+    estimatedKwhAnnual: z.string().optional(),
+    estimatedIdrSavings: z.number().optional(),
+  }),
+  impact: z.object({
+    fundUsage: z.string().optional(),
+    energyProducedKwhMonthly: z.string().optional(),
+    beneficiaries: z.number().optional(),
+    carbonReductionKgMonthly: z.string().optional(),
+    electricitySavingsIdrMonthly: z.number().optional(),
+    impactDescription: z.string().optional(),
+  }),
+  images: z
+    .object({
+      cover: z
+        .object({
+          assetId: z.uuid(),
+          publicUrl: z.url(),
+          storageKey: z.string(),
+        })
+        .nullish(),
+      gallery: z
+        .array(
+          z.object({
+            assetId: z.uuid(),
+            publicUrl: z.url(),
+            storageKey: z.string(),
+            caption: z.string().optional(),
+          })
+        )
+        .optional()
+        .default([]),
+      transparency: z
+        .array(
+          z.object({
+            assetId: z.uuid(),
+            publicUrl: z.url(),
+            storageKey: z.string(),
+            caption: z.string().optional(),
+          })
+        )
+        .optional()
+        .default([]),
+      installation: z
+        .array(
+          z.object({
+            assetId: z.uuid(),
+            publicUrl: z.url(),
+            storageKey: z.string(),
+            caption: z.string().optional(),
+          })
+        )
+        .optional()
+        .default([]),
+    })
+    .optional(),
+  published: z.boolean(),
+  energyDashboard: z
+    .object({
+      totalEnergyKwh: z.string(),
+      averageEnergyPerDayKwh: z.string(),
+      sinceDate: z.string(),
+      progressPercent: z.number(),
+      carbonReductionTon: z.string(),
+      carbonReductionMomPercent: z.number(),
+      costSavingsIdrMonthly: z.string(),
+      equivalentHousesPerYear: z.number(),
+    })
+    .optional(),
 });
 
 export const zPatchAdminCampaignsByIdStatusBody = z.object({
@@ -624,20 +730,9 @@ export const zPatchAdminCampaignsByIdPublishResponse = z.object({
   id: z.uuid(),
 });
 
-export const zDeleteAdminCampaignsByIdPath = z.object({
-  id: z.uuid(),
-});
-
-/**
- * Campaign deleted
- */
-export const zDeleteAdminCampaignsByIdResponse = z.object({
-  success: z.literal(true),
-});
-
 export const zPostAdminCampaignsByIdAssetsBody = z.object({
   assetId: z.uuid(),
-  kind: z.enum(['cover', 'gallery', 'transparency', 'installation', 'report']),
+  kind: z.enum(['cover', 'gallery', 'transparency', 'installation', 'report', 'other']),
   sortOrder: z.int().gte(0),
   caption: z.string().optional(),
 });
