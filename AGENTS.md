@@ -156,11 +156,11 @@ Use the generated `*Options()` helpers with TanStack Query — do not hand-write
 
 Validated via `@t3-oss/env-core` + Zod in `src/config/index.ts`. All three are optional URLs; empty strings count as unset.
 
-| Variable             | Purpose                                                              |
-| -------------------- | -------------------------------------------------------------------- |
-| `VITE_API_URL`       | Backend base URL without `/api` (SDK client and OpenAPI generation)  |
-| `VITE_APP_URL`       | Frontend URL, used for the post-login `callbackURL`                  |
-| `VITE_AUTH_BASE_URL` | Better Auth server URL for `authClient`                              |
+| Variable             | Purpose                                                             |
+| -------------------- | ------------------------------------------------------------------- |
+| `VITE_API_URL`       | Backend base URL without `/api` (SDK client and OpenAPI generation) |
+| `VITE_APP_URL`       | Frontend URL, used for the post-login `callbackURL`                 |
+| `VITE_AUTH_BASE_URL` | Better Auth server URL for `authClient`                             |
 
 Copy `.env.example` to `.env` before starting.
 

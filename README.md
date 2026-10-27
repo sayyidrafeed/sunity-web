@@ -9,20 +9,20 @@ Data comes from the `sunity-api` backend through a client generated from its Ope
 
 ## Stack
 
-| Layer         | Library                                                                 |
-| ------------- | ----------------------------------------------------------------------- |
-| Build         | Vite 6, `@vitejs/plugin-react`                                          |
+| Layer         | Library                                                                   |
+| ------------- | ------------------------------------------------------------------------- |
+| Build         | Vite 6, `@vitejs/plugin-react`                                            |
 | UI            | React 19, Tailwind CSS v4 (`@tailwindcss/vite`), Radix UI, `lucide-react` |
-| Routing       | React Router 7 (`createBrowserRouter`, lazy routes)                     |
-| Data          | TanStack Query 5 + hey-api generated SDK (`@hey-api/openapi-ts`)        |
-| Auth          | Better Auth client (Google sign-in via the backend)                     |
-| Forms         | `react-hook-form` + Zod                                                 |
-| State         | Zustand                                                                 |
-| Charts        | Recharts, `react-circular-progressbar`                                  |
-| Env           | `@t3-oss/env-core`                                                      |
-| Type check    | `tsgo` (`@typescript/native-preview`)                                   |
-| Lint / format | Oxlint, Oxfmt                                                           |
-| Tests         | Vitest, Testing Library, jsdom                                          |
+| Routing       | React Router 7 (`createBrowserRouter`, lazy routes)                       |
+| Data          | TanStack Query 5 + hey-api generated SDK (`@hey-api/openapi-ts`)          |
+| Auth          | Better Auth client (Google sign-in via the backend)                       |
+| Forms         | `react-hook-form` + Zod                                                   |
+| State         | Zustand                                                                   |
+| Charts        | Recharts, `react-circular-progressbar`                                    |
+| Env           | `@t3-oss/env-core`                                                        |
+| Type check    | `tsgo` (`@typescript/native-preview`)                                     |
+| Lint / format | Oxlint, Oxfmt                                                             |
+| Tests         | Vitest, Testing Library, jsdom                                            |
 
 ## Getting started
 
@@ -48,17 +48,17 @@ All variables are optional URLs, validated in `src/config/index.ts`, and inlined
 
 ## Scripts
 
-| Command                    | What it does                                                  |
-| -------------------------- | ------------------------------------------------------------- |
-| `bun run dev`              | Vite dev server                                               |
-| `bun run build`            | Production build to `dist/`                                   |
-| `bun run preview`          | Serve the production build locally                            |
-| `bun run check`            | Type check with `tsgo --noEmit`                               |
-| `bun run lint`             | Oxlint                                                        |
-| `bun run format`           | Oxfmt (write)                                                 |
-| `bun run format:check`     | Oxfmt (check only)                                            |
-| `bun run fl`               | Format, then lint                                             |
-| `bun run test`             | Vitest, single run                                            |
+| Command                    | What it does                                                            |
+| -------------------------- | ----------------------------------------------------------------------- |
+| `bun run dev`              | Vite dev server                                                         |
+| `bun run build`            | Production build to `dist/`                                             |
+| `bun run preview`          | Serve the production build locally                                      |
+| `bun run check`            | Type check with `tsgo --noEmit`                                         |
+| `bun run lint`             | Oxlint                                                                  |
+| `bun run format`           | Oxfmt (write)                                                           |
+| `bun run format:check`     | Oxfmt (check only)                                                      |
+| `bun run fl`               | Format, then lint                                                       |
+| `bun run test`             | Vitest, single run                                                      |
 | `bun run openapi:generate` | Regenerate `src/lib/api/generated/` from `${VITE_API_URL}/openapi.json` |
 
 ## Project layout
